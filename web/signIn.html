@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<!-- ==========================================================
+     HEAD DEL DOCUMENTO HTML
+========================================================== -->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Clara Montaño">
+  <title>SIGN IN | NEOBANK</title>
+
+  <!-- Fuente -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Iconos Font Awesome (ojo mostrar/ocultar contraseña) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- Hoja de estilos global -->
+  <link rel="stylesheet" href="assets/css/style.css">
+
+  <!-- Script de validación -->
+  <script src="assets/js/validation.js" defer></script>
+</head>
+
+<!-- ==========================================================
+     BODY DEL DOCUMENTO HTML
+========================================================== -->
+<body class="form-page signin-page">
+
+  <div class="form-container">
+    <h1><b>SIGN IN</b></h1>
+
+    <form id="signInForm" action="#" method="POST" novalidate>
+
+      <!-- EMAIL -->
+      <div class="input-group">
+        <label for="email" class="required">Email</label>
+        <input type="email" id="email" name="email" maxlength="255" required>
+        <span class="error-message" id="error-email"></span>
+      </div>
+
+      <!-- PASSWORD -->
+      <div class="input-group password-group">
+        <label for="password" class="required">Password</label>
+        <div class="password-wrapper">
+          <input type="password" id="password" name="password" maxlength="255" required>
+          <i class="fa-solid fa-eye toggle-password" data-target="password" aria-label="Mostrar contraseña"></i>
+        </div>
+        <span class="error-message" id="error-password"></span>
+      </div>
+
+      <!-- BUTTONS -->
+      <div class="button-group">
+        <button type="button" class="btn cancel" id="cancelBtn">Cancel</button>
+        <button type="submit" class="btn accept">Sign In</button>
+      </div>
+
+      <!-- LINK TO SIGN UP -->
+      <p style="text-align: center; margin-top: 15px;">
+        Don't have an account? <a href="signUp.html" style="color: #00d0a1;">Sign Up</a>
+      </p>
+
+    </form>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="footer-inner">
+      <p><br>Sergio Arias Blanco. 2º de Desarrollo de Aplicaciones Web.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
