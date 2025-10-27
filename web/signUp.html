@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<!-----------------------------------------------------
+     HEAD DEL DOCUMENTO HTML
+------------------------------------------------------->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Clara Montaño">
+  <title>SIGN UP | NEOBANK</title>
+
+  <!-- Fuente -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Iconos Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- Hoja de estilos global reutilizable -->
+  <link rel="stylesheet" href="assets/css/style.css">
+
+
+  <!-- Script de validación -->
+  <script src="assets/js/validation.js" defer></script>
+</head>
+
+<!-- ==========================================================
+     BODY DEL DOCUMENTO HTML
+========================================================== -->
+<body class="form-page">
+
+  <div class="form-container">
+    <h1><b>SIGN UP</b></h1>
+
+    <form id="signupForm" action="#" method="POST" novalidate>
+
+      <!-- FIRST NAME -->
+      <div class="input-group">
+        <label for="firstName" class="required">First Name</label>
+        <input type="text" id="firstName" name="firstName" maxlength="255">
+        <span class="error-message" id="error-firstName"></span>
+      </div>
+
+      <!-- LAST NAME -->
+      <div class="input-group">
+        <label for="lastName" class="required">Last Name</label>
+        <input type="text" id="lastName" name="lastName" maxlength="255">
+        <span class="error-message" id="error-lastName"></span>
+      </div>
+
+      <!-- MIDDLE INITIAL -->
+      <div class="input-group">
+        <label for="middleInitial">Middle Initial</label>
+        <input type="text" id="middleInitial" name="middleInitial" maxlength="1">
+        <span class="error-message" id="error-middleInitial"></span>
+      </div>
+
+      <!-- STREET -->
+      <div class="input-group">
+        <label for="street" class="required">Street</label>
+        <input type="text" id="street" name="street" maxlength="255">
+        <span class="error-message" id="error-street"></span>
+      </div>
+
+      <!-- CITY -->
+      <div class="input-group">
+        <label for="city" class="required">City</label>
+        <input type="text" id="city" name="city" maxlength="255">
+        <span class="error-message" id="error-city"></span>
+      </div>
+
+      <!-- STATE -->
+      <div class="input-group">
+        <label for="state" class="required">State (e.g. CA)</label>
+        <input type="text" id="state" name="state" maxlength="2">
+        <span class="error-message" id="error-state"></span>
+      </div>
+
+      <!-- ZIP CODE -->
+      <div class="input-group">
+        <label for="zip" class="required">ZIP Code</label>
+        <input type="text" id="zip" name="zip" inputmode="numeric" pattern="[0-9]*">
+        <span class="error-message" id="error-zip"></span>
+      </div>
+
+      <!-- PHONE -->
+      <div class="input-group phone-group">
+        <label for="phone" class="required">Phone Number</label>
+        <div class="phone-wrapper">
+          <select id="countryCode" name="countryCode">
+            <option value="+54">Argentina (+54)</option>
+            <option value="+33">France (+33)</option>
+            <option value="+34">Spain (+34)</option>
+            <option value="+44">United Kingdom (+44)</option>
+            <option value="+1">United States (+1)</option>
+          </select>
+          <input type="tel" id="phone" name="phone" pattern="[0-9]{6,15}">
+        </div>
+        <span class="error-message" id="error-phone"></span>
+      </div>
+
+      <!-- EMAIL -->
+      <div class="input-group">
+        <label for="email" class="required">Email</label>
+        <input type="email" id="email" name="email" maxlength="255">
+        <span class="error-message" id="error-email"></span>
+      </div>
+
+      <!-- PASSWORD -->
+      <div class="input-group password-group">
+        <label for="password" class="required">Password</label>
+        <div class="password-wrapper">
+          <input type="password" id="password" name="password" maxlength="255">
+          <i class="fa-solid fa-eye toggle-password" data-target="password" aria-label="Show password"></i>
+        </div>
+        <span class="error-message" id="error-password"></span>
+      </div>
+
+      <!-- CONFIRM PASSWORD -->
+      <div class="input-group password-group">
+        <label for="confirmPassword" class="required">Confirm Password</label>
+        <div class="password-wrapper">
+          <input type="password" id="confirmPassword" name="confirmPassword" maxlength="255">
+          <i class="fa-solid fa-eye toggle-password" data-target="confirmPassword" aria-label="Show password"></i>
+        </div>
+        <span class="error-message" id="error-confirmPassword"></span>
+      </div>
+
+      <!-- BUTTONS -->
+      <div class="button-group">
+        <button type="button" class="btn cancel" id="cancelBtn">Cancel</button>
+        <button type="submit" class="btn accept">Sign Up</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="footer-inner">
+      <p><br>&copy; 2025 Clara Montaño. 2º de Desarrollo de Aplicaciones Web.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
+
