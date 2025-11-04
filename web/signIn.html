@@ -26,13 +26,15 @@
 
   <div class="form-container">
     <h1><b>SIGN IN</b></h1>
+    
+    <div id ="responseMsg"></div>
 
     <form id="signInForm" action="http://localhost:8080/CRUDBankServerSide/webresources/customer/sigin/" method="POST" novalidate>
 
       <!-- EMAIL -->
       <div class="input-group">
         <label for="email" class="required">Email</label>
-        <input type="email" id="email" name="email" maxlength="255" required>
+        <input type="email" id="email" name="email" maxlength="255" required onblur="validateEmailOnBlur()">
         <span class="error-message" id="error-email"></span>
       </div>
 
@@ -40,7 +42,7 @@
       <div class="input-group password-group">
         <label for="password" class="required">Password</label>
         <div class="password-wrapper">
-          <input type="password" id="password" name="password" maxlength="255" required>
+          <input type="password" id="password" name="password" maxlength="255" required onblur="validatePasswordOnBlur()">
           <i class="fa-solid fa-eye toggle-password" data-target="password" aria-label="Mostrar contraseña"></i>
         </div>
         <span class="error-message" id="error-password"></span>
@@ -48,8 +50,8 @@
 
       <!-- BUTTONS -->
       <div class="button-group">
-        <button type="button" class="btn cancel" id="cancelBtn">Cancel</button>
-        <button type="submit" class="btn accept">Sign In</button>
+        <button type="button" class="btn cancel" id="cancelBtn" onclick="handleCancelOnClick();">Cancel</button>
+        <button type="submit" class="btn accept" onclick="handleSignInOnClick();">Sign In</button>
       </div>
 
       <!-- LINK TO SIGN UP -->
