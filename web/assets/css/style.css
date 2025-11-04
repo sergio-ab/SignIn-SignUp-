@@ -47,7 +47,11 @@ a:hover {
 =========================================== */
 
 body.index-page {
-  background: linear-gradient(135deg, #ff9a00, #ff005c);
+  background: url("../images/background1.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 60px 0;
   display: table;
   width: 100%;
   height: 100vh;
