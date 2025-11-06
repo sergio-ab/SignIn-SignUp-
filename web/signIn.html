@@ -17,19 +17,48 @@
   <!-- Hoja de estilos global -->
   <link rel="stylesheet" href="assets/css/style.css">
 
+  <!--ESTILO PROPIO DE SIGN IN EN MENSAJES DE ERROR-->
+ <style> /*Usamos la etiqueta style porque vamos a aplicar un tipo de estilo css integrado en el documento HTML*/
+  
+/*El estilo para el elemento HTML con el id responseMsg*/
+  #responseMsg {
+  margin-top: 1em; /*Margen superior de 1em*/
+  padding: 0.5em; /*Espacio interno de 0.5em alrededor del contenido del elemento*/
+  display: none; /*Hace que el elemento esté oculto por defecto*/
+  border-radius: 6px; /*Redondea las esquinas con un radio de 6px*/
+  text-align: center; /*Centra el texto dentro del elemento*/
+  font-weight: 600; /*Hace el texto un poco más negrita*/
+}
+
+
+/*El estilo para los elementos que tienen el id responseMsg y además la clase success*/
+#responseMsg.success {
+  color: green; /*El texto se vuelve verde*/
+  background-color: #e0ffe0; /*El fondo se vuelve claro*/
+  border: 1px solid green; /*Se agrega un borde verde alrededor*/
+}
+
+/*El estilo para los elementos que tienen el id responseMsg y además la clase error*/
+#responseMsg.error {
+  color: red; /*El texto se vuelve rojo*/
+  background-color: #ffe0e0; /*El fondo se vuelve rojo claro*/
+  border: 1px solid red; /*Se agrega un borde rojo alrededor*/
+}
+ </style> <!--Cierre de la etiqueta del css-->
+
   <!-- Script de validación -->
-  <script src="assets/js/validation.js" defer></script>
+  <script src="assets/js/validation.js" defer></script> <!--Con "defer" conseguimos que el HTML y el js se carguen en paralelo, pero el js no se ejecute hasta que termine de cargarse el HTML-->
 </head>
 
 <!--BODY DEL DOCUMENTO-->
-<body class="form-page signin-page">
+<body class="form-page signin-page"> <!--Iniciamos el cuerpo del documento y asignamos las clases form-page y singin-page para aplicar estilos CSS específicos-->
 
-  <div class="form-container">
-    <h1><b>SIGN IN</b></h1>
+  <div class="form-container"> <!--Este es el contenedor principal que controla el diseño-->
+    <h1><b>SIGN IN</b></h1> <!--Título principal de la página-->
     
-    <div id ="responseMsg"></div>
+    <div id ="responseMsg"></div> <!--Contenedor que muestra los mensajes al usuario. Inicialmente está vacío-->
 
-    <form id="signInForm" action="http://localhost:8080/CRUDBankServerSide/webresources/customer/sigin/" method="POST" novalidate>
+    <form id="signInForm" action="http://localhost:8080/CRUDBankServerSide/webresources/customer/sigin/" method="POST" novalidate> <!---->
 
       <!-- EMAIL -->
       <div class="input-group">
@@ -51,7 +80,7 @@
       <!-- BUTTONS -->
       <div class="button-group">
         <button type="button" class="btn cancel" id="cancelBtn" onclick="handleCancelOnClick();">Cancel</button>
-        <button type="submit" class="btn accept" onclick="handleSignInOnClick();">Sign In</button>
+        <button type="submit" class="btn accept" onclick="handleSignInOnClick(event);">Sign In</button> <!-- En este caso, sí ponemos "event" porque necesitamos controlar el envío del formulario-->
       </div>
 
       <!-- LINK TO SIGN UP -->
