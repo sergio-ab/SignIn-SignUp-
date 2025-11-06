@@ -216,6 +216,10 @@ function sendRequestAndProcessResponse(customer, btnSubmit) {
       */
       if (response.status === 204) { 
         showMessage("User created successfully!", "success");
+        // SESIONSTORAGE -> Guarda el email para autocompletar el Sign In
+        sessionStorage.setItem("signupEmail", customer.email);
+
+        // Espera 1,5 segundos y redirige al Sign In
         setTimeout(function() {
           window.location.href = "signin.html";
         }, 1500);
