@@ -23,7 +23,7 @@
 /*
     |  handleSignUpOnClick -> función principa, gestiona todo el proceso de envío del formulario
 */
-function handleSignUpOnClick(event) {
+function handleSignUpOnClick(event) { //Se ejecuta cuando se hace click en el botón Sign Up.
   try {
     //Evita elcomportamieto por defecto, detiene la propagación
     event.preventDefault();
@@ -82,10 +82,10 @@ function handleSignUpOnClick(event) {
     -------------------------------------------------------------------------------------
         |  CONSTRUCCIÓN DEL OBJETO CUSTOMER
     -------------------------------------------------------------------------------------
-        |  Si allValid es false, significa que hay errores.
-        |  Se reactiva el botón (por si se había deshabilitado).
-        |  Luego se lanza un throw new Error(...) para que el bloque catch lo capture
-        |  y muestre un mensaje en pantalla.
+        |  Se crea un objeto JS llamado customer que agrupa todos los datos del formulario en una sola estructura.
+        |  Este objeto es el que se enviará al servidor en formato JSON mediante la función fetch().
+        |  Se usa .value para obtener el texto introducido por el usuario y .trim() para eliminar posibles espacios en blanco
+        |  Para garantizar que los datos es´tna organizados y limpios antes de enviarlos al servidor.
     */
     const customer = {
       firstName: form.firstName.value.trim(),
@@ -104,7 +104,7 @@ function handleSignUpOnClick(event) {
         |  VALIDACIÓN EXTRA (GLOBAL ANTES DEL ENVÍO)
     -------------------------------------------------------------------------------------
         |  (Validación global, justo antes de enviar los datos al servidor)
-        |  Es una validación de seguridad y consistencia a pesar de que después
+        |  Es una validación de seguridad y consistencia a pesar de que después 
         |  de validará cada uno de  los campos para hacerlo visible y cómodo al usuario.
         |  Si algo falla, se lanza otro throw new Error(...).
      */
@@ -139,7 +139,7 @@ function handleSignUpOnClick(event) {
     sendRequestAndProcessResponse(customer, btnSubmit);
 
   } catch (error) { // Si ocurre cualquier error (de validación o de conexión), el catch lo detecta.
-    showMessage("Error: " + error.message, "error");
+    showMessage("Error: " + error.message, "error"); //error.message -> El texto descriptivo del error.
     console.error(error); // muestra el error en la consola del navegador (solo visible para depurar código).
   }
 }
@@ -150,7 +150,7 @@ function handleSignUpOnClick(event) {
 // ==========================================================
 function handleCancelOnClick(event) {
   event.preventDefault(); //Evitar que se envíe por defecto
-  // confirm() función nativa de JS abre una ventana emergente del navegador con dos botones:
+  // confirm() función nativa de JS abre una ventana emergente del navegador con dos botones: 
   // “OK” y “Cancel”.
   const confirmCancel = confirm("Are you sure you want to cancel the registration?");
   if (confirmCancel) {
@@ -158,7 +158,7 @@ function handleCancelOnClick(event) {
     // Si no, no pasa nada (se queda en la página).
     showMessage("Registration cancelled. Returning to the home page...", "info");
     // setTimeout función nativa de JS que ejecuta el bloque de código despus de un tiempo determinado 1500
-    // tiempo en milisegundos= 1,5 segundos, tiempo que tarda en enviarle a la página index
+    // tiempo en milisegundos= 1,5 segundos, tiempo que tarda en enviarle a la página index 
     // para que de tiempo a mostrar el mensaje
     setTimeout(() => (window.location.href = "index.html"), 1500);
   }
@@ -176,11 +176,11 @@ function handleCancelOnClick(event) {
 */
 
 function sendRequestAndProcessResponse(customer, btnSubmit) {
- 
+  
   /*-------------------------------------
       |   fetch -> PETICIÓN AL SERVIDOR
   -------------------------------------*/
-  /*
+  /* 
       |  fetch() devuelve una promesa (Promise).
       |  Una promesa en JavaScript representa una operación asíncrona que puede tener tres estados:
       |   pending -> en curso
@@ -199,20 +199,22 @@ function sendRequestAndProcessResponse(customer, btnSubmit) {
     body: JSON.stringify(customer), // Convierte el objeto JS en texto JSON antes de enviarlo.
   })
 
+  //------------------------------------
   // PROCESAR LA RESPUESTA DEL SERVIDOR
+  //------------------------------------
   .then(function(response) {
 
       /* |---------------------------------
          |  CASO 1 → HTTP 204 (No Content)
          |---------------------------------
-         |  Significa que el servidor ha recibido los datos correctamente
+         |  Significa que el servidor ha recibido los datos correctamente 
          |  y el usuario se ha registrado con éxito.
          |  Entonces:
          |      Muestra un mensaje global verde (tipo “success”)
          |      Espera 1,5 segundos para que el usuario lo lea
          |      Redirige automáticamente a la página "signin.html"
       */
-      if (response.status === 204) {
+      if (response.status === 204) { 
         showMessage("User created successfully!", "success");
         setTimeout(function() {
           window.location.href = "signin.html";
@@ -225,12 +227,12 @@ function sendRequestAndProcessResponse(customer, btnSubmit) {
          |  en la base de datos (usuario duplicado).
          |  Entonces:
          |      Muestra un mensaje de error bajo el campo “Email” usando la función showError().
-         |      Lanza una excepción con throw new Error()
+         |      Lanza una excepción con throw new Error() 
          |      para que el bloque .catch() muestre el mensaje global.
       */
       } else if (response.status === 403) {
         showError("email", "*The email address already exists. Please use another one.");
-        throw new Error("Duplicate email address.");
+        throw new Error("User registration failed: Email address already exists.");
 
       /* |---------------------------------
          |  CASO 3 → HTTP 500 (Server Error)
@@ -241,7 +243,7 @@ function sendRequestAndProcessResponse(customer, btnSubmit) {
          |      El error será capturado más adelante por el bloque .catch().
       */
       } else if (response.status === 500) {
-        throw new Error("Server error. Please try again later or contact Customer Support (CAW).");
+        throw new Error("Server error. Please try again later or contact Customer Support.");
 
       /* |---------------------------------
          |  CASO 4 → Cualquier otro código de estado
@@ -360,20 +362,21 @@ function validateField(id) {
     case "firstName":
     case "lastName":
     case "city":
-      if (!/^[A-Za-z\s]+$/.test(value))
-        errorMsg = "* Enter only letters and spaces.<br>* Do not enter numbers or special characters.";;
+      if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/.test(value))
+        errorMsg = "* Enter only letters (including accents) and spaces.<br>* Do not enter numbers or special characters.";
       break;
     case "middleInitial":
       if (value && !/^[A-Za-z]{1}$/.test(value))
         errorMsg = "* Enter only one letter.<br>* Do not enter numbers, spaces, or special characters.";
       break;
     case "street":
-      if (!/^[A-Za-z0-9\s]+$/.test(value))
-        errorMsg = "* Enter only letters, numbers, and spaces.<br>* Do not enter symbols or special characters.";
+      if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s/º]+$/.test(value))
+        errorMsg = "* Enter only letters (including accents), numbers, spaces, '/' and 'º'.<br>* Do not enter other symbols or special characters.";
       break;
+
     case "state":
-      if (!/^[A-Za-z]{2}$/.test(value))
-        errorMsg = "* Enter only letters.<br>* Do not enter numbers, spaces, or special characters.";
+      if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/.test(value))
+        errorMsg = "* Enter only letters (including accents) and spaces.<br>* Do not enter numbers or special characters.";
       break;
     case "zip":
       if (!/^\d{4,10}$/.test(value))
@@ -425,7 +428,7 @@ function showError(id, msg) {
     errorSpan.innerHTML = msg; // Usa .innerHTML para poder interpretar etiquetas HTML dentro del mensaje, por ejemplo <br> para hacer saltos de línea.
     errorSpan.style.display = "block"; // Hace que el span se muestre (porque normalmente está oculto con display: none; cuando no hay errores).
     // Estilos aplicados dinámicamente:
-    // Cada una de las siguientes líneas da estilo visual al mensaje de error,
+    // Cada una de las siguientes líneas da estilo visual al mensaje de error, 
     // directamente desde JavaScript (sin necesidad de CSS externo).
     errorSpan.style.color = "#ff4444";
     errorSpan.style.backgroundColor = "rgba(0, 0, 0, 0.15)";
@@ -443,7 +446,7 @@ function showError(id, msg) {
 // ==========================================================
 /*
     |  Limpia el mensaje de error del campo cuando se corrige.
-    |  Recibe un parámetro id, que es el identificador del campo que se ha validado
+    |  Recibe un parámetro id, que es el identificador del campo que se ha validado 
     |  (por ejemplo "email" o "zip").
     |  Busca el elemento <span> donde podría haber un mensaje de error.
     |  (Por ejemplo, si id = "email", selecciona el elemento con id="error-email").
@@ -464,7 +467,7 @@ function clearError(id) {
 // |   FUNCIÓN TOGGLEPASSWORDVIDIBILITY                     |
 // ==========================================================
 /*
-    |  Se ejecuta cada vez que el usuario hace clic en el icono del ojo (<i class="fa-eye">
+    |  Se ejecuta cada vez que el usuario hace clic en el icono del ojo (<i class="fa-eye"> 
     |  o <i class="fa-eye-slash">) dentro del campo de contraseña.
     |  Se le pasa el parámetro event, que contiene la información del clic:
     |  qué elemento lo provocó, en qué parte del documento ocurrió, etc.
