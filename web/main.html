@@ -1,34 +1,268 @@
 <!DOCTYPE html>
-<html  >
+<html lang="es">
 <head>
-  <!-- Site made with Mobirise Website Builder v6.1.4, https://mobirise.com -->
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="generator" content="Mobirise v6.1.4, mobirise.com">
-  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
-  <link rel="shortcut icon" href="assets/images/logo5.png" type="image/x-icon">
-  <meta name="description" content="">
-  
-  
-  <title>ACTION</title>
-  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
-  <link rel="stylesheet" href="assets/animatecss/animate.css">
-  <link rel="stylesheet" href="assets/theme/css/style.css">
-  <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=KxcOVJ"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=KxcOVJ" type="text/css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEOBANK | Dashboard</title>
 
+  <!-- Fuente -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Iconos -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- Estilos globales -->
+  <link rel="stylesheet" href="assets/css/style.css">
+
+  <style>
+    body.main-page {
+      background: url("assets/images/background1.jpg") center/cover no-repeat;
+      color: #fff;
+      overflow-y: auto;
+      text-align: left;
+      font-family: "Inter Tight", sans-serif;
+    }
+
+    .dashboard-container {
+      background: rgba(0, 0, 0, 0.65);
+      padding: 40px 50px;
+      border-radius: 15px;
+      max-width: 1000px;
+      width: 90%;
+      margin: 80px auto;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      padding-bottom: 15px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .dashboard-header h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+
+    .header-buttons button {
+      background: #007f67;
+      border: none;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: 0.3s ease;
+      font-weight: 600;
+      margin-left: 10px;
+    }
+
+    .header-buttons button:hover {
+      transform: scale(1.05);
+      opacity: 0.9;
+    }
+
+    .accounts-section h2 {
+      font-size: 1.4rem;
+      margin-bottom: 15px;
+      color: #00c896;
+    }
+
+    .account-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 20px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .card:hover {
+      transform: scale(1.03);
+    }
+
+    .card h3 {
+      font-size: 1.1rem;
+      color: #00c896;
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      font-size: 0.95rem;
+      margin-bottom: 6px;
+    }
+
+    .movements-section {
+      margin-top: 40px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    th {
+      text-align: left;
+      background: rgba(0, 127, 103, 0.6);
+    }
+
+    td {
+      color: #fff;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 50px;
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.7);
+    }
+  </style>
 </head>
-<body>
-  
-  <section data-bs-version="5.1" class="header19 cid-uYQ3m3NRAE mbr-fullscreen" id="header19-1n"> 
-    <div class="container">
-        <div class="row">
-            <div class="content-wrap col-12 col-md-8">   
-            </div>
-        </div>
+
+<body class="main-page">
+  <!-- Mensaje global -->
+  <div id="responseMsg" style="display:none;" class="msg-box">
+    <span id="closeMsg" onclick="this.parentElement.style.display='none'" style="float:right; cursor:pointer;">&times;</span>
+    <p id="responseText"></p>
+  </div>
+
+  <div class="dashboard-container">
+    <div class="dashboard-header">
+      <h1>Welcome, <span id="userName">User</span></h1>
+      <div class="header-buttons">
+        <button onclick="goToChangePassword()"><i class="fa-solid fa-key"></i> Change Password</button>
+        <button onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+      </div>
     </div>
-  </section><section class="display-7" style="padding: 0;align-items: center;justify-content: center;flex-wrap: wrap;    align-content: center;display: flex;position: relative;height: 4rem;"><a href="https://mobiri.se/4237841" style="flex: 1 1;height: 4rem;position: absolute;width: 100%;z-index: 1;"><img alt="" style="height: 4rem;" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="></a><p style="margin: 0;text-align: center;" class="display-7">&#8204;</p><a style="z-index:1" href="https://mobirise.com/builder/ai-website-generator.html">AI Website Generator</a></section><script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>  <script src="assets/smoothscroll/smooth-scroll.js"></script>  <script src="assets/ytplayer/index.js"></script>  <script src="assets/theme/js/script.js"></script>  
-  <input name="animation" type="hidden">
+
+    <section class="accounts-section">
+      <h2>Your Accounts</h2>
+      <div id="accountList" class="account-list">
+        <p>Loading accounts...</p>
+      </div>
+    </section>
+
+    <section class="movements-section" id="movementsSection" style="display:none;">
+      <h2>Account Movements</h2>
+      <table id="movementsTable">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Amount (€)</th>
+            <th>Balance (€)</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </div>
+
+  <footer class="site-footer">
+    <p><br>&copy; Grupo 4</p>
+  </footer>
+
+  <script>
+    // Mostrar mensaje global
+    function showMessage(text, type) {
+      const msgBox = document.getElementById("responseMsg");
+      const msgText = document.getElementById("responseText");
+      msgText.textContent = text;
+      msgBox.className = "msg-box " + type;
+      msgBox.style.display = "block";
+      setTimeout(() => msgBox.style.display = "none", 2000);
+    }
+
+    // Simulación de datos de sesión
+    const customerId = localStorage.getItem("customerId") || 1;
+    const customerName = localStorage.getItem("customerName") || "John Doe";
+    document.getElementById("userName").textContent = customerName;
+
+    // Logout
+    function handleLogout() {
+      if (confirm("Are you sure you want to log out?")) {
+        localStorage.clear();
+        showMessage("Logging out...", "info");
+        setTimeout(() => window.location.href = "signin.html", 1200);
+      }
+    }
+
+    // Ir a Change Password
+    function goToChangePassword() {
+      showMessage("Redirecting to change password...", "info");
+      setTimeout(() => window.location.href = "changepassword.html", 1000);
+    }
+
+    // Cargar cuentas desde el servidor
+    function loadAccounts() {
+      fetch(`http://localhost:8080/CRUDBankServerSide/webresources/customer/${customerId}/accounts`)
+        .then(response => response.json())
+        .then(accounts => {
+          const container = document.getElementById("accountList");
+          if (!accounts.length) {
+            container.innerHTML = "<p>No accounts found.</p>";
+            return;
+          }
+          container.innerHTML = accounts.map(acc => `
+            <div class="card" onclick="loadMovements(${acc.id}, '${acc.description}')">
+              <h3>${acc.description} (${acc.type})</h3>
+              <p><strong>Balance:</strong> €${acc.balance.toFixed(2)}</p>
+              ${acc.type === "CREDIT" ? `<p><strong>Credit line:</strong> €${acc.creditLine}</p>` : ""}
+              <p><strong>Opened:</strong> ${new Date(acc.beginBalanceTimestamp).toLocaleDateString()}</p>
+            </div>
+          `).join('');
+        })
+        .catch(err => {
+          console.error(err);
+          showMessage("Error loading accounts.", "error");
+        });
+    }
+
+    // Cargar movimientos de una cuenta
+    function loadMovements(accountId, description) {
+      showMessage(`Loading movements for ${description}...`, "info");
+      fetch(`http://localhost:8080/CRUDBankServerSide/webresources/account/${accountId}/movements`)
+        .then(res => res.json())
+        .then(movements => {
+          const section = document.getElementById("movementsSection");
+          const tbody = document.querySelector("#movementsTable tbody");
+          section.style.display = "block";
+          tbody.innerHTML = movements.map(mov => `
+            <tr>
+              <td>${new Date(mov.timestamp).toLocaleString()}</td>
+              <td>${mov.description}</td>
+              <td>${mov.amount.toFixed(2)}</td>
+              <td>${mov.balance.toFixed(2)}</td>
+            </tr>
+          `).join('');
+        })
+        .catch(err => {
+          console.error(err);
+          showMessage("Error loading movements.", "error");
+        });
+    }
+
+    // Inicializar
+    loadAccounts();
+  </script>
 </body>
 </html>
