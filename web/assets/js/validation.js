@@ -198,6 +198,7 @@ function handleCancelOnClick() {
   showError("error-password", "");
   //limpia cualquier mensaje global
   showResponseMessage("", "");
+  window.location.href = 'index.html';
 }
 
 // Asociar el clic del icono solo cuando el documento haya cargado completamente
