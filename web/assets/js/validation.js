@@ -116,6 +116,9 @@ function sendRequestAndProcessResponse() {
       /*document.getElementById("error-password").textContent =
         "Customer signed in successfully!";*/
       showResponseMessage("Customer signed in successfully!", "success");
+      setTimeout(() => {
+      window.location.href = 'main.html';
+      }, 500);
     })
     .catch((error) => {
       //si sale cualquier error, se muestra en el mensaje global en rojo
@@ -198,7 +201,9 @@ function handleCancelOnClick() {
   showError("error-password", "");
   //limpia cualquier mensaje global
   showResponseMessage("", "");
-  window.location.href = 'index.html';
+  setTimeout(() => {
+    window.location.href = 'index.html';
+  }, 500);
 }
 
 // Asociar el clic del icono solo cuando el documento haya cargado completamente
