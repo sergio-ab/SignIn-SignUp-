@@ -1,0 +1,349 @@
+/*==========================================
+  NEOBANK Global Styles (sin flex) - Versión verde/naranja
+  Proyecto: Formulario & Landing NEOBANK
+  Ajustes:
+  - Fondo cambiado a background2.jpg
+  - Botones en tonos naranjas
+  - Tipografía modernizada
+  - Colores de texto mejorados para contraste
+===========================================*/
+
+/* ==========================================
+   Reset Global
+=========================================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ==========================================
+   Configuración base
+=========================================== */
+body {
+  font-family: 'Poppins', sans-serif; /* Nueva tipografía moderna */
+  color: #f5f5f5; /* Texto principal claro */
+  background: url("../images/background2.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  text-align: center;
+  overflow-y: auto;
+}
+
+/* ==========================================
+   Encabezados, párrafos y enlaces
+=========================================== */
+h1, h2, h3 {
+  font-weight: 600;
+  color: #fffbe6; /* Blanco cálido */
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+p {
+  margin-bottom: 10px;
+  color: #f0f0f0;
+}
+
+a {
+  color: #ff9900; /* Naranja suave */
+  text-decoration: none;
+  transition: opacity 0.3s ease, color 0.3s ease;
+}
+
+a:hover {
+  opacity: 0.8;
+  color: #ffaa00;
+}
+
+/* ==========================================
+   1. INDEX (Landing Page)
+=========================================== */
+body.index-page {
+  background: url("../images/background2.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 60px 0;
+  display: table;
+  width: 100%; 
+  height: 100vh;
+}
+
+.container {
+  display: table-cell;
+  vertical-align: middle;
+  padding: 20px;
+}
+
+/* Título principal */
+.container h1 {
+  font-size: 2.2rem;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+  color: #fffce6;
+}
+
+.container h1 span {
+  font-weight: 700;
+  font-style: italic;
+  color: #ff9900; /* Naranja brillante */
+}
+
+/* Subtítulo o descripción */
+.container p {
+  font-size: 0.95rem;
+  margin-bottom: 25px;
+}
+
+/* Botones en la landing */
+.buttons {
+  text-align: center; 
+  white-space: nowrap;
+}
+
+.buttons .btn {
+  display: inline-block;
+  padding: 12px 35px;
+  margin: 0 10px;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 600;
+  border: 2px solid #ff9900;
+  color: #fff;
+  background: transparent;
+  transition: 0.3s ease;
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+.buttons .btn.signup {
+  background: #ff9900;
+  border-color: #ff9900;
+  color: #fff;
+  box-shadow: 0 4px 10px rgba(255, 153, 0, 0.3);
+}
+
+.buttons .btn:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+/* ==========================================
+   2. FORMULARIOS (Sign Up / Sign In)
+=========================================== */
+body.form-page {
+  background: url("../images/background2.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 60px 0;
+}
+
+.form-container {
+  background: rgba(0, 0, 0, 0.65);
+  padding: 40px 50px;
+  border-radius: 15px;
+  max-width: 480px;
+  width: 90%;
+  margin: 0 auto;
+  text-align: left;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+}
+
+.form-container h1 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 1.8rem;
+  color: #ff9900; /* Naranja pastel */
+}
+
+.input-group {
+  margin-bottom: 20px;
+}
+
+.input-group label {
+  font-weight: 600;
+  color: #fffce6;
+  margin-bottom: 6px;
+  font-size: 0.95rem;
+  display: block;
+}
+
+label.required::after {
+  content: " *";
+  color: #ff5c33;
+}
+
+/* Campos de entrada */
+.input-group input,
+.phone-group select {
+  width: 100%;
+  padding: 12px 15px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #333;
+  transition: box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.input-group input:focus,
+.phone-group select:focus {
+  outline: none;
+  box-shadow: 0 0 6px rgba(255, 153, 0, 0.7);
+  background-color: #fff;
+}
+
+/* Mostrar/Ocultar contraseña */
+.password-wrapper {
+  position: relative;
+}
+
+.password-wrapper input {
+  width: 100%;
+  padding-right: 40px;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #ffb84d;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: color 0.3s ease;
+}
+
+.toggle-password:hover {
+  color: #ff9900;
+}
+
+/* ==========================================
+   Mensajes de error
+=========================================== */
+.error-message {
+  display: none;
+  background: rgba(255, 87, 34, 0.1);
+  color: #ff7043;
+  border-left: 3px solid #ff7043;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  margin-top: 6px;
+  padding: 8px 12px;
+  text-align: left;
+  backdrop-filter: blur(3px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.input-error {
+  box-shadow: 0 0 6px #ff7043;
+  background-color: #ffece6;
+}
+
+/* ==========================================
+   Botones del formulario
+=========================================== */
+.button-group {
+  text-align: center;
+  margin-top: 30px;
+  font-size: 0; 
+}
+
+.button-group .btn {
+  display: inline-block;
+  width: 47%;          
+  margin: 0 4px;       
+  vertical-align: middle;
+  font-size: 1rem;     
+  border-radius: 50px;
+  padding: 14px 0;
+  font-weight: 600;
+  transition: 0.3s ease;
+  cursor: pointer;
+  border: 2px solid transparent;
+  text-align: center;
+}
+
+/* Botón cancelar */
+.btn.cancel {
+  background: transparent;
+  color: #fff;
+  border: 2px solid #fff;
+}
+
+/* Botón aceptar / enviar */
+.btn.accept {
+  background: #ff9900;
+  border-color: #ff9900;
+  color: #fff;
+  box-shadow: 0 4px 10px rgba(255, 153, 0, 0.3);
+}
+
+.button-group .btn:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+/* Centrado SOLO para SIGN IN / CHANGE PASSWORD*/ 
+body.signin-page,
+body.changepassword-page {
+  position: relative;
+  min-height: 100vh;
+}
+
+.signin-page .form-container,
+.changepassword-page .form-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0; /* anula el margin de la regla base */
+}
+
+/* Footer al fondo SOLO en esas dos páginas (opcional) */
+.signin-page .site-footer,
+.changepassword-page .site-footer {
+  position: absolute;
+  bottom: 10px;
+  width: 100%;
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+/* ==========================================
+   3. RESPONSIVE DESIGN
+=========================================== */
+@media (max-width: 768px) {
+  .form-container {
+    padding: 25px;
+  }
+
+  .form-container h1 {
+    font-size: 1.5rem;
+  }
+
+  .phone-wrapper select,
+  .phone-wrapper input {
+    float: none;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .btn {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .container h1 {
+    font-size: 1.8rem;
+  }
+
+  .buttons .btn {
+    display: block;
+    width: 80%;
+    margin: 10px auto;
+  }
+}
