@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="author" content="Clara Montaño" />
+  <title>SIGN UP | NEOBANK</title>
+
+  <!-------------------------------------------------------------------
+    |  FUENTE
+  --------------------------------------------------------------------->
+  <!--Descarga desde los servidores de Google la fuente "Inter Tight"-->
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-------------------------------------------------------------------
+    |  LIBRERÍA DE ICONOS "FONT-AWESOME" 
+    |  Ej: <i class="fa-solid fa-eye"></i> ojo abierto
+    |  Usado en los botones de mostrar/ocultar contraseña
+  --------------------------------------------------------------------->
+  <!--Carga la librería Font Awesome, que contiene iconos (utilizado en el ojo de la password)-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-------------------------------------------------------------------
+    |  HOJA DE ESTILOS GLOBAL REUTILIZABLE
+  --------------------------------------------------------------------->
+  <!-- Hoja de estilos global reutilizable -->
+  <link rel="stylesheet" href="assets/css/style.css">
+
+  <!-------------------------------------------------------------------
+    |  ESTILO PROPIO SIGN UP MENSAJE GLOBAL
+  --------------------------------------------------------------------->
+  <style>
+  /************************************************
+    |  Estilo caja para mensaje global centrado
+  *************************************************/
+    .msg-box { /*Clase de CSS*/
+      position: fixed;/* Fijo respecto a la ventana */
+      top: 50%;/* Centrado vertical */
+      left: 50%;/* Centrado horizontal */
+      transform: translate(-50%, -50%); /* Ajuste exacto al centro */
+      background: #fff;
+      border: 2px solid #333;
+      border-radius: 10px;
+      padding: 25px 25px 25px 25px;
+      text-align: center;
+      width: 320px;
+      max-width: 90%;/* Responsivo */
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+      z-index: 10000;
+      position: fixed;
+      font-family: "Inter Tight", sans-serif;
+      font-size: 15px;
+      line-height: 1.4;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    /* Botón de cierre (×) */
+    #closeMsg {
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      font-size: 20px;
+      font-weight: bold;
+      color: #d22;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+
+    #closeMsg:hover {
+      color: #a00;
+    }
+
+  /************************************************
+     |  Colores por tipo de mensaje
+  *************************************************/
+
+    /* Éxito */
+    .msg-box.success {
+      border-color: #28a745;
+      color: #28a745;
+    }
+
+    /* Error */
+    .msg-box.error {
+      border-color: #d22;
+      color: #d22;
+    }
+
+    /* Información / proceso en curso */
+    .msg-box.info {
+      border-color: #007bff;
+      color: #007bff;
+    }
+
+    /* Animación suave de aparición */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translate(-50%, -48%); }
+      to { opacity: 1; transform: translate(-50%, -50%); }
+    }
+  </style>
+
+
+  <!-- Script principal -->
+  <script src="scriptSignUp.js"></script>
+</head>
+
+<body class="form-page">
+
+  <div class="form-container">    <!-- Caja central donde está el formulario -->
+    <h1><b>SIGN UP</b></h1>
+
+  <!-------------------------------------------
+    |  CAPA FLOTANTE PARA MENSAJES GLOBALES
+  --------------------------------------------->
+  <!-- 
+    |  Esta caja es invisible al principio (display:none).
+    |  Cuando la función showMessage() del JS se ejecuta, 
+    |  cambia el texto y la muestra centrada.
+    |  El botón “×” ejecuta la función closeMessage() del JS para ocultarla.
+    |  <p id="responseText"></p> -> Párrafo vacío con id "responseText" que permite al JS localizarlo.
+    |  En el JS lo udamos en la función showMessage
+  -->
+  <div id="responseMsg" style="display:none;" class="msg-box"> 
+    <span id="closeMsg" onclick="closeMessage()" style="float:right; cursor:pointer;">&times;</span>
+    <p id="responseText"></p>
+  </div>  
+
+    <!----------------------------------------------------------------------------- 
+      |  FORMULARIO 
+    ------------------------------------------------------------------------------>
+    <!-- 
+      |  id = signupForm -> lo usa el JS para acceder a los campos.
+      |  ATRIBUTO -> onsubmit que ejecuta la función handleSignUpOnClick(event) del JS
+      |  cuando haces click en "Sign Up" 
+      |  novalidate -> desactiva la validación automática del navegador, 
+      |  ya lo manejo yo en el JS
+    -->
+    <form id="signupForm" method="POST" novalidate
+          onsubmit="handleSignUpOnClick(event)">
+
+      
+      <!-- 
+        |  onblur -> Cada campo llama a función validateField() al perder el foco.
+        |  Esto permite validar campo a campo (inmediato, más usable para el usuario).
+        |  Bajo cada campo hay un <span id="error-campo"> donde se muestran los mensajes.
+      -->
+
+      <!------------------------
+          FIRST NAME 
+      -------------------------->
+      <div class="input-group">
+        <label for="firstName" class="required">First Name</label>
+        <input type="text" id="firstName" name="firstName" maxlength="255"
+               onblur="validateField(this.id)">
+        <span class="error-message" id="error-firstName"></span>
+      </div>
+
+      <!------------------------
+          LAST NAME 
+      -------------------------->
+      <div class="input-group">
+        <label for="lastName" class="required">Last Name</label>
+        <input type="text" id="lastName" name="lastName" maxlength="255"
+               onblur="validateField(this.id)">
+        <span class="error-message" id="error-lastName"></span>
+      </div>
+
+      <!------------------------
+          MIDDLE INITIAL 
+      -------------------------->
+      <div class="input-group">
+        <label for="middleInitial">Middle Initial</label>
+        <input type="text" id="middleInitial" name="middleInitial" maxlength="1"
+               onblur="validateField(this.id)">
+        <span class="error-message" id="error-middleInitial"></span>
+      </div>
+
+      <!------------------------
+          STREET 
+      -------------------------->
+      <div class="input-group">
+        <label for="street" class="required">Street</label>
+        <input type="text" id="street" name="street" maxlength="255"
+               onblur="validateField(this.id)">
+        <span class="error-message" id="error-street"></span>
+      </div>
+
+      <!------------------------
+          CITY 
+      -------------------------->
+      <div class="input-group">
+        <label for="city" class="required">City</label>
+        <input type="text" id="city" name="city" maxlength="255"
+               onblur="validateField(this.id)">
+        <span class="error-message" id="error-city"></span>
+      </div>
+
+      <!------------------------
+          STATE
+      -------------------------->
+      <div class="input-group">
+        <label for="state" class="required">State</label>
+        <input type="text" id="state" name="state" maxlength="255"
+               onblur="validateField(this.id)">
+        <span class="error-message" id="error-state"></span>
+      </div>
+
+      <!------------------------
+          ZIP CODE 
+      -------------------------->
+      <div class="input-group">
+        <label for="zip" class="required">ZIP Code</label>
+        <input type="text" id="zip" name="zip" inputmode="numeric" pattern="[0-9]*"
+               onblur="validateField(this.id)">
+        <span class="error-message" id="error-zip"></span>
+      </div>
+
+      <!------------------------
+          PHONE 
+      -------------------------->
+      <div class="input-group">
+        <label for="phone" class="required">Phone Number</label>
+        <input type="tel" id="phone" name="phone" pattern="[0-9]{6,15}"
+               onblur="validateField(this.id)">
+        <span class="error-message" id="error-phone"></span>
+      </div>
+
+      <!------------------------
+          EMAIL 
+      -------------------------->
+      <div class="input-group">
+        <label for="email" class="required">Email</label>
+        <input type="email" id="email" name="email" maxlength="255"
+               onblur="validateField(this.id)">
+        <span class="error-message" id="error-email"></span>
+      </div>
+
+      <!------------------------
+          PASSWORD 
+      -------------------------->
+      <!--
+        |  type="password" -> oculta el texto introducido
+        |  fa-solid fa-eye -> muestra el icono del ojo en estilo sólido
+        |  aria-label="Show password"
+        |  data-target="password" le indica a qué campo de contraseña afecta, 
+        |  (puede ser "password" o "confirmPassword").
+        |  onclick="togglePasswordVisibility(event)" 
+        |  ejecuta la función JS para alternar entre mostrar y ocultar el texto.
+        |  aria-label="Show password" mejora la accesibilidad (para lectores de pantalla).
+      -->
+      <div class="input-group password-group">
+        <label for="password" class="required">Password</label>
+        <div class="password-wrapper"> <!--agrupa el input y el icono del ojo i -->
+          <input type="password" id="password" name="password" maxlength="255"
+                 onblur="validateField(this.id)">
+          <i class="fa-solid fa-eye toggle-password" data-target="password" aria-label="Show password"
+             onclick="togglePasswordVisibility(event)"></i>
+        </div>
+        <span class="error-message" id="error-password"></span>
+      </div>
+
+      <!------------------------
+          CONFIRM PASSWORD 
+      -------------------------->
+      <div class="input-group password-group">
+        <label for="confirmPassword" class="required">Confirm Password</label>
+        <div class="password-wrapper"> <!--agrupa el input y el icono del ojo i -->
+          <input type="password" id="confirmPassword" name="confirmPassword" maxlength="255"
+                 onblur="validateField(this.id)">
+          <i class="fa-solid fa-eye toggle-password" data-target="confirmPassword" aria-label="Show password"
+             onclick="togglePasswordVisibility(event)"></i>
+        </div>
+        <span class="error-message" id="error-confirmPassword"></span>
+      </div>
+
+      <!------------------------
+        |  BUTTONS 
+      -------------------------->
+      <!-- 
+        |  Contenedor <div> class="button-group" que agrupa los botones 
+        |  y les aplica estilos comunes mediante las clases CSS.
+        |  
+        |  - Botón "Cancel":
+        |      No envía el formulario (type="button").
+        |      Ejecuta código JavaScript al hacer clic (onclick="handleCancelOnClick(event)").
+        |      class="btn cancel" aplica los estilos visuales definidos para los botones de tipo cancelación.
+        |      id="cancelBtn" permite identificarlo desde JavaScript o CSS si fuera necesario.
+        |
+        |  - Botón "Sign Up":
+        |      Envía el formulario (type="submit").
+        |      class="btn accept" no tiene id porque usamos CSS reutilizable 
+        |      y el botón Sing Up coge la clase del btn accept.
+      -->
+      <div class="button-group">
+        <button type="button" class="btn cancel" id="cancelBtn"
+                onclick="handleCancelOnClick(event)">Cancel</button>
+        <button type="submit" class="btn accept"
+                onclick="handleSignUpOnClick(event)">Sign Up</button>
+      </div>
+    </form>
+  </div>
+
+  <!----------------------------------------------------------------------------- 
+      |  FOOTER
+  ------------------------------------------------------------------------------>
+  <!-- 
+    |  role="contentinfo" -> describe la función semántica del elemento.
+    |  En este caso, role="contentinfo" le dice a los lectores de pantalla:
+    |  “Este bloque es un pie de página con información sobre el sitio o el autor.”
+  -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="footer-inner">
+      <p><br>&copy; 2025 Clara Montaño. 2º de Desarrollo de Aplicaciones Web.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
