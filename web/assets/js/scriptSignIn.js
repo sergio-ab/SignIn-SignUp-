@@ -215,4 +215,54 @@ window.onload = function() {
   }
 };
 
+/*Función ToggleStyle para el cambio entre style.css y style2.css*/
+/*
+  Permite alternar entre el estilo principal y el alternativo.
+  Guarda la preferencia en localStorage para recordar la elección del usuario.
+*/
+
+function toggleStyle(){
+  const mainStyle = document.querySelector('link[href="assets/css/style.css"]');
+  const altStyle = document.querySelector('link[href="assets/css/style2.css"]');
+
+  if (altStyle.disabled){
+    mainStyle.disabled = true; 
+    altStyle.disabled = false;
+    localStorage.setItem("activeStyle", "alt");
+    console.log("Estilo alternativo activado"); 
+  }
+
+  else {
+    altStyle.disabled = true; 
+    mainStyle.disabled = false; 
+    localStorage.setItem("activeStyle", "main");
+    console.log("Estilo principal activado");
+  }
+}
+
+
+/*
+  Aplicar el estilo recordado al cargar la página.
+*/
+
+/*
+    Comprueba si el usuario ya había seleccionado un estilo previamente.
+    Si lo hay, lo aplica automaticamente al cargar la página.
+*/
+
+(function restoreStylePreference(){
+  const active = localStorage.getItem("activeStyle");
+  const mainStyle = document.querySelector('link[href="assets/css/style.css"]');
+  const altStyle = document.querySelector('link[href="assets/css/style2.css"]');
+
+  if (active === "alt") {
+    mainStyle.disabled = true;
+    altStyle.disabled = false; 
+  }
+
+  else {
+    altStyle.disabled = true;
+    mainStyle.disabled = false; 
+  }
+})();
 

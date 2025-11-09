@@ -349,3 +349,30 @@ body.changepassword-page {
   }
   
 }
+
+/*================================================
+    4.- Botón Flotante Para Cambiar De Estilo
+================================================ */
+
+#styleToggleBtn {
+
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  background-color: rgba(0, 127, 103, 0.9);
+  border: none;
+  color: white;
+  padding: 10px 12px;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  z-index: 9999;
+}
+
+#styleToggleBtn:hover {
+
+  transform: scale(1.1);
+  background-color: #00c896;
+}

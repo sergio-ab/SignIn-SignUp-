@@ -15,7 +15,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <!-- Hoja de estilos global -->
-  <link rel="stylesheet" href="assets/css/style2.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/style2.css" id="altStyle" disabled>
 
   <!--ESTILO PROPIO DE SIGN IN EN MENSAJES DE ERROR-->
  <style> /*Usamos la etiqueta style porque vamos a aplicar un tipo de estilo css integrado en el documento HTML*/
@@ -52,6 +53,11 @@
 
 <!--BODY DEL DOCUMENTO-->
 <body class="form-page signin-page"> <!--Iniciamos el cuerpo del documento y asignamos las clases form-page y singin-page para aplicar estilos CSS específicos-->
+
+  <!--Botón flotante para cambiar de estilo-->
+    <button id="styleToggleBtn" title="Cambiar estilo" onclick="toggleStyle()">
+      <i class="fa-solid fa-paintbrush"></i>
+    </button>
 
   <div class="form-container"> <!--Este es el contenedor principal que controla el diseño-->
     <h1><b>SIGN IN</b></h1> <!--Título principal de la página-->
