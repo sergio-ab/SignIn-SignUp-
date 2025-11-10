@@ -213,6 +213,18 @@ window.onload = function() {
   if (icon) {
     icon.onclick = togglePasswordVisibility;
   }
+  
+  // Recuperar email guardado tras el signUp
+  const emailInput = document.getElementById("email");
+  const savedEmail = sessionStorage.getItem("signupEmail");
+
+  if (emailInput && savedEmail) {
+    emailInput.value = savedEmail;
+
+    // Poner el foco directamente en el campo de contraseña
+    const passwordInput = document.getElementById("password");
+    if (passwordInput) passwordInput.focus();
+  }
 };
 
 /*Función ToggleStyle para el cambio entre style.css y style2.css*/
