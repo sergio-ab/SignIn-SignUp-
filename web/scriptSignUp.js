@@ -217,7 +217,7 @@ function sendRequestAndProcessResponse(customer, btnSubmit) {
       if (response.status === 204) { 
         showMessage("User created successfully!", "success");
         setTimeout(function() {
-          window.location.href = "signin.html";
+          window.location.href = "signIn.html";
         }, 1500);
 
       /* |---------------------------------
