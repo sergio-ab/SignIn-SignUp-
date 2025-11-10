@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<!--HEAD DEL DOCUMENTO HTML-->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Sergio Arias Blanco">
+  <title>SIGN IN | NEOBANK</title>
+
+  <!-- Fuente -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Iconos Font Awesome (ojo mostrar/ocultar contraseña) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- Hoja de estilos global -->
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/style2.css" id="altStyle" disabled>
+
+  <!--ESTILO PROPIO DE SIGN IN EN MENSAJES DE ERROR-->
+ <style> /*Usamos la etiqueta style porque vamos a aplicar un tipo de estilo css integrado en el documento HTML*/
+  
+/*El estilo para el elemento HTML con el id responseMsg*/
+  #responseMsg {
+  margin-top: 1em; /*Margen superior de 1em*/
+  padding: 0.5em; /*Espacio interno de 0.5em alrededor del contenido del elemento*/
+  display: none; /*Hace que el elemento esté oculto por defecto*/
+  border-radius: 6px; /*Redondea las esquinas con un radio de 6px*/
+  text-align: center; /*Centra el texto dentro del elemento*/
+  font-weight: 600; /*Hace el texto un poco más negrita*/
+}
+
+
+/*El estilo para los elementos que tienen el id responseMsg y además la clase success*/
+#responseMsg.success {
+  color: green; /*El texto se vuelve verde*/
+  background-color: #e0ffe0; /*El fondo se vuelve claro*/
+  border: 1px solid green; /*Se agrega un borde verde alrededor*/
+}
+
+/*El estilo para los elementos que tienen el id responseMsg y además la clase error*/
+#responseMsg.error {
+  color: red; /*El texto se vuelve rojo*/
+  background-color: #ffe0e0; /*El fondo se vuelve rojo claro*/
+  border: 1px solid red; /*Se agrega un borde rojo alrededor*/
+}
+ </style> <!--Cierre de la etiqueta del css-->
+
+  <!-- Script de validación -->
+  <script src="assets/js/scriptSignIn.js" defer></script> <!--Con "defer" conseguimos que el HTML y el js se carguen en paralelo, pero el js no se ejecute hasta que termine de cargarse el HTML-->
+</head>
+
+<!--BODY DEL DOCUMENTO-->
+<body class="form-page signin-page"> <!--Iniciamos el cuerpo del documento y asignamos las clases form-page y singin-page para aplicar estilos CSS específicos-->
+
+  <!--Botón flotante para cambiar de estilo-->
+    <button id="styleToggleBtn" title="Cambiar estilo" onclick="toggleStyle()">
+      <i class="fa-solid fa-paintbrush"></i>
+    </button>
+
+  <div class="form-container"> <!--Este es el contenedor principal que controla el diseño-->
+    <h1><b>SIGN IN</b></h1> <!--Título principal de la página-->
+    
+    <div id ="responseMsg"></div> <!--Contenedor que muestra los mensajes al usuario. Inicialmente está vacío-->
+
+    <form id="signInForm" action="http://localhost:8080/CRUDBankServerSide/webresources/customer/sigin/" method="POST" novalidate> <!---->
+
+      <!-- EMAIL -->
+      <div class="input-group">
+        <label for="email" class="required">Email</label>
+        <input type="email" id="email" name="email" maxlength="255" required onblur="validateEmailOnBlur()">
+        <span class="error-message" id="error-email"></span>
+      </div>
+
+      <!-- PASSWORD -->
+      <div class="input-group password-group">
+        <label for="password" class="required">Password</label>
+        <div class="password-wrapper">
+          <input type="password" id="password" name="password" maxlength="255" required onblur="validatePasswordOnBlur()">
+          <i class="fa-solid fa-eye toggle-password" id="toggle-password" data-target="password" aria-label="Mostrar contraseña"></i>
+        </div>
+        <span class="error-message" id="error-password"></span>
+      </div>
+
+      <!-- BUTTONS -->
+      <div class="button-group">
+        <button type="button" class="btn cancel" id="cancelBtn" onclick="handleCancelOnClick();">Cancel</button>
+        <button type="submit" class="btn accept" onclick="handleSignInOnClick(event);">Sign In</button> <!-- En este caso, sí, ponemos "event" porque necesitamos controlar el envío del formulario-->
+      </div>
+
+      <!-- LINK TO SIGN UP -->
+      <p style="text-align: center; margin-top: 15px;">
+        Don't have an account? <a href="signUp.html" style="color: #00d0a1;">Sign Up</a>
+      </p>
+
+    </form>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="footer-inner">
+      <p><br>Sergio Arias Blanco. 2º de Desarrollo de Aplicaciones Web.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
