@@ -12,7 +12,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <!-- Estilos globales -->
-  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/style.css?v=1.1">
+  <link rel="stylesheet" href="assets/css/style2.css?v=1.1">
 
   <style>
     body.main-page {
@@ -139,6 +140,11 @@
 </head>
 
 <body class="main-page">
+  <!-- Botón flotante para cambiar de estilo -->
+  <button id="styleToggleBtn" title="Cambiar estilo" onclick="toggleStyle()">
+    <i class="fa-solid fa-paintbrush"></i>
+  </button>
+
   <!-- Mensaje global -->
   <div id="responseMsg" style="display:none;" class="msg-box">
     <span id="closeMsg" onclick="this.parentElement.style.display='none'" style="float:right; cursor:pointer;">&times;</span>
@@ -146,35 +152,20 @@
   </div>
 
   <div class="dashboard-container">
-    <div class="dashboard-header">
-      <h1>Welcome, <span id="userName">User</span></h1>
-      <div class="header-buttons">
-        <button onclick="goToChangePassword()"><i class="fa-solid fa-key"></i> Change Password</button>
-        <button onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+      <div class="dashboard-header">
+        <h1>Welcome, <span id="userName">User</span></h1>
+        <div class="header-buttons">
+          <button onclick="goToChangePassword()"><i class="fa-solid fa-key"></i> Change Password</button>
+          <button onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+        </div>
       </div>
+    <div class="construction-box">
+      <h1><i class="fa-solid fa-wrench"></i> Page Under Construction</h1><br>
+      <p>
+        We're currently working on this feature.<br>
+        Soon you'll be able to change your password securely from here.
+      </p>
     </div>
-
-    <section class="accounts-section">
-      <h2>Your Accounts</h2>
-      <div id="accountList" class="account-list">
-        <p>Loading accounts...</p>
-      </div>
-    </section>
-
-    <section class="movements-section" id="movementsSection" style="display:none;">
-      <h2>Account Movements</h2>
-      <table id="movementsTable">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Description</th>
-            <th>Amount (€)</th>
-            <th>Balance (€)</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </section>
   </div>
 
   <footer class="site-footer">
@@ -182,7 +173,7 @@
   </footer>
 
   <script>
-    // Mostrar mensaje global
+    // ==== Mensajes globales ====
     function showMessage(text, type) {
       const msgBox = document.getElementById("responseMsg");
       const msgText = document.getElementById("responseText");
@@ -192,77 +183,92 @@
       setTimeout(() => msgBox.style.display = "none", 2000);
     }
 
-    // Simulación de datos de sesión
-    const customerId = localStorage.getItem("customerId") || 1;
-    const customerName = localStorage.getItem("customerName") || "John Doe";
-    document.getElementById("userName").textContent = customerName;
 
-    // Logout
     function handleLogout() {
       if (confirm("Are you sure you want to log out?")) {
         localStorage.clear();
         showMessage("Logging out...", "info");
-        setTimeout(() => window.location.href = "signin.html", 1200);
+        setTimeout(() => window.location.replace("signIn.html"), 1200);
       }
     }
 
-    // Ir a Change Password
+    // Ir al cambio de contraseña
     function goToChangePassword() {
+      const active = localStorage.getItem("activeStyle") || "main";
       showMessage("Redirecting to change password...", "info");
-      setTimeout(() => window.location.href = "changepassword.html", 1000);
+      setTimeout(() => {
+        // Replace en lugar de href para que Firefox no use caché
+        window.location.replace("changepassword.html?style=" + active + "&t=" + Date.now());
+      }, 800);
     }
 
-    // Cargar cuentas desde el servidor
-    function loadAccounts() {
-      fetch(`http://localhost:8080/CRUDBankServerSide/webresources/customer/${customerId}/accounts`)
-        .then(response => response.json())
-        .then(accounts => {
-          const container = document.getElementById("accountList");
-          if (!accounts.length) {
-            container.innerHTML = "<p>No accounts found.</p>";
-            return;
-          }
-          container.innerHTML = accounts.map(acc => `
-            <div class="card" onclick="loadMovements(${acc.id}, '${acc.description}')">
-              <h3>${acc.description} (${acc.type})</h3>
-              <p><strong>Balance:</strong> €${acc.balance.toFixed(2)}</p>
-              ${acc.type === "CREDIT" ? `<p><strong>Credit line:</strong> €${acc.creditLine}</p>` : ""}
-              <p><strong>Opened:</strong> ${new Date(acc.beginBalanceTimestamp).toLocaleDateString()}</p>
-            </div>
-          `).join('');
-        })
-        .catch(err => {
-          console.error(err);
-          showMessage("Error loading accounts.", "error");
-        });
+    // ==== Cambiar estilo ====
+    function toggleStyle() {
+      let links = document.querySelectorAll('link[rel="stylesheet"]');
+      let mainStyle, altStyle;
+
+      links.forEach(link => {
+        if (link.href.includes("style.css") && !link.href.includes("style2.css")) mainStyle = link;
+        if (link.href.includes("style2.css")) altStyle = link;
+      });
+
+      if (!mainStyle || !altStyle) return;
+
+      if (altStyle.disabled) {
+        mainStyle.disabled = true;
+        altStyle.disabled = false;
+        localStorage.setItem("activeStyle", "alt");
+      } else {
+        altStyle.disabled = true;
+        mainStyle.disabled = false;
+        localStorage.setItem("activeStyle", "main");
+      }
     }
 
-    // Cargar movimientos de una cuenta
-    function loadMovements(accountId, description) {
-      showMessage(`Loading movements for ${description}...`, "info");
-      fetch(`http://localhost:8080/CRUDBankServerSide/webresources/account/${accountId}/movements`)
-        .then(res => res.json())
-        .then(movements => {
-          const section = document.getElementById("movementsSection");
-          const tbody = document.querySelector("#movementsTable tbody");
-          section.style.display = "block";
-          tbody.innerHTML = movements.map(mov => `
-            <tr>
-              <td>${new Date(mov.timestamp).toLocaleString()}</td>
-              <td>${mov.description}</td>
-              <td>${mov.amount.toFixed(2)}</td>
-              <td>${mov.balance.toFixed(2)}</td>
-            </tr>
-          `).join('');
-        })
-        .catch(err => {
-          console.error(err);
-          showMessage("Error loading movements.", "error");
-        });
-    }
+    // ==== Restaurar el estilo guardado ====
+    (function restoreStylePreference() {
+      let links = document.querySelectorAll('link[rel="stylesheet"]');
+      let mainStyle, altStyle;
 
-    // Inicializar
-    loadAccounts();
+      links.forEach(link => {
+        if (link.href.includes("style.css") && !link.href.includes("style2.css")) mainStyle = link;
+        if (link.href.includes("style2.css")) altStyle = link;
+      });
+
+      const active = localStorage.getItem("activeStyle");
+      if (active === "alt") {
+        mainStyle.disabled = true;
+        altStyle.disabled = false;
+      } else {
+        altStyle.disabled = true;
+        mainStyle.disabled = false;
+      }
+    })();
+
+    // ==== Forzar estilo si viene por URL ====
+    (function enforceStyleFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      const styleParam = params.get("style");
+
+      if (!styleParam) return;
+      let links = document.querySelectorAll('link[rel="stylesheet"]');
+      let mainStyle, altStyle;
+
+      links.forEach(link => {
+        if (link.href.includes("style.css") && !link.href.includes("style2.css")) mainStyle = link;
+        if (link.href.includes("style2.css")) altStyle = link;
+      });
+
+      if (styleParam === "alt") {
+        mainStyle.disabled = true;
+        altStyle.disabled = false;
+        localStorage.setItem("activeStyle", "alt");
+      } else {
+        altStyle.disabled = true;
+        mainStyle.disabled = false;
+        localStorage.setItem("activeStyle", "main");
+      }
+    })();
   </script>
 </body>
 </html>

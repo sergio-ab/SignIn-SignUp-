@@ -2,16 +2,28 @@
   NEOBANK Global Styles (sin flex)
   Proyecto: Formulario & Landing NEOBANK
   Fecha: Grupo 4
+   Descripción:
+   - Define estilos base, landing principal (index)
+   - Diseña formularios (Sign Up / Sign In / Change Password)
+   - Incluye versión responsive adaptable
 ===========================================*/
 
-/*Reset global*/
+/* ==========================================
+   Reset Global
+=============================================
+    Elimina márgenes y paddings por defecto en todos los elementos,
+    y establece el box-sizing para un control más predecible del tamaño.*/
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/*onfiguración base*/
+
+/* ==========================================
+   Configuración base del sitio web
+=============================================
+    Define tipografía, color de texto, fondo y alineación global.*/
 body {
   font-family: 'Inter Tight', sans-serif;
   color: #fff;
@@ -23,7 +35,10 @@ body {
   overflow-y: auto;
 }
 
-/*Encabezados, párrafos y enlaces*/
+/* ==========================================
+   Encabezados, párrafos y enlaces
+=============================================
+    Estilo unificado para encabezados, párrafos y enlaces.*/
 h1, h2, h3 {
   font-weight: 600;
 }
@@ -44,7 +59,8 @@ a:hover {
 
 /* ==========================================
    1. ESTILOS DEL INDEX (página principal)
-=========================================== */
+=============================================
+    Fondo, contenedor central y botones principales de la portada.*/
 
 body.index-page {
   background: url("../images/background1.jpg");
@@ -52,8 +68,8 @@ body.index-page {
   background-position: center;
   background-repeat: no-repeat;
   padding: 60px 0;
-  display: table;
-  width: 100%;
+  display: table; /* Centra verticalmente con display: table-cell */
+  width: 100%; 
   height: 100vh;
 }
 
@@ -63,6 +79,7 @@ body.index-page {
   padding: 20px;
 }
 
+/* Título principal */
 .container h1 {
   font-size: 2.2rem;
   letter-spacing: 1px;
@@ -74,11 +91,13 @@ body.index-page {
   font-style: italic;
 }
 
+/* Subtítulo o descripción */
 .container p {
   font-size: 0.95rem;
   margin-bottom: 25px;
 }
 
+/* Botones de navegación en la landing */
 .buttons {
   text-align: center; 
   white-space: nowrap;
@@ -99,6 +118,7 @@ body.index-page {
   vertical-align: middle; /* los alinea correctamente */
 }
 
+/*Botón signUp*/
 .buttons .btn.signup {
   background: #007f67;
   border-color: #007f67;
@@ -110,8 +130,10 @@ body.index-page {
 }
 
 /* ==========================================
-   2. ESTILOS DE FORMULARIOS (Sign Up / Sign In / Change Password)
-=========================================== */
+   2. ESTILOS DE FORMULARIOS 
+=============================================
+    Estilo común para los formularios de las páginas:
+    (Sign Up / Sign In / Change Password)*/
 
 /*Fondo de formulario*/
 body.form-page {
@@ -133,18 +155,19 @@ body.form-page {
   text-align: left;
 }
 
-/*Título*/
+/*Título del formulario*/
 .form-container h1 {
   text-align: center;
   margin-bottom: 30px;
   font-size: 1.8rem;
 }
 
-/*Campos*/
+/*Grupo de entrada para inputs*/
 .input-group {
   margin-bottom: 20px;
 }
 
+/*Grupo de entrada para label*/
 .input-group label {
   font-weight: 600;
   color: #fff;
@@ -173,6 +196,7 @@ label.required::after {
   display: block;
 }
 
+/*Estilo focus*/
 .input-group input:focus,
 .phone-group select:focus {
   outline: none;
@@ -198,16 +222,19 @@ label.required::after {
   float: right;
 }
 
-/*Mostrar/ocultar contraseña*/
+/* ==========================================
+   Mostrar/ocultar contraseña
+===========================================*/
 .password-wrapper {
   position: relative;
 }
 
 .password-wrapper input {
   width: 100%;
-  padding-right: 40px;
+  padding-right: 40px; /* deja espacio para el ícono */
 }
 
+/* Ícono de ojo */
 .toggle-password {
   position: absolute;
   right: 12px;
@@ -223,7 +250,10 @@ label.required::after {
   color: #007f67;
 }
 
-/*Mensajes de error*/
+
+/* ==========================================
+   Mensajes de error en formularios
+===========================================*/
 .error-message {
   display: none;
   background: rgba(255, 0, 0, 0.08);
@@ -238,26 +268,27 @@ label.required::after {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
 }
 
+/* Input con error visual */
 .input-error {
   box-shadow: 0 0 6px #ff0000;
   background-color: #ffecec;
 }
 
 /* ==========================================
-   Botones del formulario (alineados con mini espacio)
-=========================================== */
+   Botones del formulario
+============================================= */
 .button-group {
   text-align: center;
   margin-top: 30px;
-  font-size: 0; /* elimina el salto invisible entre inline-blocks */
+  font-size: 0; 
 }
 
 .button-group .btn {
   display: inline-block;
-  width: 47%;          /* tamaño justo para dejar un hueco sutil */
-  margin: 0 4px;       /* mini espacio entre ambos */
+  width: 47%;          
+  margin: 0 4px;       
   vertical-align: middle;
-  font-size: 1rem;     /* restablece el tamaño de texto */
+  font-size: 1rem;     
   border-radius: 50px;
   padding: 14px 0;
   font-weight: 600;
@@ -267,12 +298,14 @@ label.required::after {
   text-align: center;
 }
 
+/*Botón cancelar*/
 .btn.cancel {
   background: transparent;
   color: #fff;
   border: 2px solid #fff;
 }
 
+/*Botón Sign In / Sign Up / Change Passwoerd (botón enviar)*/
 .btn.accept {
   background: #007f67;
   color: #fff;
@@ -283,11 +316,7 @@ label.required::after {
   opacity: 0.9;
 }
 
-/* Centrado SOLO para SIGN IN / CHANGE PASSWORD 
-ATENCIÓN
-ATENCIÓN 
-ATENCIÓN
-HAY QUE INTRODUCIRLO EN EL DE MELANIC Y EN EL INDEX*/ 
+/* Centrado SOLO para SIGN IN / CHANGE PASSWORD / INDEX*/ 
 body.signin-page,
 body.changepassword-page {
   position: relative;
@@ -303,7 +332,7 @@ body.changepassword-page {
   margin: 0; /* anula el margin de la regla base */
 }
 
-/* Footer al fondo SOLO en esas dos páginas (opcional) */
+/* Footer al fondo SOLO en esas dos páginas*/
 .signin-page .site-footer,
 .changepassword-page .site-footer {
   position: absolute;
@@ -348,4 +377,28 @@ body.changepassword-page {
     margin: 10px auto;
   }
   
+}
+
+/* ==========================================
+   4. Botón flotante para cambiar de estilo
+=========================================== */
+#styleToggleBtn {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  background-color: rgba(0, 127, 103, 0.9);
+  border: none;
+  color: white;
+  padding: 10px 12px;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  z-index: 9999;
+}
+
+#styleToggleBtn:hover {
+  transform: scale(1.1);
+  background-color: #00c896;
 }
