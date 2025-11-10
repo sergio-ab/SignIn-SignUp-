@@ -191,18 +191,12 @@
       msgBox.style.display = "block";
       setTimeout(() => msgBox.style.display = "none", 2000);
     }
-
-    // Simulación de datos de sesión
-    const customerId = localStorage.getItem("customerId") || 1;
-    const customerName = localStorage.getItem("customerName") || "John Doe";
-    document.getElementById("userName").textContent = customerName;
-
     // Logout
     function handleLogout() {
       if (confirm("Are you sure you want to log out?")) {
         localStorage.clear();
         showMessage("Logging out...", "info");
-        setTimeout(() => window.location.href = "signin.html", 1200);
+        setTimeout(() => window.location.href = "signIn.html", 1200);
       }
     }
 
