@@ -8,19 +8,72 @@
   <!-- Fuente -->
   <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+  <!-- Iconos -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
   <!-- Estilos globales -->
-  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/style.css?v=1.1">
+  <link rel="stylesheet" href="assets/css/style2.css?v=1.1">
 </head>
 
 <body class="index-page">
+  <!-- Botón flotante para cambiar estilo -->
+  <button id="styleToggleBtn" title="Cambiar estilo" onclick="toggleStyle()">
+    <i class="fa-solid fa-paintbrush"></i>
+  </button>
+
   <div class="container">
     <h1>WELCOME TO OUR <span>NEOBANK</span></h1>
     <p>Sign In or Sign Up if you don't have an account!</p>
 
     <div class="buttons">
-      <a href="signIn.html" class="btn signin">SIGN IN</a>
-      <a href="signUp.html" class="btn signup">SIGN UP</a>
+      <button class="btn signin" onclick="goToSignIn()">SIGN IN</button>
+      <button class="btn signup" onclick="goToSignUp()">SIGN UP</button>
     </div>
   </div>
+
+  <script>
+    // ===== CAMBIO DE ESTILO (igual que en signUp) =====
+    function toggleStyle() {
+      const mainStyle = document.querySelector('link[href^="assets/css/style.css"]');
+      const altStyle = document.querySelector('link[href^="assets/css/style2.css"]');
+
+      if (altStyle.disabled) {
+        mainStyle.disabled = true;
+        altStyle.disabled = false;
+        localStorage.setItem("activeStyle", "alt");
+      } else {
+        altStyle.disabled = true;
+        mainStyle.disabled = false;
+        localStorage.setItem("activeStyle", "main");
+      }
+    }
+
+    // Restaurar estilo preferido al cargar
+    (function restoreStylePreference() {
+      const active = localStorage.getItem("activeStyle");
+      const mainStyle = document.querySelector('link[href^="assets/css/style.css"]');
+      const altStyle = document.querySelector('link[href^="assets/css/style2.css"]');
+
+      if (active === "alt") {
+        mainStyle.disabled = true;
+        altStyle.disabled = false;
+      } else {
+        altStyle.disabled = true;
+        mainStyle.disabled = false;
+      }
+    })();
+
+    // Redirección manteniendo el color activo
+    function goToSignIn() {
+      const active = localStorage.getItem("activeStyle") || "main";
+      window.location.href = "signIn.html?style=" + active + "&t=" + Date.now();
+    }
+
+    function goToSignUp() {
+      const active = localStorage.getItem("activeStyle") || "main";
+      window.location.href = "signUp.html?style=" + active + "&t=" + Date.now();
+    }
+  </script>
 </body>
 </html>

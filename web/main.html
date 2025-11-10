@@ -1,34 +1,274 @@
 <!DOCTYPE html>
-<html  >
+<html lang="es">
 <head>
-  <!-- Site made with Mobirise Website Builder v6.1.4, https://mobirise.com -->
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="generator" content="Mobirise v6.1.4, mobirise.com">
-  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
-  <link rel="shortcut icon" href="assets/images/logo5.png" type="image/x-icon">
-  <meta name="description" content="">
-  
-  
-  <title>ACTION</title>
-  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
-  <link rel="stylesheet" href="assets/animatecss/animate.css">
-  <link rel="stylesheet" href="assets/theme/css/style.css">
-  <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=KxcOVJ"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=KxcOVJ" type="text/css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEOBANK | Dashboard</title>
 
+  <!-- Fuente -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Iconos -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- Estilos globales -->
+  <link rel="stylesheet" href="assets/css/style.css?v=1.1">
+  <link rel="stylesheet" href="assets/css/style2.css?v=1.1">
+
+  <style>
+    body.main-page {
+      background: url("assets/images/background1.jpg") center/cover no-repeat;
+      color: #fff;
+      overflow-y: auto;
+      text-align: left;
+      font-family: "Inter Tight", sans-serif;
+    }
+
+    .dashboard-container {
+      background: rgba(0, 0, 0, 0.65);
+      padding: 40px 50px;
+      border-radius: 15px;
+      max-width: 1000px;
+      width: 90%;
+      margin: 80px auto;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      padding-bottom: 15px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .dashboard-header h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+
+    .header-buttons button {
+      background: #007f67;
+      border: none;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: 0.3s ease;
+      font-weight: 600;
+      margin-left: 10px;
+    }
+
+    .header-buttons button:hover {
+      transform: scale(1.05);
+      opacity: 0.9;
+    }
+
+    .accounts-section h2 {
+      font-size: 1.4rem;
+      margin-bottom: 15px;
+      color: #00c896;
+    }
+
+    .account-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 20px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .card:hover {
+      transform: scale(1.03);
+    }
+
+    .card h3 {
+      font-size: 1.1rem;
+      color: #00c896;
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      font-size: 0.95rem;
+      margin-bottom: 6px;
+    }
+
+    .movements-section {
+      margin-top: 40px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    th {
+      text-align: left;
+      background: rgba(0, 127, 103, 0.6);
+    }
+
+    td {
+      color: #fff;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 50px;
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.7);
+    }
+  </style>
 </head>
-<body>
-  
-  <section data-bs-version="5.1" class="header19 cid-uYQ3m3NRAE mbr-fullscreen" id="header19-1n"> 
-    <div class="container">
-        <div class="row">
-            <div class="content-wrap col-12 col-md-8">   
-            </div>
+
+<body class="main-page">
+  <!-- Botón flotante para cambiar de estilo -->
+  <button id="styleToggleBtn" title="Cambiar estilo" onclick="toggleStyle()">
+    <i class="fa-solid fa-paintbrush"></i>
+  </button>
+
+  <!-- Mensaje global -->
+  <div id="responseMsg" style="display:none;" class="msg-box">
+    <span id="closeMsg" onclick="this.parentElement.style.display='none'" style="float:right; cursor:pointer;">&times;</span>
+    <p id="responseText"></p>
+  </div>
+
+  <div class="dashboard-container">
+      <div class="dashboard-header">
+        <h1>Welcome, <span id="userName">User</span></h1>
+        <div class="header-buttons">
+          <button onclick="goToChangePassword()"><i class="fa-solid fa-key"></i> Change Password</button>
+          <button onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
         </div>
+      </div>
+    <div class="construction-box">
+      <h1><i class="fa-solid fa-wrench"></i> Page Under Construction</h1><br>
+      <p>
+        We're currently working on this feature.<br>
+        Soon you'll be able to change your password securely from here.
+      </p>
     </div>
-  </section><section class="display-7" style="padding: 0;align-items: center;justify-content: center;flex-wrap: wrap;    align-content: center;display: flex;position: relative;height: 4rem;"><a href="https://mobiri.se/4237841" style="flex: 1 1;height: 4rem;position: absolute;width: 100%;z-index: 1;"><img alt="" style="height: 4rem;" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="></a><p style="margin: 0;text-align: center;" class="display-7">&#8204;</p><a style="z-index:1" href="https://mobirise.com/builder/ai-website-generator.html">AI Website Generator</a></section><script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>  <script src="assets/smoothscroll/smooth-scroll.js"></script>  <script src="assets/ytplayer/index.js"></script>  <script src="assets/theme/js/script.js"></script>  
-  <input name="animation" type="hidden">
+  </div>
+
+  <footer class="site-footer">
+    <p><br>&copy; Grupo 4</p>
+  </footer>
+
+  <script>
+    // ==== Mensajes globales ====
+    function showMessage(text, type) {
+      const msgBox = document.getElementById("responseMsg");
+      const msgText = document.getElementById("responseText");
+      msgText.textContent = text;
+      msgBox.className = "msg-box " + type;
+      msgBox.style.display = "block";
+      setTimeout(() => msgBox.style.display = "none", 2000);
+    }
+
+
+    function handleLogout() {
+      if (confirm("Are you sure you want to log out?")) {
+        localStorage.clear();
+        showMessage("Logging out...", "info");
+        setTimeout(() => window.location.replace("signIn.html"), 1200);
+      }
+    }
+
+    // Ir al cambio de contraseña
+    function goToChangePassword() {
+      const active = localStorage.getItem("activeStyle") || "main";
+      showMessage("Redirecting to change password...", "info");
+      setTimeout(() => {
+        // Replace en lugar de href para que Firefox no use caché
+        window.location.replace("changepassword.html?style=" + active + "&t=" + Date.now());
+      }, 800);
+    }
+
+    // ==== Cambiar estilo ====
+    function toggleStyle() {
+      let links = document.querySelectorAll('link[rel="stylesheet"]');
+      let mainStyle, altStyle;
+
+      links.forEach(link => {
+        if (link.href.includes("style.css") && !link.href.includes("style2.css")) mainStyle = link;
+        if (link.href.includes("style2.css")) altStyle = link;
+      });
+
+      if (!mainStyle || !altStyle) return;
+
+      if (altStyle.disabled) {
+        mainStyle.disabled = true;
+        altStyle.disabled = false;
+        localStorage.setItem("activeStyle", "alt");
+      } else {
+        altStyle.disabled = true;
+        mainStyle.disabled = false;
+        localStorage.setItem("activeStyle", "main");
+      }
+    }
+
+    // ==== Restaurar el estilo guardado ====
+    (function restoreStylePreference() {
+      let links = document.querySelectorAll('link[rel="stylesheet"]');
+      let mainStyle, altStyle;
+
+      links.forEach(link => {
+        if (link.href.includes("style.css") && !link.href.includes("style2.css")) mainStyle = link;
+        if (link.href.includes("style2.css")) altStyle = link;
+      });
+
+      const active = localStorage.getItem("activeStyle");
+      if (active === "alt") {
+        mainStyle.disabled = true;
+        altStyle.disabled = false;
+      } else {
+        altStyle.disabled = true;
+        mainStyle.disabled = false;
+      }
+    })();
+
+    // ==== Forzar estilo si viene por URL ====
+    (function enforceStyleFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      const styleParam = params.get("style");
+
+      if (!styleParam) return;
+      let links = document.querySelectorAll('link[rel="stylesheet"]');
+      let mainStyle, altStyle;
+
+      links.forEach(link => {
+        if (link.href.includes("style.css") && !link.href.includes("style2.css")) mainStyle = link;
+        if (link.href.includes("style2.css")) altStyle = link;
+      });
+
+      if (styleParam === "alt") {
+        mainStyle.disabled = true;
+        altStyle.disabled = false;
+        localStorage.setItem("activeStyle", "alt");
+      } else {
+        altStyle.disabled = true;
+        mainStyle.disabled = false;
+        localStorage.setItem("activeStyle", "main");
+      }
+    })();
+  </script>
 </body>
 </html>
