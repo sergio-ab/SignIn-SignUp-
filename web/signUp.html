@@ -26,6 +26,9 @@
   --------------------------------------------------------------------->
   <!-- Hoja de estilos global reutilizable -->
   <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/style2.css" id="altStyle" disabled>
+
+
 
   <!-------------------------------------------------------------------
     |  ESTILO PROPIO SIGN UP MENSAJE GLOBAL
@@ -75,23 +78,41 @@
      |  Colores por tipo de mensaje
   *************************************************/
 
-    /* Éxito */
-    .msg-box.success {
-      border-color: #28a745;
-      color: #28a745;
-    }
+/* Forzar colores del mensaje y romper la herencia del <p> global, así msg-box tiene su propuo estilo y nadie puede cambiarlo ni style2.css */
+.msg-box {
+  background: #fff !important;
+  color: #000 !important; /* color base neutro */
+}
 
-    /* Error */
-    .msg-box.error {
-      border-color: #d22;
-      color: #d22;
-    }
+/* Mantener el color del texto para todos los hijos del mensaje 
+inherit hereda el valor de su elemento padre
+El <p> ya no aplica color: gray del style2.css sino que dice:
+“voy a heredar el color de mi padre .msg-box”,
+por tanto se muestra verde/rojo/azul, igual que la caja.*/
+.msg-box * {
+  color: inherit !important;
+}
 
-    /* Información / proceso en curso */
-    .msg-box.info {
-      border-color: #007bff;
-      color: #007bff;
-    }
+/* Éxito */
+.msg-box.success,
+.msg-box.success * {
+  color: #28a745 !important;
+  border-color: #28a745 !important;
+}
+
+/* Error */
+.msg-box.error,
+.msg-box.error * {
+  color: #d22 !important;
+  border-color: #d22 !important;
+}
+
+/* Información / proceso en curso */
+.msg-box.info,
+.msg-box.info * {
+  color: #007bff !important;
+  border-color: #007bff !important;
+}
 
     /* Animación suave de aparición */
     @keyframes fadeIn {
@@ -106,6 +127,11 @@
 </head>
 
 <body class="form-page">
+
+  <!-- Botón flotante para cambiar de estilo -->
+  <button id="styleToggleBtn" title="Cambiar estilo" onclick="toggleStyle()">
+    <i class="fa-solid fa-paintbrush"></i>
+  </button>
 
   <div class="form-container">    <!-- Caja central donde está el formulario -->
     <h1><b>SIGN UP</b></h1>

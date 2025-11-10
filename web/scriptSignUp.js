@@ -216,10 +216,6 @@ function sendRequestAndProcessResponse(customer, btnSubmit) {
       */
       if (response.status === 204) { 
         showMessage("User created successfully!", "success");
-        // SESIONSTORAGE -> Guarda el email para autocompletar el Sign In
-        sessionStorage.setItem("signupEmail", customer.email);
-
-        // Espera 1,5 segundos y redirige al Sign In
         setTimeout(function() {
           window.location.href = "signin.html";
         }, 1500);
@@ -498,3 +494,48 @@ function togglePasswordVisibility(event) {
     icon.setAttribute("aria-label", "Show password"); // Actualiza el texto accesible a “Show password”
   }
 }
+
+// ==========================================================
+// |   FUNCIÓN TOGGLESTYLE (CAMBIO ENTRE style.css y style2.css) |
+// ==========================================================
+/*
+    |  Permite alternar entre el estilo principal y el alternativo.
+    |  Guarda la preferencia en localStorage para recordar la elección del usuario.
+*/
+function toggleStyle() {
+  const mainStyle = document.querySelector('link[href="assets/css/style.css"]');
+  const altStyle = document.querySelector('link[href="assets/css/style2.css"]');
+
+  if (altStyle.disabled) {
+    mainStyle.disabled = true;
+    altStyle.disabled = false;
+    localStorage.setItem("activeStyle", "alt");
+    console.log("Estilo alternativo activado");
+  } else {
+    altStyle.disabled = true;
+    mainStyle.disabled = false;
+    localStorage.setItem("activeStyle", "main");
+    console.log("Estilo principal activado");
+  }
+}
+
+// ==========================================================
+// |   APLICAR EL ESTILO RECORDADO AL CARGAR LA PÁGINA       |
+// ==========================================================
+/*
+    |  Comprueba si el usuario ya había seleccionado un estilo previamente.
+    |  Si lo hay, lo aplica automáticamente al cargar la página.
+*/
+(function restoreStylePreference() {
+  const active = localStorage.getItem("activeStyle");
+  const mainStyle = document.querySelector('link[href="assets/css/style.css"]');
+  const altStyle = document.querySelector('link[href="assets/css/style2.css"]');
+
+  if (active === "alt") {
+    mainStyle.disabled = true;
+    altStyle.disabled = false;
+  } else {
+    altStyle.disabled = true;
+    mainStyle.disabled = false;
+  }
+})();
