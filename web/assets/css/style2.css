@@ -355,3 +355,48 @@ body.theme-alt .header-buttons button {
 body.theme-alt .header-buttons button:hover {
   background: #ffaa00;
 }
+/* ==========================================
+   Dashboard Buttons 
+=========================================== */
+body.theme-alt .header-buttons button {
+  background: #ff9900;              /* Naranja sólido */
+  border: 2px solid #ff9900;        /* Borde naranja */
+  color: #fff;                      /* Texto blanco */
+  border-radius: 50px;              /* Bordes redondeados tipo píldora */
+  padding: 12px 30px;               /* Tamaño similar al botón Sign In */
+  font-size: 1rem;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(255, 153, 0, 0.3); /* Sombra suave */
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+body.theme-alt .header-buttons button:hover {
+  background: #ffaa00;              /* Tono más claro al pasar el ratón */
+  border-color: #ffaa00;
+  transform: scale(1.05);
+  opacity: 0.95;
+}
+
+/* ==========================================
+   Change Password 
+=========================================== */
+body.theme-alt .btn-return {
+  background: #ff9900;              /* Naranja sólido */
+  border: 2px solid #ff9900;        /* Borde naranja */
+  color: #fff;                      /* Texto blanco */
+  border-radius: 50px;
+  padding: 12px 35px;
+  font-size: 1rem;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(255, 153, 0, 0.3);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+body.theme-alt .btn-return:hover {
+  background: #ffaa00;              /* Más claro al pasar el ratón */
+  border-color: #ffaa00;
+  transform: scale(1.05);
+  opacity: 0.95;
+}
