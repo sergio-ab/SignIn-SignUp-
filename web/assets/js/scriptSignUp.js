@@ -104,7 +104,7 @@ function handleSignUpOnClick(event) { //Se ejecuta cuando se hace click en el bo
         |  VALIDACIÓN EXTRA (GLOBAL ANTES DEL ENVÍO)
     -------------------------------------------------------------------------------------
         |  (Validación global, justo antes de enviar los datos al servidor)
-        |  Es una validación de seguridad y consistencia a pesar de que después 
+        |  Es una validación de seguridad y consistencia a pesar de que después
         |  de validará cada uno de  los campos para hacerlo visible y cómodo al usuario.
         |  Si algo falla, se lanza otro throw new Error(...).
      */
@@ -150,7 +150,7 @@ function handleSignUpOnClick(event) { //Se ejecuta cuando se hace click en el bo
 // ==========================================================
 function handleCancelOnClick(event) {
   event.preventDefault(); //Evitar que se envíe por defecto
-  // confirm() función nativa de JS abre una ventana emergente del navegador con dos botones: 
+  // confirm() función nativa de JS abre una ventana emergente del navegador con dos botones:
   // “OK” y “Cancel”.
   const confirmCancel = confirm("Are you sure you want to cancel the registration?");
   if (confirmCancel) {
@@ -158,7 +158,7 @@ function handleCancelOnClick(event) {
     // Si no, no pasa nada (se queda en la página).
     showMessage("Registration cancelled. Returning to the home page...", "info");
     // setTimeout función nativa de JS que ejecuta el bloque de código despus de un tiempo determinado 1500
-    // tiempo en milisegundos= 1,5 segundos, tiempo que tarda en enviarle a la página index 
+    // tiempo en milisegundos= 1,5 segundos, tiempo que tarda en enviarle a la página index
     // para que de tiempo a mostrar el mensaje
     setTimeout(() => (window.location.href = "index.html"), 1500);
   }
@@ -176,11 +176,11 @@ function handleCancelOnClick(event) {
 */
 
 function sendRequestAndProcessResponse(customer, btnSubmit) {
-  
+ 
   /*-------------------------------------
       |   fetch -> PETICIÓN AL SERVIDOR
   -------------------------------------*/
-  /* 
+  /*
       |  fetch() devuelve una promesa (Promise).
       |  Una promesa en JavaScript representa una operación asíncrona que puede tener tres estados:
       |   pending -> en curso
@@ -207,15 +207,19 @@ function sendRequestAndProcessResponse(customer, btnSubmit) {
       /* |---------------------------------
          |  CASO 1 → HTTP 204 (No Content)
          |---------------------------------
-         |  Significa que el servidor ha recibido los datos correctamente 
+         |  Significa que el servidor ha recibido los datos correctamente
          |  y el usuario se ha registrado con éxito.
          |  Entonces:
          |      Muestra un mensaje global verde (tipo “success”)
          |      Espera 1,5 segundos para que el usuario lo lea
          |      Redirige automáticamente a la página "signin.html"
       */
-      if (response.status === 204) { 
+      if (response.status === 204) {
         showMessage("User created successfully!", "success");
+       
+        //Guardamos el email en sessionStorage antes de redirigir
+        sessionStorage.setItem("signupEmail", customer.email);
+       
         setTimeout(function() {
           window.location.href = "signIn.html";
         }, 1500);
@@ -227,7 +231,7 @@ function sendRequestAndProcessResponse(customer, btnSubmit) {
          |  en la base de datos (usuario duplicado).
          |  Entonces:
          |      Muestra un mensaje de error bajo el campo “Email” usando la función showError().
-         |      Lanza una excepción con throw new Error() 
+         |      Lanza una excepción con throw new Error()
          |      para que el bloque .catch() muestre el mensaje global.
       */
       } else if (response.status === 403) {
@@ -428,7 +432,7 @@ function showError(id, msg) {
     errorSpan.innerHTML = msg; // Usa .innerHTML para poder interpretar etiquetas HTML dentro del mensaje, por ejemplo <br> para hacer saltos de línea.
     errorSpan.style.display = "block"; // Hace que el span se muestre (porque normalmente está oculto con display: none; cuando no hay errores).
     // Estilos aplicados dinámicamente:
-    // Cada una de las siguientes líneas da estilo visual al mensaje de error, 
+    // Cada una de las siguientes líneas da estilo visual al mensaje de error,
     // directamente desde JavaScript (sin necesidad de CSS externo).
     errorSpan.style.color = "#ff4444";
     errorSpan.style.backgroundColor = "rgba(0, 0, 0, 0.15)";
@@ -446,7 +450,7 @@ function showError(id, msg) {
 // ==========================================================
 /*
     |  Limpia el mensaje de error del campo cuando se corrige.
-    |  Recibe un parámetro id, que es el identificador del campo que se ha validado 
+    |  Recibe un parámetro id, que es el identificador del campo que se ha validado
     |  (por ejemplo "email" o "zip").
     |  Busca el elemento <span> donde podría haber un mensaje de error.
     |  (Por ejemplo, si id = "email", selecciona el elemento con id="error-email").
@@ -467,7 +471,7 @@ function clearError(id) {
 // |   FUNCIÓN TOGGLEPASSWORDVIDIBILITY                     |
 // ==========================================================
 /*
-    |  Se ejecuta cada vez que el usuario hace clic en el icono del ojo (<i class="fa-eye"> 
+    |  Se ejecuta cada vez que el usuario hace clic en el icono del ojo (<i class="fa-eye">
     |  o <i class="fa-eye-slash">) dentro del campo de contraseña.
     |  Se le pasa el parámetro event, que contiene la información del clic:
     |  qué elemento lo provocó, en qué parte del documento ocurrió, etc.
