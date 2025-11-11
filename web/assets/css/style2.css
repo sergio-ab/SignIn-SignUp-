@@ -282,6 +282,32 @@ label.required::after {
   opacity: 0.9;
 }
 
+/* Centrado SOLO para SIGN IN / CHANGE PASSWORD / INDEX*/ 
+body.signin-page,
+body.changepassword-page {
+  position: relative;
+  min-height: 100vh;
+}
+
+.signin-page .form-container,
+.changepassword-page .form-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0; /* anula el margin de la regla base */
+}
+
+/* Footer al fondo SOLO en esas dos páginas*/
+.signin-page .site-footer,
+.changepassword-page .site-footer {
+  position: absolute;
+  bottom: 10px;
+  width: 100%;
+  text-align: center;
+  font-size: 0.85rem;
+}
+
 /* ==========================================
    4. Botón flotante para cambiar de estilo
 =========================================== */
