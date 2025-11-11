@@ -216,7 +216,7 @@ window.onload = function() {
   
   // Recuperar email guardado tras el signUp
   const emailInput = document.getElementById("email");
-  const savedEmail = sessionStorage.getItem("signupEmail");
+  const savedEmail = sessionStorage.getItem("signUpEmail");
 
   if (emailInput && savedEmail) {
     emailInput.value = savedEmail;

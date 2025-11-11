@@ -193,7 +193,7 @@ function sendRequestAndProcessResponse(customer, btnSubmit) {
       |       .catch(...)       Captura errores lanzados o problemas de conexión
       |       .finally(...);    Ejecuta acciones finales (activar botón, limpiar, etc.)
   */
-  fetch("http://localhost:8080/CRUDBankServerSide/webresources/customer", {
+  fetch("/CRUDBankServerSide/webresources/customer", {
     method: "POST", // mediante el método POST envía datos nuevos al servidor
     headers: { "Content-Type": "application/json" }, //Especifica que el contenido es JSON.
     body: JSON.stringify(customer), // Convierte el objeto JS en texto JSON antes de enviarlo.
