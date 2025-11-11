@@ -213,18 +213,6 @@ window.onload = function() {
   if (icon) {
     icon.onclick = togglePasswordVisibility;
   }
-  
-  // Recuperar email guardado tras el signUp
-  const emailInput = document.getElementById("email");
-  const savedEmail = sessionStorage.getItem("signUpEmail");
-
-  if (emailInput && savedEmail) {
-    emailInput.value = savedEmail;
-
-    // Poner el foco directamente en el campo de contraseña
-    const passwordInput = document.getElementById("password");
-    if (passwordInput) passwordInput.focus();
-  }
 };
 
 /*Función ToggleStyle para el cambio entre style.css y style2.css*/
@@ -275,6 +263,24 @@ function toggleStyle(){
   else {
     altStyle.disabled = true;
     mainStyle.disabled = false; 
+  }
+})();
+
+// Rellenar email guardado desde SignUp
+(function applySavedEmail() {
+  const emailInput = document.getElementById("email");
+  const savedEmail = sessionStorage.getItem("signupEmail");
+
+  console.log("Recuperado de sessionStorage:", savedEmail);
+
+  if (emailInput && savedEmail) {
+    emailInput.value = savedEmail;
+
+    // Poner el foco en la contraseña
+    const passwordInput = document.getElementById("password");
+    if (passwordInput) passwordInput.focus();
+
+    console.log("✅ Email aplicado correctamente en SignIn");
   }
 })();
 
