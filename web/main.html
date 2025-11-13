@@ -204,26 +204,29 @@
 
     // ==== Cambiar estilo ====
     function toggleStyle() {
-      let links = document.querySelectorAll('link[rel="stylesheet"]');
-      let mainStyle, altStyle;
+        let links = document.querySelectorAll('link[rel="stylesheet"]');
+        let mainStyle, altStyle;
 
-      links.forEach(link => {
-        if (link.href.includes("style.css") && !link.href.includes("style2.css")) mainStyle = link;
-        if (link.href.includes("style2.css")) altStyle = link;
-      });
+        links.forEach(link => {
+            if (link.href.includes("style.css") && !link.href.includes("style2.css")) mainStyle = link;
+            if (link.href.includes("style2.css")) altStyle = link;
+        });
 
-      if (!mainStyle || !altStyle) return;
+        if (!mainStyle || !altStyle) return;
 
-      if (altStyle.disabled) {
-        mainStyle.disabled = true;
-        altStyle.disabled = false;
-        localStorage.setItem("activeStyle", "alt");
-      } else {
-        altStyle.disabled = true;
-        mainStyle.disabled = false;
-        localStorage.setItem("activeStyle", "main");
-      }
+        if (altStyle.disabled) {
+            mainStyle.disabled = true;
+            altStyle.disabled = false;
+            localStorage.setItem("activeStyle", "alt");
+            document.body.classList.add("theme-alt");   // ✅ añade la clase
+        } else {
+            altStyle.disabled = true;
+            mainStyle.disabled = false;
+            localStorage.setItem("activeStyle", "main");
+            document.body.classList.remove("theme-alt"); // ✅ la quita
+        }
     }
+
 
     // ==== Restaurar el estilo guardado ====
     (function restoreStylePreference() {
@@ -269,6 +272,16 @@
         localStorage.setItem("activeStyle", "main");
       }
     })();
+    
+    // ==== Aplicar la clase de tema al cargar la página ====
+    (function applyThemeClass() {
+    const active = localStorage.getItem("activeStyle");
+    if (active === "alt") {
+        document.body.classList.add("theme-alt");
+    } else {
+        document.body.classList.remove("theme-alt");
+    }
+})();
   </script>
 </body>
 </html>
