@@ -52,7 +52,8 @@
 </head>
 
 <!--BODY DEL DOCUMENTO-->
-<body class="form-page signin-page"> <!--Iniciamos el cuerpo del documento y asignamos las clases form-page y singin-page para aplicar estilos CSS específicos-->
+<body class="form-page signin-page" onload="cambiarFuenteBotones()"> <!--Iniciamos el cuerpo del documento y asignamos las clases form-page y singin-page para aplicar estilos CSS específicos-->
+
 
   <!--Botón flotante para cambiar de estilo-->
     <button id="styleToggleBtn" title="Cambiar estilo" onclick="toggleStyle()">
@@ -93,6 +94,7 @@
       <p style="text-align: center; margin-top: 15px;">
         Don't have an account? <a href="signUp.html" style="color: #00d0a1;">Sign Up</a>
       </p>
+      
 
     </form>
   </div>
