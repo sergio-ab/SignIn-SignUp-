@@ -116,6 +116,12 @@ body.index-page {
   vertical-align: middle;
 }
 
+@media (max-width: 768px) {
+  .buttons {
+    flex-direction: column;
+  }
+}
+
 .buttons .btn.signup {
   background: #ff9900;
   border-color: #ff9900;
@@ -262,6 +268,11 @@ label.required::after {
   text-align: center;
 }
 
+@media (max-width: 768px) {
+  .button-group {
+    flex-direction: column;
+  }
+}
 /* Botón cancelar */
 .btn.cancel {
   background: transparent;
