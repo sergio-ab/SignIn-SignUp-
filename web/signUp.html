@@ -21,14 +21,19 @@
   <!--Carga la librería Font Awesome, que contiene iconos (utilizado en el ojo de la password)-->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
+  
   <!-------------------------------------------------------------------
-    |  HOJA DE ESTILOS GLOBAL REUTILIZABLE
+    |  HOJA DE ESTILOS GLOBAL REUTILIZABLE Y HOJA DE ESTILO ALTERNATIVA
   --------------------------------------------------------------------->
   <!-- Hoja de estilos global reutilizable -->
-  <link rel="stylesheet" href="assets/css/style.css">
-  <link rel="stylesheet" href="assets/css/style2.css" id="altStyle" disabled>
+  <link rel="stylesheet" title="style1" href="assets/css/style.css"> <!-- El estilo principal. Siempre cargado -->
+  
+  <!-- Hoja de estilos alternativa -->
+  <link rel="alternate stylesheet" title="style2" href="assets/css/style2.css"> <!-- Esto es para compatibilidad con navegadores que permiten elegir estilos alternativos (Firefox) -->
+  <link rel="stylesheet" href="assets/css/style2.css" id="altStyle" disabled> <!-- Esta es la que activamos y desactivamos desde js para poder mantener el cambio en localStorage -->
 
-
+  
+  
 
   <!-------------------------------------------------------------------
     |  ESTILO PROPIO SIGN UP MENSAJE GLOBAL
@@ -119,6 +124,10 @@ por tanto se muestra verde/rojo/azul, igual que la caja.*/
       from { opacity: 0; transform: translate(-50%, -48%); }
       to { opacity: 1; transform: translate(-50%, -50%); }
     }
+    
+    
+    
+
   </style>
 
 
@@ -126,7 +135,7 @@ por tanto se muestra verde/rojo/azul, igual que la caja.*/
   <script src="assets/js/scriptSignUp.js"></script>
 </head>
 
-<body class="form-page">
+<body class="form-page" onload="cambiarEstiloInput()">
 
   <!-- Botón flotante para cambiar de estilo -->
   <button id="styleToggleBtn" title="Cambiar estilo" onclick="toggleStyle()">

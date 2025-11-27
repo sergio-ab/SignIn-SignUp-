@@ -274,13 +274,34 @@ label.required::after {
   background-color: #ffecec;
 }
 
+
+/*------------------------------------------------------------------------------
+    |   EJERCICIO EXAMEN
+    |   Aplicar al contenedor button-group posicionamiento flex y responsividad 
+    |   cambiando flex-direction de row a column para @media (max-width: 1024px).
+    |   @media línea 409
+    |   Hago lo mismo en el archivo style2.css para que cuando cambiemos de hoja
+    |   de estilo también sea responsivo ese estilo
+------------------------------------------------------------------------------*/
+
+
 /* ==========================================
    Botones del formulario
 ============================================= */
 .button-group {
+  /*----------------------------------------------------------------------------
+  Dejo comentada la parte en la que se alineaban los botones para poder hacerlo
+  con posicionamiento fel
+  ----------------------------------------------------------------------------
   text-align: center;
   margin-top: 30px;
   font-size: 0; 
+  ------------------------------------------------------------------------------
+  
+  agregamos flex ejercicio examen*/
+  
+  display: flex;
+  flex-direction: row; /* El diseño predeterminado es una fila horizontal */
 }
 
 .button-group .btn {
@@ -345,7 +366,7 @@ body.changepassword-page {
 
 /* ==========================================
    3. RESPONSIVE (común a todas las páginas)
-=========================================== */
+===========================================*/
 @media (max-width: 768px) {
   .form-container {
     padding: 25px;
@@ -376,8 +397,23 @@ body.changepassword-page {
     width: 80%;
     margin: 10px auto;
   }
-  
+
 }
+
+/*------------------------------------------------------------------------------
+
+    |   @media (max-width: 1024px).
+
+------------------------------------------------------------------------------*/
+
+
+@media (max-width: 1024px) {
+  .button-group {
+    flex-direction: column; /* Apila los botones verticalmente en pantallas medianas/grandes y más pequeñas */
+  }
+}
+
+
 
 /* ==========================================
    4. Botón flotante para cambiar de estilo

@@ -21,6 +21,41 @@
 // ==========================================================
 
 /*
+-------------------------------------------------------------------------------------
+    |   EJERCICIO 2: Enviar datos en XML en el fetch. 
+    |   Esta es la primera parte de este ejercicio para poder enviar los datos XML 
+    |   mediante fetch() debemos crearlo manualmente, por eso creamos esta 
+    |   función customerToXML(Customer)
+    |   En la versión anterior JSON esto se generaba solo con JSON.stringify().
+
+
+    |  customerToXML -> Convierte el objeto customer (con los datos delformulario) 
+    |  en una cadena XML válida para enviarla al servidor mediante fetch().
+
+*/
+
+function customerToXML(customer) {
+    return `
+        <customer>
+        <firstName>${customer.firstName}</firstName>
+        <lastName>${customer.lastName}</lastName>
+        <middleInitial>${customer.middleInitial}</middleInitial>
+        <street>${customer.street}</street>
+        <city>${customer.city}</city>
+        <state>${customer.state}</state>
+        <zip>${customer.zip}</zip>
+        <phone>${customer.phone}</phone>
+        <email>${customer.email}</email>
+        <password>${customer.password}</password>
+        </customer>
+    `;
+}
+
+// El ejercicio 2 continua con la modificación del comentario 
+// CONSTRUCCIÓN DEL OBJETO CUSTOMER en la línea 116
+//-------------------------------------------------------------------------------------
+
+/*
     |  handleSignUpOnClick -> función principa, gestiona todo el proceso de envío del formulario
 */
 function handleSignUpOnClick(event) { //Se ejecuta cuando se hace click en el botón Sign Up.
@@ -78,15 +113,23 @@ function handleSignUpOnClick(event) { //Se ejecuta cuando se hace click en el bo
       throw new Error("Please correct the highlighted errors before continuing.");
     }
 
-    /*
+/*
+-------------------------------------------------------------------------------------
+    |   EJERCICIO 2: Cmabiamos el comentario ya que no enviamos ahora desdeJSON
+    |    sino desde XML
+
     -------------------------------------------------------------------------------------
         |  CONSTRUCCIÓN DEL OBJETO CUSTOMER
     -------------------------------------------------------------------------------------
-        |  Se crea un objeto JS llamado customer que agrupa todos los datos del formulario en una sola estructura.
-        |  Este objeto es el que se enviará al servidor en formato JSON mediante la función fetch().
-        |  Se usa .value para obtener el texto introducido por el usuario y .trim() para eliminar posibles espacios en blanco
-        |  Para garantizar que los datos es´tna organizados y limpios antes de enviarlos al servidor.
+        |  Se crea un objeto JS llamado customer que agrupa todos los datos del formulario
+        |  en una sola estructura.
+        |  Este objeto NO se envía directamente como JSON.
+        |  Primero se convierte a XML mediante la función customerToXML()
+        |  para enviarlo al servidor en formato XML.
+        |  Se usa .value para obtener el texto introducido por el usuario y .trim()
+        |  para eliminar espacios en blanco y garantizar datos limpios antes del envío.
     */
+
     const customer = {
       firstName: form.firstName.value.trim(),
       lastName: form.lastName.value.trim(),
@@ -99,6 +142,12 @@ function handleSignUpOnClick(event) { //Se ejecuta cuando se hace click en el bo
       email: form.email.value.trim(),
       password: form.password.value.trim(),
     };
+    
+// El ejercicio 2 continua con la modificación del header y del body en el fetch().
+// Línea 245
+//-------------------------------------------------------------------------------------
+
+
     /*
     -------------------------------------------------------------------------------------
         |  VALIDACIÓN EXTRA (GLOBAL ANTES DEL ENVÍO)
@@ -193,11 +242,25 @@ function sendRequestAndProcessResponse(customer, btnSubmit) {
       |       .catch(...)       Captura errores lanzados o problemas de conexión
       |       .finally(...);    Ejecuta acciones finales (activar botón, limpiar, etc.)
   */
-  fetch("/CRUDBankServerSide/webresources/customer", {
+ 
+ /*
+-------------------------------------------------------------------------------------
+    |   EJERCICIO 2: Cambiamos el header y el body para poder enviarlo correctamente
+    |   en XML
+    |   Dejo comentado el código anterior por si hiciera falta en un futuro
+    |   volver a mandarlo como JSON
+    
+*/
+    fetch("/CRUDBankServerSide/webresources/customer", {
+    method: "POST", // mediante el método POST envía datos nuevos al servidor
+    headers: { "Content-Type": "application/xml" }, // Ya no lo enviamos como JSON sino como XML
+    body: customerToXML(customer)
+  })
+  /*fetch("/CRUDBankServerSide/webresources/customer", {
     method: "POST", // mediante el método POST envía datos nuevos al servidor
     headers: { "Content-Type": "application/json" }, //Especifica que el contenido es JSON.
     body: JSON.stringify(customer), // Convierte el objeto JS en texto JSON antes de enviarlo.
-  })
+  })*/
 
   //------------------------------------
   // PROCESAR LA RESPUESTA DEL SERVIDOR
@@ -543,3 +606,31 @@ function toggleStyle() {
     mainStyle.disabled = false;
   }
 })();
+
+/*
+
+--------------------------------------------------------------------------
+
+--------------------------------------------------------------------------
+
+/*-------------------------------------------------------------------------------------
+    |   EJERCICIO 1
+    |   Mediante el uso del método getElementsByTagName de la interfaz Document, cambiar 
+    |   la propiedad de estilo font-size de todos los INPUT  al valor 1.25rem. 
+    |   Hacerlo en el onload del BODY.
+*/
+// ==========================================================
+// |   FUNCIÓN "cambiarEstiloInput"                         |
+// |   Esta función busca todos los elementos <input> del   |
+// |   documento y cambia su tamaño de fuente a 1.25rem.    |
+// ==========================================================
+
+
+function cambiarEstiloInput() {
+  const inputs = document.getElementsByTagName("input");
+  for (let i = 0; i < inputs.length; i++) {
+    inputs[i].style.fontSize = "1.25rem";
+  }
+}
+        
+//-------------------------------------------------------------------------------------
