@@ -1,0 +1,193 @@
+/* ==========================================
+   RESET & BASE
+========================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body.crud-page {
+    font-family: 'Inter Tight', sans-serif;
+    color: #fff;
+    background: url("background1.jpg");
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 60px 20px;
+}
+
+/* ==========================================
+   CONTAINER
+========================================== */
+.crud-container {
+    width: 100%;
+    max-width: 1100px;
+    background: rgba(0, 0, 0, 0.65);
+    border-radius: 20px;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+h1 {
+    text-align: center;
+    font-size: 2rem;
+}
+
+h2 {
+    margin-bottom: 20px;
+}
+
+/* ==========================================
+   CARDS
+========================================== */
+.card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 25px;
+}
+
+/* ==========================================
+   FORM
+========================================== */
+.form-row {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+.form-row label {
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+.form-row input,
+.form-row select {
+    padding: 12px;
+    border-radius: 6px;
+    border: none;
+    font-size: 1rem;
+}
+
+/* ==========================================
+   BUTTONS
+========================================== */
+.btn {
+    padding: 14px;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+/* CREATE / EDIT (ACCEPT) */
+.btn-accept {
+    background: #007f67;
+    color: #fff;
+    border: 2px solid #007f67;
+}
+
+/* 🔥 BOTÓN CREATE FULL WIDTH */
+.btn-full {
+    width: 100%;
+}
+
+.btn:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+}
+
+/* ==========================================
+   TABLE WITH DIVS
+========================================== */
+.table {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.row.header {
+    background: rgba(0, 0, 0, 0.4);
+    font-weight: 600;
+}
+
+.row>div {
+    flex: 1;
+    text-align: center;
+}
+
+/* ==========================================
+   ACTION BUTTONS
+========================================== */
+.actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.btn-action {
+    width: 120px;
+    height: 42px;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* EDIT */
+.btn-edit {
+    background: #007f67;
+    color: #fff;
+    border: 2px solid #007f67;
+}
+
+/* DELETE = CANCEL */
+.btn-delete {
+    background: transparent;
+    color: #fff;
+    border: 2px solid #fff;
+}
+
+.btn-action:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+@media (max-width: 900px) {
+    .row {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .row.header {
+        display: none;
+    }
+
+    .row>div {
+        text-align: left;
+    }
+
+    .actions {
+        width: 100%;
+    }
+}
