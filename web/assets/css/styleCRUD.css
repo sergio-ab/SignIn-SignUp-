@@ -1,31 +1,34 @@
 /* ==========================================
-   RESET & BASE
+   NEOBANK – CRUD ACCOUNTS STYLES
+   Página: Accounts / CRUD
+   Usa: Flex (layout) + Grid (tabla)
 ========================================== */
+
+/* ---------- RESET ---------- */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+/* ---------- BASE ---------- */
 body.crud-page {
     font-family: 'Inter Tight', sans-serif;
     color: #fff;
-    background: url("background1.jpg");
-    background-size: cover;
-    background-position: center;
     min-height: 100vh;
+    background: url("background1.jpg") center / cover no-repeat;
     display: flex;
     justify-content: center;
+    align-items: flex-start;
     padding: 60px 20px;
 }
 
-/* ==========================================
-   CONTAINER
-========================================== */
+/* ---------- MAIN CONTAINER ---------- */
 .crud-container {
     width: 100%;
-    max-width: 1100px;
-    background: rgba(0, 0, 0, 0.65);
+    max-width: 1200px;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(6px);
     border-radius: 20px;
     padding: 40px;
     display: flex;
@@ -33,68 +36,35 @@ body.crud-page {
     gap: 30px;
 }
 
-h1 {
-    text-align: center;
-    font-size: 2rem;
-}
-
-h2 {
-    margin-bottom: 20px;
-}
-
-/* ==========================================
-   CARDS
-========================================== */
-.card {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 15px;
-    padding: 25px;
-}
-
-/* ==========================================
-   FORM
-========================================== */
-.form-row {
+/* ---------- HEADER ---------- */
+.crud-header {
     display: flex;
-    flex-direction: column;
-    margin-bottom: 15px;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.form-row label {
-    margin-bottom: 6px;
+.crud-header h1 {
+    font-size: 2.2rem;
     font-weight: 600;
 }
 
-.form-row input,
-.form-row select {
-    padding: 12px;
-    border-radius: 6px;
-    border: none;
-    font-size: 1rem;
+.header-actions {
+    display: flex;
+    gap: 15px;
 }
 
-/* ==========================================
-   BUTTONS
-========================================== */
+/* ---------- BUTTONS (GLOBAL) ---------- */
 .btn {
-    padding: 14px;
     border-radius: 50px;
-    font-size: 1rem;
+    padding: 12px 26px;
     font-weight: 600;
+    font-size: 1rem;
     cursor: pointer;
-    transition: 0.3s ease;
-}
-
-/* CREATE / EDIT (ACCEPT) */
-.btn-accept {
-    background: #007f67;
-    color: #fff;
-    border: 2px solid #007f67;
-}
-
-/* 🔥 BOTÓN CREATE FULL WIDTH */
-.btn-full {
-    width: 100%;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    min-width: 140px;
+    /* MISMO TAMAÑO */
+    text-align: center;
 }
 
 .btn:hover {
@@ -102,81 +72,159 @@ h2 {
     opacity: 0.9;
 }
 
-/* ==========================================
-   TABLE WITH DIVS
-========================================== */
-.table {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.row {
-    display: flex;
-    align-items: center;
-    padding: 15px;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.08);
-}
-
-.row.header {
-    background: rgba(0, 0, 0, 0.4);
-    font-weight: 600;
-}
-
-.row>div {
-    flex: 1;
-    text-align: center;
-}
-
-/* ==========================================
-   ACTION BUTTONS
-========================================== */
-.actions {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-}
-
-.btn-action {
-    width: 120px;
-    height: 42px;
-    border-radius: 50px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* EDIT */
-.btn-edit {
+/* PRIMARY (Create / Edit / Accept) */
+.btn-primary {
     background: #007f67;
     color: #fff;
-    border: 2px solid #007f67;
 }
 
-/* DELETE = CANCEL */
-.btn-delete {
+/* SECONDARY (Cancel / Delete / Logout) */
+.btn-secondary {
     background: transparent;
     color: #fff;
     border: 2px solid #fff;
 }
 
-.btn-action:hover {
-    transform: scale(1.05);
-    opacity: 0.9;
+/* ---------- CREATE FORM (OCULTO / MODAL READY) ---------- */
+.create-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
 }
 
-/* ==========================================
-   RESPONSIVE
-========================================== */
+.create-form label {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.create-form input,
+.create-form select {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 8px;
+    border: none;
+    font-size: 1rem;
+    background: rgba(255, 255, 255, 0.9);
+    color: #333;
+}
+
+.create-form input:focus,
+.create-form select:focus {
+    outline: none;
+    box-shadow: 0 0 6px rgba(0, 150, 130, 0.7);
+}
+
+/* CREATE BUTTON FULL WIDTH */
+.create-form .btn-primary {
+    width: 100%;
+}
+
+/* ---------- ACCOUNTS SECTION ---------- */
+.accounts-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.accounts-section h2 {
+    font-size: 1.6rem;
+    font-weight: 600;
+}
+
+/* ---------- TABLE ---------- */
+.table {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* HEADER + ROWS */
+.row {
+    display: grid;
+    grid-template-columns:
+        1.2fr
+        /* ID */
+        2fr
+        /* Description */
+        1.2fr
+        /* Type */
+        1fr
+        /* Balance */
+        1fr
+        /* Begin Balance */
+        1fr
+        /* Credit Line */
+        2fr;
+    /* Actions */
+    align-items: center;
+    padding: 16px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* HEADER */
+.row.header {
+    background: rgba(0, 0, 0, 0.45);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+}
+
+/* CELLS */
+.row>div {
+    text-align: center;
+    word-break: break-word;
+}
+
+/* ---------- ACTIONS ---------- */
+.actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* ---------- UPDATE FORM ---------- */
+.update-form {
+    display: none;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.update-form.active {
+    display: flex;
+}
+
+.update-form input {
+    width: 100%;
+    padding: 14px;
+    border-radius: 8px;
+    border: none;
+}
+
+/* ---------- RESPONSIVE ---------- */
 @media (max-width: 900px) {
-    .row {
+
+    .crud-container {
+        padding: 25px;
+    }
+
+    .crud-header {
         flex-direction: column;
+        gap: 20px;
+        text-align: center;
+    }
+
+    .header-actions {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    /* TABLE → CARDS */
+    .row {
+        grid-template-columns: 1fr;
         gap: 8px;
+        text-align: left;
     }
 
     .row.header {
@@ -188,6 +236,6 @@ h2 {
     }
 
     .actions {
-        width: 100%;
+        justify-content: flex-start;
     }
 }
