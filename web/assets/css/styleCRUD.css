@@ -1,170 +1,265 @@
-/* ==========================================
-   NEOBANK – CRUD ACCOUNTS STYLES
-   Página: Accounts / CRUD
-   Usa: Flex (layout) + Grid (tabla)
-========================================== */
+/*---------------------------------------------------------
+    |   Autor: Grupo
+    |   Última modificación: 23/12/2025
+-----------------------------------------------------------
+    |   HOJA DE ESTILOS (CSS)
+    |   Define:
+    |       - Apariencia visual de la aplicación
+    |       - Diseño responsive
+    |       - Estilos comunes y reutilizables
+    |       - Estilos del formulario modal
+    |   Mejora:
+    |       - Usabilidad
+    |       - Accesibilidad
+    |       - Homogeneidad visual
+---------------------------------------------------------*/
 
-/* RESET */
+/* ========== RESET ========== */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* BODY */
-body.crud-page {
+/* ========== BASE ========== */
+body {
     font-family: 'Inter Tight', sans-serif;
-    background: url("background1.jpg") no-repeat center/cover;
+    background: url("background1.jpg") center / cover no-repeat;
     min-height: 100vh;
     color: #fff;
-    padding: 40px;
 }
 
-/* MAIN CONTAINER */
-.crud-container {
+/* ========== LAYOUT ========== */
+.main-container {
     max-width: 1200px;
-    margin: auto;
-    background: rgba(80, 35, 15, 0.85);
-    border-radius: 22px;
-    padding: 40px;
+    margin: 40px auto;
+    padding: 36px 42px 44px;
+    background: rgba(90, 40, 15, 0.88);
+    border-radius: 26px;
 }
 
-/* HEADER */
-.crud-header {
+/* ========== HEADER ========== */
+.top-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 30px;
 }
 
-.crud-header h1 {
-    font-size: 2.4rem;
+.top-bar h1 {
+    font-size: 2.3rem;
 }
 
-.header-actions {
+.top-actions {
     display: flex;
-    gap: 15px;
+    gap: 14px;
 }
 
-/* TITLES */
-h2 {
-    margin-bottom: 15px;
-    font-size: 1.8rem;
-}
-
-/* BUTTONS */
+/* ========== BUTTONS ========== */
 .btn {
     padding: 12px 28px;
     border-radius: 50px;
     font-weight: 600;
+    background: transparent;
+    color: #fff;
     cursor: pointer;
     border: 2px solid transparent;
     transition: 0.3s;
 }
 
-.btn.accept {
+.btn--primary {
     background: #007f67;
-    color: #fff;
 }
 
-.btn.cancel {
-    background: transparent;
+.btn--outline {
     border: 2px solid #fff;
-    color: #fff;
 }
 
-.btn.movements {
-    background: transparent;
-    border: 2px solid #fff;
-    color: #fff;
-    padding: 10px 22px;
+.btn--small {
+    padding: 10px 26px;
+    font-size: 0.9rem;
 }
 
-.btn:hover {
-    transform: scale(1.05);
-}
-
-/* GRID (HEADER + ROWS SHARE SAME GRID) */
-.accounts-grid {
-    display: grid;
-    grid-template-columns: 1.3fr 2.2fr 1.2fr 1.2fr 1.4fr 1.3fr 2fr;
+/* ========== WELCOME ========== */
+.welcome-box {
+    margin: 30px 0;
+    padding: 22px 26px;
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 18px;
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 10px;
 }
 
-/* HEADER ROW */
-.accounts-grid.header {
-    background: rgba(40, 20, 10, 0.85);
+.user-name {
+    color: #00c896;
+}
+
+.welcome-stats {
+    display: flex;
+    gap: 30px;
+    text-align: right;
+}
+
+/* ========== TABLE / GRID ========== */
+.section-title {
+    margin: 24px 0 14px;
+    font-size: 1.6rem;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 140px 1.8fr 1fr 1fr 1fr 1fr 240px;
+    align-items: center;
+    padding: 16px 22px;
     border-radius: 14px;
-    padding: 14px 20px;
+    margin-bottom: 12px;
+}
+
+.grid--header {
+    background: rgba(0, 0, 0, 0.45);
     font-weight: 600;
-    margin-bottom: 15px;
+    font-size: 0.9rem;
 }
 
-/* DATA ROW */
-.accounts-grid.row {
+.grid--row {
     background: rgba(255, 255, 255, 0.08);
-    border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 14px;
 }
 
-/* ACTIONS */
+/* ========== ACTIONS ========== */
 .actions {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 14px;
 }
 
-/* ICON BUTTONS */
+/* ========== ICON BUTTONS ========== */
 .icon-btn {
     width: 42px;
     height: 42px;
     border-radius: 10px;
     background: transparent;
     cursor: pointer;
-    font-size: 1.1rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: 0.3s;
+    transition: background 0.3s, color 0.3s, transform 0.2s;
+}
+
+.icon-btn i {
+    font-size: 1.1rem;
+}
+
+.icon-btn svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 
 /* EDIT */
-.icon-btn.edit {
+.icon-btn--edit {
     border: 2px solid #007f67;
     color: #007f67;
 }
 
-.icon-btn.edit:hover {
+.icon-btn--edit:hover {
     background: #007f67;
     color: #fff;
 }
 
-/* DELETE (MISMO ESTILO QUE CANCEL) */
-.icon-btn.delete {
+/* DELETE */
+.icon-btn--delete {
     border: 2px solid #fff;
     color: #fff;
 }
 
-.icon-btn.delete:hover {
+.icon-btn--delete:hover {
     background: #fff;
     color: #7a2a15;
 }
 
-/* RESPONSIVE */
+/* ========== MODAL CREATE / EDIT ========== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.65);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal {
+    background: rgba(90, 40, 15, 0.95);
+    padding: 30px 34px;
+    border-radius: 22px;
+    width: 420px;
+    max-width: 90%;
+}
+
+.modal h2 {
+    margin-bottom: 18px;
+    font-size: 1.6rem;
+}
+
+.modal form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.modal label {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.9rem;
+    gap: 6px;
+}
+
+.modal input,
+.modal select {
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: none;
+    font-family: inherit;
+    font-size: 0.9rem;
+}
+
+.modal input:disabled,
+.modal select:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+/* ========== RESPONSIVE ========== */
 @media (max-width: 900px) {
-    .accounts-grid.header {
+    .grid--header {
         display: none;
     }
 
-    .accounts-grid.row {
+    .grid--row {
         grid-template-columns: 1fr;
-        gap: 8px;
+        gap: 10px;
     }
 
     .actions {
         justify-content: flex-start;
-        margin-top: 10px;
+    }
+
+    .welcome-box {
+        flex-direction: column;
+        gap: 14px;
     }
 }
