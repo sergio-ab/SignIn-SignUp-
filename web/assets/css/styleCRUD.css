@@ -4,48 +4,41 @@
    Usa: Flex (layout) + Grid (tabla)
 ========================================== */
 
-/* ---------- RESET ---------- */
+/* RESET */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* ---------- BASE ---------- */
+/* BODY */
 body.crud-page {
     font-family: 'Inter Tight', sans-serif;
-    color: #fff;
+    background: url("background1.jpg") no-repeat center/cover;
     min-height: 100vh;
-    background: url("background1.jpg") center / cover no-repeat;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 60px 20px;
-}
-
-/* ---------- MAIN CONTAINER ---------- */
-.crud-container {
-    width: 100%;
-    max-width: 1200px;
-    background: rgba(0, 0, 0, 0.55);
-    backdrop-filter: blur(6px);
-    border-radius: 20px;
+    color: #fff;
     padding: 40px;
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
 }
 
-/* ---------- HEADER ---------- */
+/* MAIN CONTAINER */
+.crud-container {
+    max-width: 1200px;
+    margin: auto;
+    background: rgba(80, 35, 15, 0.85);
+    border-radius: 22px;
+    padding: 40px;
+}
+
+/* HEADER */
 .crud-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 30px;
 }
 
 .crud-header h1 {
-    font-size: 2.2rem;
-    font-weight: 600;
+    font-size: 2.4rem;
 }
 
 .header-actions {
@@ -53,189 +46,125 @@ body.crud-page {
     gap: 15px;
 }
 
-/* ---------- BUTTONS (GLOBAL) ---------- */
+/* TITLES */
+h2 {
+    margin-bottom: 15px;
+    font-size: 1.8rem;
+}
+
+/* BUTTONS */
 .btn {
+    padding: 12px 28px;
     border-radius: 50px;
-    padding: 12px 26px;
     font-weight: 600;
-    font-size: 1rem;
     cursor: pointer;
     border: 2px solid transparent;
-    transition: all 0.3s ease;
-    min-width: 140px;
-    /* MISMO TAMAÑO */
-    text-align: center;
+    transition: 0.3s;
 }
 
-.btn:hover {
-    transform: scale(1.05);
-    opacity: 0.9;
-}
-
-/* PRIMARY (Create / Edit / Accept) */
-.btn-primary {
+.btn.accept {
     background: #007f67;
     color: #fff;
 }
 
-/* SECONDARY (Cancel / Delete / Logout) */
-.btn-secondary {
+.btn.cancel {
     background: transparent;
-    color: #fff;
     border: 2px solid #fff;
+    color: #fff;
 }
 
-/* ---------- CREATE FORM (OCULTO / MODAL READY) ---------- */
-.create-form {
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
+.btn.movements {
+    background: transparent;
+    border: 2px solid #fff;
+    color: #fff;
+    padding: 10px 22px;
 }
 
-.create-form label {
-    font-weight: 600;
-    font-size: 0.95rem;
+.btn:hover {
+    transform: scale(1.05);
 }
 
-.create-form input,
-.create-form select {
-    width: 100%;
-    padding: 14px 16px;
-    border-radius: 8px;
-    border: none;
-    font-size: 1rem;
-    background: rgba(255, 255, 255, 0.9);
-    color: #333;
-}
-
-.create-form input:focus,
-.create-form select:focus {
-    outline: none;
-    box-shadow: 0 0 6px rgba(0, 150, 130, 0.7);
-}
-
-/* CREATE BUTTON FULL WIDTH */
-.create-form .btn-primary {
-    width: 100%;
-}
-
-/* ---------- ACCOUNTS SECTION ---------- */
-.accounts-section {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.accounts-section h2 {
-    font-size: 1.6rem;
-    font-weight: 600;
-}
-
-/* ---------- TABLE ---------- */
-.table {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-/* HEADER + ROWS */
-.row {
+/* GRID (HEADER + ROWS SHARE SAME GRID) */
+.accounts-grid {
     display: grid;
-    grid-template-columns:
-        1.2fr
-        /* ID */
-        2fr
-        /* Description */
-        1.2fr
-        /* Type */
-        1fr
-        /* Balance */
-        1fr
-        /* Begin Balance */
-        1fr
-        /* Credit Line */
-        2fr;
-    /* Actions */
+    grid-template-columns: 1.3fr 2.2fr 1.2fr 1.2fr 1.4fr 1.3fr 2fr;
     align-items: center;
-    padding: 16px;
+    gap: 10px;
+}
+
+/* HEADER ROW */
+.accounts-grid.header {
+    background: rgba(40, 20, 10, 0.85);
     border-radius: 14px;
-    background: rgba(255, 255, 255, 0.08);
-}
-
-/* HEADER */
-.row.header {
-    background: rgba(0, 0, 0, 0.45);
+    padding: 14px 20px;
     font-weight: 600;
-    text-transform: uppercase;
-    font-size: 0.9rem;
+    margin-bottom: 15px;
 }
 
-/* CELLS */
-.row>div {
-    text-align: center;
-    word-break: break-word;
+/* DATA ROW */
+.accounts-grid.row {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 14px;
 }
 
-/* ---------- ACTIONS ---------- */
+/* ACTIONS */
 .actions {
     display: flex;
+    align-items: center;
     gap: 10px;
-    justify-content: center;
-    flex-wrap: wrap;
 }
 
-/* ---------- UPDATE FORM ---------- */
-.update-form {
-    display: none;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.update-form.active {
+/* ICON BUTTONS */
+.icon-btn {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: transparent;
+    cursor: pointer;
+    font-size: 1.1rem;
     display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
 }
 
-.update-form input {
-    width: 100%;
-    padding: 14px;
-    border-radius: 8px;
-    border: none;
+/* EDIT */
+.icon-btn.edit {
+    border: 2px solid #007f67;
+    color: #007f67;
 }
 
-/* ---------- RESPONSIVE ---------- */
+.icon-btn.edit:hover {
+    background: #007f67;
+    color: #fff;
+}
+
+/* DELETE (MISMO ESTILO QUE CANCEL) */
+.icon-btn.delete {
+    border: 2px solid #fff;
+    color: #fff;
+}
+
+.icon-btn.delete:hover {
+    background: #fff;
+    color: #7a2a15;
+}
+
+/* RESPONSIVE */
 @media (max-width: 900px) {
-
-    .crud-container {
-        padding: 25px;
-    }
-
-    .crud-header {
-        flex-direction: column;
-        gap: 20px;
-        text-align: center;
-    }
-
-    .header-actions {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-
-    /* TABLE → CARDS */
-    .row {
-        grid-template-columns: 1fr;
-        gap: 8px;
-        text-align: left;
-    }
-
-    .row.header {
+    .accounts-grid.header {
         display: none;
     }
 
-    .row>div {
-        text-align: left;
+    .accounts-grid.row {
+        grid-template-columns: 1fr;
+        gap: 8px;
     }
 
     .actions {
         justify-content: flex-start;
+        margin-top: 10px;
     }
 }
