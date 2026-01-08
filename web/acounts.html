@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+
+<!------------------------------------------------------------------------------
+    |   Autor: Clara Montaño Rodríguez
+    |   Última modificación: 23/12/2025
+--------------------------------------------------------------------------------
+    |   VISTA (HTML)
+    |   Contiene:
+    |       - Estructura de la interfaz
+    |       - Contenedores para datos dinámicos
+    |       - Marcado semántico
+    |
+    |   Generación dinámica:
+    |       - El contenido de cuentas se inserta
+    |         dinámicamente desde JavaScript mediante
+    |         una función generadora (function*)
+------------------------------------------------------------------------------->
+
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>My Accounts</title>
+
+    <!-- FONT -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="assets/css/styleCRUD.css">
+</head>
+
+<body>
+
+    <div class="main-container">
+
+        <!-- 
+        ========================================================================
+             HEADER
+        ========================================================================
+        -->
+        <div class="top-bar">
+            <h1>My Accounts</h1>
+            <div class="top-actions">
+                <button class="btn btn--primary" id="btnCreateAccount">
+                    Create Account
+                </button>
+                <button class="btn btn--outline">
+                    Logout
+                </button>
+            </div>
+        </div>
+
+        <!-- 
+        ========================================================================
+             WELCOME
+        ========================================================================
+        -->
+        <div class="welcome-box">
+            <div>
+                <h2>
+                    Bienvenido,
+                    <span class="user-name" id="userName"></span>
+                </h2>
+                <p>Consulta y gestiona tus cuentas de forma segura.</p>
+            </div>
+
+            <div class="welcome-stats">
+                <div>
+                    <strong id="totalAccounts">0</strong>
+                    <span>Cuentas</span>
+                </div>
+                <div>
+                    <strong id="totalBalance">€0,00</strong>
+                    <span>Balance total</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 
+        ========================================================================
+             ACCOUNTS
+        ========================================================================
+        -->
+        <h2 class="section-title">Accounts</h2>
+
+        <!-- CABECERA (ESTÁTICA) -->
+        <div class="grid grid--header">
+            <div>ID</div>
+            <div>Description</div>
+            <div>Type</div>
+            <div>Balance</div>
+            <div>Begin Balance</div>
+            <div>Credit Line</div>
+            <div>Actions</div>
+        </div>
+
+        <!-- 
+        ========================================================================
+             CONTENEDOR DINÁMICO (EQUIVALENTE A <tbody>)
+             
+             Aquí se insertan dinámicamente las filas generadas desde JavaScript 
+             mediante una función generadora (function* + yield)
+        ========================================================================
+        -->
+        <div id="accountsContainer"></div>
+
+    </div>
+
+    <!-- =========================
+         MODAL CREATE / EDIT
+    ========================= -->
+    <div id="accountModal" class="modal-overlay" style="display: none;">
+        <div class="modal">
+
+            <h2 id="modalTitle">Create Account</h2>
+
+            <form id="accountForm">
+
+                <input type="hidden" id="accountId">
+
+                <label>
+                    Description
+                    <input type="text" id="description" maxlength="50" required>
+                </label>
+
+                <label>
+                    Type
+                    <select id="type" required>
+                        <option value="STANDARD">STANDARD</option>
+                        <option value="CREDIT">CREDIT</option>
+                    </select>
+                </label>
+
+                <label>
+                    Begin Balance
+                    <input type="number" id="beginBalance" step="0.01" required>
+                </label>
+
+                <label>
+                    Credit Line
+                    <input type="number" id="creditLine" step="0.01" value="0">
+                </label>
+
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn--primary">
+                        Save
+                    </button>
+                    <button type="button" class="btn btn--outline" id="btnCancel">
+                        Cancel
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+    <!-- 
+    ========================================================================
+         CONTROLLER
+         (Incluye función generadora)
+    ========================================================================
+    -->
+    <script type="module" src="controller.js"></script>
+
+</body>
+
+</html>
