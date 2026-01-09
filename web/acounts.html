@@ -38,34 +38,19 @@
 
     <div class="main-container">
 
-        <!-- 
-        ========================================================================
-             HEADER
-        ========================================================================
-        -->
+        <!-- HEADER -->
         <div class="top-bar">
             <h1>My Accounts</h1>
             <div class="top-actions">
-                <button class="btn btn--primary" id="btnCreateAccount">
-                    Create Account
-                </button>
-                <button class="btn btn--outline">
-                    Logout
-                </button>
+                <button class="btn btn--primary" id="btnCreateAccount">Create Account</button>
+                <button class="btn btn--outline">Logout</button>
             </div>
         </div>
 
-        <!-- 
-        ========================================================================
-             WELCOME
-        ========================================================================
-        -->
+        <!-- WELCOME -->
         <div class="welcome-box">
             <div>
-                <h2>
-                    Bienvenido,
-                    <span class="user-name" id="userName"></span>
-                </h2>
+                <h2>Bienvenido, <span class="user-name" id="userName"></span></h2>
                 <p>Consulta y gestiona tus cuentas de forma segura.</p>
             </div>
 
@@ -81,39 +66,30 @@
             </div>
         </div>
 
-        <!-- 
-        ========================================================================
-             ACCOUNTS
-        ========================================================================
-        -->
         <h2 class="section-title">Accounts</h2>
 
-        <!-- CABECERA (ESTÁTICA) -->
-        <div class="grid grid--header">
-            <div>ID</div>
-            <div>Description</div>
-            <div>Type</div>
-            <div>Balance</div>
-            <div>Begin Balance</div>
-            <div>Credit Line</div>
-            <div>Actions</div>
-        </div>
+        <!-- TABLA (DIV BASED) -->
+        <div class="table">
 
-        <!-- 
-        ========================================================================
-             CONTENEDOR DINÁMICO (EQUIVALENTE A <tbody>)
-             
-             Aquí se insertan dinámicamente las filas generadas desde JavaScript 
-             mediante una función generadora (function* + yield)
-        ========================================================================
-        -->
-        <div id="accountsContainer"></div>
+            <!-- THEAD -->
+            <div class="table-header">
+                <div>ID</div>
+                <div>Description</div>
+                <div>Type</div>
+                <div>Balance</div>
+                <div>Begin Balance</div>
+                <div>Credit Line</div>
+                <div>Actions</div>
+            </div>
+
+            <!-- TBODY -->
+            <div id="accountsContainer"></div>
+
+        </div>
 
     </div>
 
-    <!-- =========================
-         MODAL CREATE / EDIT
-    ========================= -->
+    <!-- MODAL -->
     <div id="accountModal" class="modal-overlay" style="display: none;">
         <div class="modal">
 
@@ -147,12 +123,8 @@
                 </label>
 
                 <div class="modal-actions">
-                    <button type="submit" class="btn btn--primary">
-                        Save
-                    </button>
-                    <button type="button" class="btn btn--outline" id="btnCancel">
-                        Cancel
-                    </button>
+                    <button type="submit" class="btn btn--primary">Save</button>
+                    <button type="button" class="btn btn--outline" id="btnCancel">Cancel</button>
                 </div>
 
             </form>

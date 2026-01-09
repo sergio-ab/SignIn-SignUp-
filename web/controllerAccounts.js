@@ -1,5 +1,5 @@
 /* 
-<!------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
     |   Autor: Clara Montaño Rodríguez
     |   Última modificación: 08/01/2026
 --------------------------------------------------------------------------------
@@ -8,8 +8,31 @@
     |   
     |   
     |   
-------------------------------------------------------------------------------->
+--------------------------------------------------------------------------------
  */
+
+"use strict";
+
+/* 
+================================================================================
+    |    FETCH ACCOUNTS (JSON)
+================================================================================
+ */
+
+async function fetchAccounts() {
+    const response = await fetch(SERVICE_URL, {
+        method: "GET",
+        headers: {
+            "Accept": "application/json"
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error("Error al obtener las cuentas");
+    }
+
+    return await response.json();
+}
 
 
 /* 
@@ -18,6 +41,11 @@
 ================================================================================
  */
 
+const SERVICE_URL = "http://localhost:8080/CRUDBankServerSide/webresources/account/{id}";
+
+/*
+       |    Función generadora que produce filas de tabla
+ */
 
 function* accountRowGenerator(accounts) {
     for (const account of accounts) {
