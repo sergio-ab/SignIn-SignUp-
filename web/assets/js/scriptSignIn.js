@@ -29,10 +29,10 @@ function handleSignInOnClick(event) {
     const tfPassword = document.getElementById("password");
     //obtenemos el formulario completo
     const signInForm = document.getElementById("signInForm");
-
+    
     //expresión regular que se utiliza para verificar que el email tenga el formato correcto
     const emailRegExp = new RegExp("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
-
+    
     //evitamos que el formulario se envíe de forma automática y recargue la página
     event.preventDefault();
     event.stopPropagation();
@@ -99,8 +99,8 @@ function sendRequestAndProcessResponse() {
     {
       method: "GET", //metodo GET
       headers: {
-        "Content-Type": "application/xml",//indicamos que esperamos un XML
-      },
+        "Content-Type": "application/json"//indicamos que esperamos un JSON
+      }, body: JSON.stringify()
     }
   ).then((response) => {
       // Verificar que hay conexión con servidor y se lanzan los errores correspondientes
@@ -109,9 +109,26 @@ function sendRequestAndProcessResponse() {
         else if (response.status === 500) throw new Error("Server Error. Please try later!!");
         else throw new Error("Failed to fetch from server!");
       }
-      return response;
+      return response.text();
     })
-    .then(() => {
+    .then((xmlText) => {
+        const parser = new DOMParser();
+      const xmlDoc = parser.parseFromString(xmlText, "application/xml");
+
+      const customer = {
+        id: xmlDoc.getElementsByTagName("id")[0].textContent,
+        firstName: xmlDoc.getElementsByTagName("firstName")[0].textContent,
+        middleInitial: xmlDoc.getElementsByTagName("middleInitial")[0].textContent,
+        lastName: xmlDoc.getElementsByTagName("lastName")[0].textContent,
+        street: xmlDoc.getElementsByTagName("street")[0].textContent,
+        city: xmlDoc.getElementsByTagName("city")[0].textContent,
+        state: xmlDoc.getElementsByTagName("state")[0].textContent,
+        zip: xmlDoc.getElementsByTagName("zip")[0].textContent,
+        phone: xmlDoc.getElementsByTagName("phone")[0].textContent,
+        email: xmlDoc.getElementsByTagName("email")[0].textContent,
+        password: xmlDoc.getElementsByTagName("password")[0].textContent
+      };
+      sessionStorage.setItem("customer", JSON.stringify(customer));
       //si sale bien, mostramos el mensaje de exito de inicio
       /*document.getElementById("error-password").textContent =
         "Customer signed in successfully!";*/
@@ -239,6 +256,17 @@ function toggleStyle(){
     console.log("Estilo principal activado");
   }
 }
+//-----------------------------------------------------------------------------------
+//FUNCIÓN PARA CAMBIAR EL GROSOR DEL TEXTO DE LOS BOTONES DE LA PÁGINA DE SINGIN
+//EJERCICIO 1
+//----------------------------------------------------------------------------------------
+
+(function cambiarFuenteBotones() {
+      const botones = document.getElementsByTagName('button');
+      for (let i = 0; i < botones.length; i++) {
+        botones[i].style.fontWeight = '300';
+      }
+    })();
 
 
 /*
@@ -280,7 +308,6 @@ function toggleStyle(){
     const passwordInput = document.getElementById("password");
     if (passwordInput) passwordInput.focus();
 
-    console.log("✅ Email aplicado correctamente en SignIn");
+    console.log("Email aplicado correctamente en SignIn");
   }
 })();
-
