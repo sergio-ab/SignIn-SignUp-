@@ -2,12 +2,11 @@
     |   Autor: Clara Montaño Rodríguez
     |   Última modificación: 12/01/2026
 -----------------------------------------------------------
-    |   CONTROLLER 
+    |   CONTROLLER - ACCOUNTS (DEMO CUSTOMER)
     |
-    |   - Obtiene datos del servidor REST (JSON)
-    |   - Usa sessionStorage para el usuario
+    |   - Obtiene TODAS las cuentas del servidor
+    |   - Filtra por customerId en el controller
     |   - Genera contenido dinámico con function*
-    |   - Usa DIVs con display: table
 ---------------------------------------------------------*/
 
 "use strict"; //Activa el modo estricto de JavaScript.
@@ -16,21 +15,29 @@
 ================================================================================
    CONSTANTES
 ================================================================================
-     |   Dirección del servicio REST que devuelve las cuentas. 
- */
-
+*/
+const CUSTOMER_ID = sessionStorage.getItem("customer.id");
 const SERVICE_URL =
     "http://localhost:8080/CRUDBankServerSide/webresources/account";
+let accounts = [];
+
 
 /*
 ================================================================================
-   INIT
+   DEMO CUSTOMER (SIMULACIÓN DE SESIÓN)
 ================================================================================
-    |   Este código se ejecuta cuando el HTML ya está cargado. 
-    |   Evitamos errores de “elemento no encontrado”
- */
+*/
+sessionStorage.setItem("customer.id", "102263301");
+sessionStorage.setItem("userName", "Cliente 102263301");
 
-document.addEventListener("DOMContentLoaded", () => {
+
+/*
+================================================================================
+   DOM
+================================================================================
+*/
+//Este código se ejecuta cuando el HTML ya está cargado. Evitamos errores de “elemento no encontrado”
+document.addEventListener("DOMContentLoaded", () => { /*ESTO A FUNCION*/
     loadUserFromSession(); //muestra el usuario
     loadAccounts(); //carga las cuentas del servidor
 });
@@ -51,7 +58,7 @@ function loadUserFromSession() {
     }
 }
 
-/*
+/* 
 ================================================================================
    FETCH ACCOUNTS (JSON)
 ================================================================================
@@ -112,6 +119,8 @@ function* accountRowGenerator(accounts) {
             row.appendChild(cell);
         }
 
+        
+        
         //Devuelve una fila cada vez, permite que el controller vaya insertando filas poco a poco.
         yield row;
     }
@@ -119,7 +128,7 @@ function* accountRowGenerator(accounts) {
 
 /*
 ================================================================================
-   BUILD VIEW (EQUIVALENTE A tbody
+   BUILD VIEW (EQUIVALENTE A <tbody>)
 ================================================================================
     |   Construcción de la vista (tbody)
     |   Obtiene datos -> const accounts
@@ -128,18 +137,19 @@ function* accountRowGenerator(accounts) {
 */
 async function loadAccounts() {
     try {
-        const accounts = await fetchAccounts();
+        accounts = await fetchAccounts();
         const container = document.getElementById("accountsContainer");
         container.innerHTML = "";
 
-        const generator = accountRowGenerator(accounts);
+        const accountsHTML = accountRowGenerator(accounts);
 
-        for (const row of generator) {
+        for (const row of accountsHTML) {
             container.appendChild(row);
         }
 
-        //Manjo básico de errores (mejorar más adelante)
+        //Manejo básico de errores (mejorar más adelante)
     } catch (error) {
         alert(error.message);
     }
 }
+
