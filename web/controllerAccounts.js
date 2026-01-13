@@ -28,7 +28,7 @@ let accounts = [];
 ================================================================================
 */
 sessionStorage.setItem("customer.id", "102263301");
-sessionStorage.setItem("userName", "Cliente 102263301");
+sessionStorage.setItem("userName", "Carlos");
 
 
 /*
@@ -119,8 +119,53 @@ function* accountRowGenerator(accounts) {
             row.appendChild(cell);
         }
 
-        
-        
+        /* =========================
+           ACTIONS CELL
+        ========================= */
+        const actionsCell = document.createElement("div");
+        actionsCell.className = "actions";
+
+        actionsCell.innerHTML = 
+            `<button 
+                class="icon-btn icon-btn--edit"
+                data-account-id="${account.id}"
+                title="Edit"
+            >
+                <i class="fa-regular fa-pen-to-square"></i>
+            </button>
+
+            <button 
+                class="icon-btn icon-btn--delete"
+                data-account-id="${account.id}"
+                title="Delete"
+            >
+                <svg viewBox="0 0 24 24">
+                    <path d="M3 6h18" />
+                    <path d="M8 6V4h8v2" />
+                    <path d="M6 6l1 14h10l1-14" />
+                    <path d="M10 11v6" />
+                    <path d="M14 11v6" />
+                </svg>
+            </button>`;
+
+        row.appendChild(actionsCell);
+
+        /* =========================
+           EVENT LISTENERS
+           (FORMA QUE HA PEDIDO EL PROFESOR)
+        ========================= */
+        let buttons = actionsCell.getElementsByTagName("button");
+
+        for (const but of buttons) {
+            if (but.classList.contains("icon-btn--delete")) {
+                but.addEventListener("click", deleteAccount);
+            }
+
+            /*if (but.classList.contains("icon-btn--edit")) {
+                but.addEventListener("click", editAccount);
+            }*/
+        }
+                
         //Devuelve una fila cada vez, permite que el controller vaya insertando filas poco a poco.
         yield row;
     }
@@ -153,3 +198,22 @@ async function loadAccounts() {
     }
 }
 
+
+
+/*
+function editAccount(event) {
+    const accountId = event.currentTarget.dataset.accountId;
+    alert("Edit account: " + accountId);
+}
+ */
+
+
+function deleteAccount(event) {
+    const accountId = event.target.dataset.accountId;
+
+    if (!accountId) return;
+
+    alert("Borrar cuenta con id: " + accountId);
+
+    // Aquí más adelante irá el fetch DELETE
+}
