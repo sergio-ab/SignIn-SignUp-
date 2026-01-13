@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>My Movements</title>
+
+    <!-- FONT -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="assets/css/styleCRUD.css">
+
+    <!-- JS-->
+    <script type="module" src="assets/js/movementsController.js" defer></script>
+</head>
+
+<body>
+    <div class="main-container">
+
+        <!-- HEADER -->
+        <div class="top-bar">
+            <h1>My Movements</h1>
+            <div class="top-actions">
+                <button class="btn btn--primary" id="btnCreateMovement">Create Movement</button>
+                <button class="btn btn--outline" id="btnLogout">Logout</button>
+            </div>
+        </div>
+
+        <!-- WELCOME -->
+        <div class="welcome-box">
+            <div>
+                <h2>Bienvenido, <span class="user-name" id="accountId"></span></h2>
+                <p>Consulta y gestiona tus movimientos de forma segura.</p>
+            </div>
+
+            <div class="welcome-stats">
+                <div>
+                    <strong id="totalMovements">0</strong>
+                    <span>Movimientos</span>
+                </div>
+                <div>
+                    <strong id="totalBalance">€0,00</strong>
+                    <span>Balance total</span>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title">Movements</h2>
+
+        <!-- TABLA -->
+        <div class="table">
+            <div class="table-header">
+                <div>ID</div>
+                <div>Timestamp</div>
+                <div>Amount</div>
+                <div>Balance</div>
+                <div>Description</div>
+                <div>Account ID</div>
+                <div>Actions</div>
+            </div>
+            <div id="movementsContainer" class="table-body"></div>
+        </div>
+
+    </div>
+
+    <!-- MODAL -->
+    <div id="movementModal" class="modal-overlay" style="display: none;">
+        <div class="modal">
+            <h2 id="modalTitle">Create Movement</h2>
+
+            <form id="movementForm">
+                <input type="hidden" id="movementId">
+
+                <label>
+                    Amount
+                    <input type="number" id="amount" step="0.01" required>
+                </label>
+
+                <label>
+                    Description
+                    <input type="text" id="description" maxlength="50" required>
+                </label>
+
+                <label>
+                    Account ID
+                    <input type="number" id="accountId" required>
+                </label>
+
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn--primary">Save</button>
+                    <button type="button" class="btn btn--outline" id="btnCancel">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    
+</body>
+</html>
