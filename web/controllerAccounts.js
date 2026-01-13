@@ -1,24 +1,65 @@
-/* 
---------------------------------------------------------------------------------
+/*---------------------------------------------------------
     |   Autor: Clara Montaño Rodríguez
-    |   Última modificación: 08/01/2026
---------------------------------------------------------------------------------
-    |   CONTROLLER
-    |   
-    |   
-    |   
-    |   
---------------------------------------------------------------------------------
+    |   Última modificación: 12/01/2026
+-----------------------------------------------------------
+    |   CONTROLLER 
+    |
+    |   - Obtiene datos del servidor REST (JSON)
+    |   - Usa sessionStorage para el usuario
+    |   - Genera contenido dinámico con function*
+    |   - Usa DIVs con display: table
+---------------------------------------------------------*/
+
+"use strict"; //Activa el modo estricto de JavaScript.
+
+/*
+================================================================================
+   CONSTANTES
+================================================================================
+     |   Dirección del servicio REST que devuelve las cuentas. 
  */
 
-"use strict";
+const SERVICE_URL =
+    "http://localhost:8080/CRUDBankServerSide/webresources/account";
 
-/* 
+/*
 ================================================================================
-    |    FETCH ACCOUNTS (JSON)
+   INIT
 ================================================================================
+    |   Este código se ejecuta cuando el HTML ya está cargado. 
+    |   Evitamos errores de “elemento no encontrado”
  */
 
+document.addEventListener("DOMContentLoaded", () => {
+    loadUserFromSession(); //muestra el usuario
+    loadAccounts(); //carga las cuentas del servidor
+});
+
+/*
+================================================================================
+   USER (SESSION STORAGE)
+================================================================================
+    |   Usuario desde sessionStorage
+    |   Lee el nombre del usuario guardado al hacer login
+    |   Lo muestra en la vista
+*/
+function loadUserFromSession() {
+    const userName = sessionStorage.getItem("userName");
+
+    if (userName) {
+        document.getElementById("userName").textContent = userName;
+    }
+}
+
+/*
+================================================================================
+   FETCH ACCOUNTS (JSON)
+================================================================================
+    |   Fetch de cuentas (JSON)
+    |   Hace una petición GET al servidor
+    |   Pide explícitamente los datos en formato JSON
+    |   Usamos async para hacer más legible el código evitando el uso de muchos .then()
+*/
 async function fetchAccounts() {
     const response = await fetch(SERVICE_URL, {
         method: "GET",
@@ -27,34 +68,33 @@ async function fetchAccounts() {
         }
     });
 
+    //Comprobación de errores -> Comprueba si la respuesta fue correcta (status 200). 
+    //Si no, lanza un error.
     if (!response.ok) {
         throw new Error("Error al obtener las cuentas");
     }
 
+    //Convierte la respuesta del servidor en un objeto JavaScript
     return await response.json();
 }
 
-
-/* 
-================================================================================
-       |FUNCIÓN GENERADORA
-================================================================================
- */
-
-const SERVICE_URL = "http://localhost:8080/CRUDBankServerSide/webresources/account/{id}";
-
 /*
-       |    Función generadora que produce filas de tabla
- */
-
+================================================================================
+   FUNCIÓN GENERADORA
+================================================================================
+    |   Produce elementos uno a uno usando yield
+    |   Permite generar filas dinámicamente
+    |   No crea todo de golpe
+    |   for() -> Recorre el array de cuentas recibido del servidor
+*/
 function* accountRowGenerator(accounts) {
     for (const account of accounts) {
 
-        // Fila (equivalente a <tr>)
+        //Fila (equivalente a <tr>)
         const row = document.createElement("div");
-        row.className = "grid grid--row";
+        row.className = "table-row";
 
-        // Campos (equivalente a <td>)
+        //Campos que se van a mostrar -> Lista de propiedades del objeto account
         const fields = [
             "id",
             "description",
@@ -64,38 +104,42 @@ function* accountRowGenerator(accounts) {
             "creditLine"
         ];
 
+        //Creación de celdas -> Crea una celda por cada campo e inserta el valor correspondiente (equivalente a <td>)
         for (const field of fields) {
             const cell = document.createElement("div");
+            cell.className = "table-cell";
             cell.textContent = account[field];
             row.appendChild(cell);
         }
 
-        // Actions (solo visual, sin lógica todavía)
-        const actions = document.createElement("div");
-        actions.className = "actions";
-
-        // Se inserta el HTML de los botones de acción (editar y borrar) 
-        // dentro del contenedor de acciones
-        // Rutas SVG que definen la forma del icono de eliminar (escribir/papelera)
-        actions.innerHTML = `
-            <button class="icon-btn icon-btn--edit" title="Edit">
-                <i class="fa-regular fa-pen-to-square"></i>
-            </button>
-
-            <button class="icon-btn icon-btn--delete" title="Delete">
-                <svg viewBox="0 0 24 24">
-                    <path d="M3 6h18" />
-                    <path d="M8 6V4h8v2" />
-                    <path d="M6 6l1 14h10l1-14" />
-                    <path d="M10 11v6" />
-                    <path d="M14 11v6" />
-                </svg>
-            </button>
-        `;
-
-        row.appendChild(actions);
-
-        // yield devuelve la fila generada para insertarla dinámicamente en el DOM
+        //Devuelve una fila cada vez, permite que el controller vaya insertando filas poco a poco.
         yield row;
+    }
+}
+
+/*
+================================================================================
+   BUILD VIEW (EQUIVALENTE A tbody
+================================================================================
+    |   Construcción de la vista (tbody)
+    |   Obtiene datos -> const accounts
+    |   Prepara el contenedor -> const container
+    |   Usa la función generadora -> const generator
+*/
+async function loadAccounts() {
+    try {
+        const accounts = await fetchAccounts();
+        const container = document.getElementById("accountsContainer");
+        container.innerHTML = "";
+
+        const generator = accountRowGenerator(accounts);
+
+        for (const row of generator) {
+            container.appendChild(row);
+        }
+
+        //Manjo básico de errores (mejorar más adelante)
+    } catch (error) {
+        alert(error.message);
     }
 }

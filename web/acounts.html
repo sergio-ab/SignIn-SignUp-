@@ -1,20 +1,23 @@
 <!DOCTYPE html>
 
-<!------------------------------------------------------------------------------
+<!-- ---------------------------------------------------------
     |   Autor: Clara Montaño Rodríguez
     |   Última modificación: 23/12/2025
---------------------------------------------------------------------------------
+-----------------------------------------------------------
     |   VISTA (HTML)
     |   Contiene:
-    |       - Estructura de la interfaz
-    |       - Contenedores para datos dinámicos
+    |       - Estructura de la interfaz de usuario
     |       - Marcado semántico
-    |
-    |   Generación dinámica:
-    |       - El contenido de cuentas se inserta
-    |         dinámicamente desde JavaScript mediante
-    |         una función generadora (function*)
-------------------------------------------------------------------------------->
+    |       - Elementos interactivos (botones, formularios)
+    |       - Contenedores dinámicos para datos del servidor
+    |   NO contiene:
+    |       - Lógica de negocio
+    |       - Acceso a datos
+    |       - Código JavaScript
+-----------------------------------------------------------
+    |   FLUJO DE ESTA PÁGINA
+    |   Sign in -> sessionStorage (userId, name, role) -> Accounts page -> Controller -> Model (fetch REST)
+--------------------------------------------------------- -->
 
 <html lang="es">
 
@@ -27,8 +30,7 @@
         rel="stylesheet">
 
     <!-- FONT AWESOME -->
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <!-- CSS -->
     <link rel="stylesheet" href="assets/css/styleCRUD.css">
