@@ -1,45 +1,72 @@
-"use strict";
+/*========================================================================================================
+    |   MOVEMENT CONTROLLER
+    |   Autor: SERGIO ARIAS BLANCO 2ºDAW
+==========================================================================================================
+    |   Controlador de la operativa CRUD de movimientos.
+    |   Gestiona la visualización y la interacción con la interfaz. 
+==========================================================================================================*/
 
-import { Movement } from "./dataModel.js";
+"use strict"; // Activa el modo estricto de JavaScript, que sirve para evitar errores y malas prácticas, haciendo el código más seguro y fácil de depurar. 
 
-const SERVICE_URL = "http://localhost:8080/CRUDBankServerSide/webresources/movement";
+//URL del servicio REST que maneja los eventos
+const SERVICE_URL = "http://localhost:8080/CRUDBankServerSide/webresources/movement"; 
 
-sessionStorage.setItem("selectedAccountId", "2654785441");
-sessionStorage.setItem("accountId", "2654785441");
+//TEMPORAL (PARA REALIZAR PRUEBAS SIN UNIÓN DE PÁGINAS)
+//Guarda un valor de prueba en sessionStorage, simulando un inicio de sesión y la selección de una cuenta. 
+sessionStorage.setItem("selectedAccountId", "2654785441"); 
 
-
-// ============================================================
-// MODO PRUEBA / FUNCIONAMIENTO INDEPENDIENTE
-// ============================================================
-if (!sessionStorage.getItem("selectedAccountId")) {
-    // Valor de prueba; se puede cambiar según tu cuenta de test
-    sessionStorage.setItem("selectedAccountId", "2654785441");
-}
-
-
-
-
-
+/*========================================================================================================
+    |   FUNCIÓN MANEJADORA PARA CREAR MOVIMIENTOS
+==========================================================================================================
+    |   Se llama cuando el usuario pulsa el botón Create Movement
+    |   Prepara la capa para introducir un nuevo movimiento.  
+==========================================================================================================*/
 
 function createMovementsHandler (){
-        movementForm.reset();
-        document.getElementById("modalTitle").textContent = "Create Movement";
-        movementModal.style.display = "flex";
+        /*movementForm.reset();*/ // Limpia cualquier dato previo en el formulario
+        document.getElementById("modalTitle").textContent = "Create Movement"; //Cambia el título de la capa
+        movementModal.style.display = "flex"; //Muestra la capa
     }
-   
+
+
+
+
+/*========================================================================================================
+    |   FUNCIÓN MANEJADORA PARA CANCELAR MOVIMIENTOS
+==========================================================================================================
+    |   Se llama cuando el usuario pulsa el botón cancel
+    |   Oculta la capa y resetea los campos
+==========================================================================================================*/
+
 function cancelMovementsForm (){
-        movementModal.style.display = "none";
-        movementForm.reset();
+        movementModal.style.display = "none"; // Oculta la capa
+        /*movementForm.reset();*/ 
     }
-    
+
+
+
+
+/*========================================================================================================
+    |   FUNCIÓN MANEJADORA PARA CERRAR SESIÓN
+==========================================================================================================
+    |   Se llama cuando el usuario pulsa el botón logout
+    |   Finaliza la sesión y vuelve al login
+==========================================================================================================*/
+
 function logoutMovements (){
-        sessionStorage.clear();
-        window.location.href = "index.html";
+        sessionStorage.clear(); // Borra los datos de la sesión
+        window.location.href = "index.html"; // Redirige a la página de login
     }
     
-// ============================================================
-    // ACCOUNT (SESSION STORAGE)
-// ============================================================
+
+
+
+/*========================================================================================================
+    |   FUNCIÓN PARA CARGAR LOS DATOS DEL USUARIO
+==========================================================================================================
+    |   Muestra el ID de la cuenta en la interfaz
+    |   Extrae el valor del sessionStorage y lo coloca en el HTML
+==========================================================================================================*/
 
 function loadAccountFromSession() {
     const accountId = sessionStorage.getItem("accountId");
@@ -83,8 +110,10 @@ function loadAccountFromSession() {
             actions.className = "actions";
 
             const isLast = lastMovementMap[movement.accountId] === movement.id;
-            actions.innerHTML = `
-                <button class="icon-btn icon-btn--delete" title="Delete" ${isLast ? "" : "disabled"}>
+            if (isLast) {
+
+                actions.innerHTML = `
+                <button class="icon-btn icon-btn--delete" title="Delete">
                     <svg viewBox="0 0 24 24">
                         <path d="M3 6h18" />
                         <path d="M8 6V4h8v2" />
@@ -95,8 +124,7 @@ function loadAccountFromSession() {
                 </button>
             `;
 
-            if (isLast) {
-                actions.querySelector("button").addEventListener("click", async () => {
+                actions.querySelector("button").addEventListener("click", async function() {
                     try {
                         await deleteMovement(movement);
                         alert("Movimiento borrado correctamente");
@@ -106,6 +134,9 @@ function loadAccountFromSession() {
                     }
                 });
             }
+            
+
+            
 
             row.appendChild(actions);
             yield row;
