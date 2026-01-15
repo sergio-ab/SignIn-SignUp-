@@ -11,6 +11,15 @@
 
 "use strict"; //Activa el modo estricto de JavaScript.
 
+
+/*
+================================================================================
+   DEMO CUSTOMER (SIMULACIÓN DE SESIÓN)
+================================================================================
+*/
+sessionStorage.setItem("customer.id", "102263301");
+sessionStorage.setItem("userName", "Carlos");
+
 /*
 ================================================================================
    CONSTANTES
@@ -24,23 +33,18 @@ let accounts = [];
 
 /*
 ================================================================================
-   DEMO CUSTOMER (SIMULACIÓN DE SESIÓN)
+   INIT
 ================================================================================
+    |   La función init se encarga de inicializar la página cuando el DOM está cargado.
 */
-sessionStorage.setItem("customer.id", "102263301");
-sessionStorage.setItem("userName", "Carlos");
 
+document.addEventListener("DOMContentLoaded", init);
 
-/*
-================================================================================
-   DOM
-================================================================================
-*/
-//Este código se ejecuta cuando el HTML ya está cargado. Evitamos errores de “elemento no encontrado”
-document.addEventListener("DOMContentLoaded", () => { /*ESTO A FUNCION*/
-    loadUserFromSession(); //muestra el usuario
-    loadAccounts(); //carga las cuentas del servidor
-});
+async function init() {
+    initMessageModal();   
+    loadUserFromSession();   // Muestra el usuario desde sessionStorage
+    await loadAccounts();    // Carga las cuentas del servidor
+}
 
 /*
 ================================================================================
@@ -199,21 +203,108 @@ async function loadAccounts() {
 }
 
 
-
 /*
+================================================================================
+   EDIT ACCOUNT / UPDATE
+================================================================================
+
+
 function editAccount(event) {
     const accountId = event.currentTarget.dataset.accountId;
     alert("Edit account: " + accountId);
 }
- */
+
+*/    
+    
+    
+/*
+================================================================================
+   DELETE ACCOUNT / DELETE
+================================================================================
+*/
+async function deleteAccount(event) {
+    const accountId = event.currentTarget.dataset.accountId;
+
+    showConfirm(
+        "Eliminar cuenta",
+        `¿Seguro que deseas eliminar la cuenta ${accountId}?`,
+        async function () {
+            try {
+                const response = await fetch(
+                    `${SERVICE_URL}/${accountId}`,
+                    { method: "DELETE" }
+                );
+
+                if (response.status === 409) {
+                    throw new Error(
+                        "No se puede eliminar la cuenta porque tiene movimientos"
+                    );
+                }
+
+                if (!response.ok) {
+                    throw new Error("Error al eliminar la cuenta");
+                }
+
+                showMessage(
+                    "Cuenta eliminada",
+                    "La cuenta se ha eliminado correctamente"
+                );
+
+                await loadAccounts();
+
+            } catch (error) {
+                showMessage("Error", error.message);
+            }
+        }
+    );
+}
 
 
-function deleteAccount(event) {
-    const accountId = event.target.dataset.accountId;
 
-    if (!accountId) return;
 
-    alert("Borrar cuenta con id: " + accountId);
+/*
+================================================================================
+   MESSAGE ERROR / CONFIRMACIÓN (CAPA)
+================================================================================
+*/
+let messageOverlay;
+let messageTitle;
+let messageText;
+let btnConfirm;
+let btnCloseMessage;
 
-    // Aquí más adelante irá el fetch DELETE
+function initMessageModal() {
+    messageOverlay = document.getElementById("messageOverlay");
+    messageTitle = document.getElementById("messageTitle");
+    messageText = document.getElementById("messageText");
+    btnConfirm = document.getElementById("btnConfirm");
+    btnCloseMessage = document.getElementById("btnCloseMessage");
+
+    btnCloseMessage.addEventListener("click", closeMessage);
+}
+
+function showMessage(title, text) {
+    messageTitle.textContent = title;
+    messageText.textContent = text;
+    btnConfirm.style.display = "none";
+    messageOverlay.style.display = "flex";
+}
+
+function showConfirm(title, text, onConfirm) {
+    messageTitle.textContent = title;
+    messageText.textContent = text;
+    btnConfirm.style.display = "inline-block";
+
+    btnConfirm.onclick = async function () {
+        closeMessage();
+        await onConfirm();
+    };
+
+    messageOverlay.style.display = "flex";
+}
+
+function closeMessage() {
+    messageOverlay.style.display = "none";
+    btnConfirm.style.display = "none";
+    btnConfirm.onclick = null;
 }
