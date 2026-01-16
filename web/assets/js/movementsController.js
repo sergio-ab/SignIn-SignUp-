@@ -124,13 +124,19 @@ function loadAccountFromSession() {
                 </button>
             `;
 
-                actions.querySelector("button").addEventListener("click", async function() {
-                    try {
-                        await deleteMovement(movement);
+                actions.querySelector("button").addEventListener("click", function() {
+                    const confirmation = confirm("¿Quiere eliminar este movimiento?");
+                    if (confirmation) {
+                        try {
+                        deleteMovement(movement);
                         alert("Movimiento borrado correctamente");
                         loadMovements();
                     } catch (err) {
                         alert(err.message);
+                    }
+                    }
+                    else {
+                       alert("La eliminación fue cancelada"); 
                     }
                 });
             }
@@ -169,6 +175,8 @@ function loadAccountFromSession() {
             }
 
             document.getElementById("totalMovements").textContent = movements.length;
+            const totalBalance = movements.reduce((acc, movement) => acc + movement.amount, 0);
+            document.getElementById("totalBalance").textContent = `${totalBalance.toFixed(2)}€`;
 
         } catch (err) {
             alert(err.message);
