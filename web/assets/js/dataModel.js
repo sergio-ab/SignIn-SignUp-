@@ -27,6 +27,19 @@ export class Customer {
         this.email = email;
         this.password = password;
     }
+    toJSON(){
+        id: this.id;
+        firstName: this.firstName;
+        lastName: this.lastName;
+        middleInitital: this.middleInitial;
+        street: this.street;
+        city: this.city;
+        state: this.state;
+        zip: this.zip;
+        phone: this.phone;
+        email: this.email;
+        password: this.password;
+    }
 }
 
 /*========================================================================================================
@@ -46,6 +59,16 @@ export class Account {
         this.type = type; // "STANDARD" O "CREDIT"
         this.customerId = customerId; // ID del cliente propietario
     }
+    toJSON() {
+        id: this.id;
+        description: this.description;
+        balance: this.balance;
+        creditLine: this.creditLine;
+        beginBalance: this.beginBalance;
+        beginBalanceTimestamp: this.beginBalanceTimestamp;
+        type: this.type;
+        customerId: this.customerId;
+    }
 }
 
 /*========================================================================================================
@@ -62,5 +85,14 @@ export class Movement {
         this.balance = balance; // Saldo restante tras el movimiento.
         this.description = description;
         this.accountId = accountId; // ID de la cuenta asociada. 
+    }
+    toJSON() {
+        id: this.id;
+        timestamp: this.timestamp;
+        amount: this.amount;
+        balance: this.balance; 
+        description: this.description;
+        accountId: this.accountId;
+        
     }
 }
