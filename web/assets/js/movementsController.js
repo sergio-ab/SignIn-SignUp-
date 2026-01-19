@@ -13,7 +13,7 @@ const SERVICE_URL = "http://localhost:8080/CRUDBankServerSide/webresources/movem
 
 //TEMPORAL (PARA REALIZAR PRUEBAS SIN UNIÓN DE PÁGINAS)
 //Guarda un valor de prueba en sessionStorage, simulando un inicio de sesión y la selección de una cuenta. 
-sessionStorage.setItem("selectedAccountId", "2654785441"); 
+const accountId = sessionStorage.setItem("selectedAccountId", "2654785441"); 
 
 /*========================================================================================================
     |   FUNCIÓN MANEJADORA PARA CREAR MOVIMIENTOS
@@ -98,7 +98,7 @@ function loadAccountFromSession() {
             const row = document.createElement("div");
             row.className = "table-row";
 
-            const fields = ["id", "timestamp", "amount", "balance", "description", "accountId"];
+            const fields = ["id", "timestamp", "amount", "balance", "description", "selectedAccountId"];
             for (const field of fields) {
                 const cell = document.createElement("div");
                 cell.textContent = movement[field];
@@ -196,11 +196,13 @@ function loadAccountFromSession() {
 
             if (isNaN(amount)) throw new Error("Amount must be a number");
             if (!description) throw new Error("Description cannot be empty");
-            if (isNaN(accountId)) throw new Error("Account ID must be a number");
+            /*if (isNaN(accountId)) throw new Error("Account ID must be a number");*/
+            
+            const url = `http://localhost:8080/CRUDBankServerSide/webresources/movement/${accountId}`;
 
-            const movementData = { amount, description, accountId };
+            const movementData = { amount, description};
 
-            const response = await fetch(SERVICE_URL, {
+            const response = await fetch(url, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -237,6 +239,7 @@ function loadAccountFromSession() {
         if (!response.ok) throw new Error("Error al borrar movimiento");
 
         return await response.json();
+        
     }
 
  function initializeMovements (){
