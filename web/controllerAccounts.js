@@ -9,6 +9,7 @@
     |   - Genera contenido dinámico con function*
 ---------------------------------------------------------*/
 
+
 "use strict"; //Activa el modo estricto de JavaScript.
 
 
@@ -17,18 +18,56 @@
    DEMO CUSTOMER (SIMULACIÓN DE SESIÓN)
 ================================================================================
 */
-sessionStorage.setItem("customer.id", "102263301");
-sessionStorage.setItem("userName", "Carlos");
-
+sessionStorage.setItem("customer.id", "1234567890");
+sessionStorage.setItem("userName", "Account")
 /*
 ================================================================================
    CONSTANTES
 ================================================================================
 */
-const CUSTOMER_ID = sessionStorage.getItem("customer.id");
+const CUSTOMER_ID = sessionStorage.getItem("customer.id").replace(/[,.]/g, "");
 const SERVICE_URL =
     "http://localhost:8080/CRUDBankServerSide/webresources/account";
 let accounts = [];
+
+
+/*
+================================================================================
+   CREATE / EDIT ACCOUNT - ELEMENTOS DOM
+================================================================================
+    |   Elementos del DOM relacionados con la creación y edición de cuentas
+    |   Se reutiliza el mismo modal para CREATE y EDIT
+    |   Se accede a los inputs para:
+    |       - Leer valores introducidos por el usuario
+    |       - Bloquear / habilitar campos según el tipo de cuenta
+    |       - Rellenar datos cuando se edita una cuenta
+*/
+const btnCreateAccount = document.getElementById("btnCreateAccount");
+const accountModal = document.getElementById("accountModal");
+const accountForm = document.getElementById("accountForm");
+const modalTitle = document.getElementById("modalTitle");
+
+const inputAccountId = document.getElementById("accountId");
+const inputDescription = document.getElementById("description");
+const inputType = document.getElementById("type");
+const inputBeginBalance = document.getElementById("beginBalance");
+const inputCreditLine = document.getElementById("creditLine");
+const btnCancel = document.getElementById("btnCancel");
+
+
+/*
+================================================================================
+   ESTADO DEL MODAL
+================================================================================
+    |   Variable de control del estado del formulario
+    |   false  -> El modal está en modo CREATE
+    |   true   -> El modal está en modo EDIT
+    |   Se utiliza para:
+    |       - Decidir qué acción ejecutar al hacer submit
+    |       - Cambiar el comportamiento del formulario
+    |       - Bloquear o permitir campos según el caso
+*/
+let isEditMode = false;
 
 
 /*
@@ -41,10 +80,17 @@ let accounts = [];
 document.addEventListener("DOMContentLoaded", init);
 
 async function init() {
-    initMessageModal();   
-    loadUserFromSession();   // Muestra el usuario desde sessionStorage
-    await loadAccounts();    // Carga las cuentas del servidor
+    initMessageModal();
+    loadUserFromSession();
+
+    btnCreateAccount.addEventListener("click", openCreateAccount);
+    btnCancel.addEventListener("click", closeAccountModal);
+    accountForm.addEventListener("submit", submitAccountForm);
+    inputType.addEventListener("change", handleTypeChange);
+
+    await loadAccounts();
 }
+
 
 /*
 ================================================================================
@@ -56,7 +102,6 @@ async function init() {
 */
 function loadUserFromSession() {
     const userName = sessionStorage.getItem("userName");
-
     if (userName) {
         document.getElementById("userName").textContent = userName;
     }
@@ -79,16 +124,12 @@ async function fetchAccounts() {
         }
     });
 
-    //Comprobación de errores -> Comprueba si la respuesta fue correcta (status 200). 
-    //Si no, lanza un error.
     if (!response.ok) {
         throw new Error("Error al obtener las cuentas");
     }
 
-    //Convierte la respuesta del servidor en un objeto JavaScript
     return await response.json();
 }
-
 /*
 ================================================================================
    FUNCIÓN GENERADORA
@@ -101,11 +142,9 @@ async function fetchAccounts() {
 function* accountRowGenerator(accounts) {
     for (const account of accounts) {
 
-        //Fila (equivalente a <tr>)
         const row = document.createElement("div");
         row.className = "table-row";
 
-        //Campos que se van a mostrar -> Lista de propiedades del objeto account
         const fields = [
             "id",
             "description",
@@ -115,21 +154,26 @@ function* accountRowGenerator(accounts) {
             "creditLine"
         ];
 
-        //Creación de celdas -> Crea una celda por cada campo e inserta el valor correspondiente (equivalente a <td>)
         for (const field of fields) {
             const cell = document.createElement("div");
             cell.className = "table-cell";
-            cell.textContent = account[field];
+
+            // 🔑 CAMBIO CLAVE: el tipo se deduce del creditLine
+            if (field === "type") {
+                cell.textContent = account.creditLine > 0
+                    ? "CREDIT"
+                    : "STANDARD";
+            } else {
+                cell.textContent = account[field];
+            }
+
             row.appendChild(cell);
         }
 
-        /* =========================
-           ACTIONS CELL
-        ========================= */
         const actionsCell = document.createElement("div");
         actionsCell.className = "actions";
 
-        actionsCell.innerHTML = 
+        actionsCell.innerHTML =
             `<button 
                 class="icon-btn icon-btn--edit"
                 data-account-id="${account.id}"
@@ -154,10 +198,6 @@ function* accountRowGenerator(accounts) {
 
         row.appendChild(actionsCell);
 
-        /* =========================
-           EVENT LISTENERS
-           (FORMA QUE HA PEDIDO EL PROFESOR)
-        ========================= */
         let buttons = actionsCell.getElementsByTagName("button");
 
         for (const but of buttons) {
@@ -165,12 +205,11 @@ function* accountRowGenerator(accounts) {
                 but.addEventListener("click", deleteAccount);
             }
 
-            /*if (but.classList.contains("icon-btn--edit")) {
+            if (but.classList.contains("icon-btn--edit")) {
                 but.addEventListener("click", editAccount);
-            }*/
+            }
         }
-                
-        //Devuelve una fila cada vez, permite que el controller vaya insertando filas poco a poco.
+
         yield row;
     }
 }
@@ -190,37 +229,190 @@ async function loadAccounts() {
         const container = document.getElementById("accountsContainer");
         container.innerHTML = "";
 
-        const accountsHTML = accountRowGenerator(accounts);
-
-        for (const row of accountsHTML) {
+        for (const row of accountRowGenerator(accounts)) {
             container.appendChild(row);
         }
-
-        //Manejo básico de errores (mejorar más adelante)
     } catch (error) {
-        alert(error.message);
+        showMessage("Error", error.message);
     }
 }
 
 
 /*
 ================================================================================
-   EDIT ACCOUNT / UPDATE
+   CREATE ACCOUNT
 ================================================================================
+    |   Abre el modal en modo CREAR cuenta
+    |   Inicializa el formulario con valores por defecto
+    |   Desactiva campos que no deben modificarse
+*/
+function openCreateAccount() {
+    isEditMode = false;
+    modalTitle.textContent = "Create Account";
+    accountForm.reset();
 
+    inputAccountId.value = "";
+    inputBeginBalance.value = 0;
+    inputBeginBalance.disabled = true;
 
-function editAccount(event) {
-    const accountId = event.currentTarget.dataset.accountId;
-    alert("Edit account: " + accountId);
+    inputType.disabled = false;
+    inputCreditLine.disabled = true;
+
+    accountModal.style.display = "flex";
 }
 
-*/    
-    
-    
+
+/*
+================================================================================
+   EDIT ACCOUNT
+================================================================================
+    |   Abre el modal en modo EDICIÓN
+    |   Obtiene la cuenta seleccionada a partir de su id
+    |   Rellena el formulario con los datos existentes
+    |   Bloquea los campos que no deben modificarse
+*/
+function editAccount(event) {
+    const accountId = event.currentTarget.dataset.accountId;
+    const account = accounts.find(acc => acc.id == accountId);
+
+    if (!account) {
+        showMessage("Error", "Cuenta no encontrada");
+        return;
+    }
+
+    isEditMode = true;
+    modalTitle.textContent = "Edit Account";
+
+    inputAccountId.value = account.id;
+    inputDescription.value = account.description;
+    inputType.value = account.type;
+    inputBeginBalance.value = account.beginBalance;
+    inputCreditLine.value = account.creditLine;
+
+    inputBeginBalance.disabled = true;
+    inputType.disabled = true;
+
+    handleTypeChange();
+    accountModal.style.display = "flex";
+}
+
+
+/*
+================================================================================
+   SUBMIT CREATE / EDIT
+================================================================================
+    |   Gestiona el envío del formulario del modal
+    |   Valida los datos introducidos por el usuario
+    |   Decide si se crea o se edita una cuenta según el estado del modal
+    |   Realiza la llamada REST correspondiente (POST o PUT)
+    |   Muestra mensajes de éxito o error y recarga la tabla
+*/
+/*
+================================================================================
+   SUBMIT CREATE / EDIT
+================================================================================
+*/
+async function submitAccountForm(event) {
+    event.preventDefault();
+
+    const description = inputDescription.value.trim();
+    const type = inputType.value;
+    let creditLine = 0;
+
+    if (!description) {
+        showMessage("Error", "La descripción es obligatoria");
+        return;
+    }
+
+    // ============================
+    // TRADUCIR SELECTOR A CREDITLINE
+    // ============================
+    if (type === "CREDIT") {
+        creditLine = parseInt(inputCreditLine.value, 10);
+
+        if (isNaN(creditLine) || creditLine <= 0) {
+            showMessage("Error", "La línea de crédito debe ser mayor que 0");
+            return;
+        }
+    } else {
+        creditLine = 0;
+    }
+
+
+    try {
+        let response;
+
+        if (isEditMode) {
+            response = await fetch(SERVICE_URL, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    id: inputAccountId.value,
+                    description: description,
+                    beginBalance: inputBeginBalance.value,
+                    balance: accounts.find(a => a.id == inputAccountId.value).balance,
+                    creditLine: creditLine,
+                    customerId: CUSTOMER_ID
+                })
+            });
+        } else {
+            // ============================
+            // CREATE - PAYLOAD CORRECTO
+            // ============================
+            const payload = {
+                id: Math.floor(Math.random() * 100000000),
+                description: description,
+                balance: 0,
+                creditLine: creditLine,
+                beginBalance: 0,
+                beginBalanceTimestamp: new Date().toISOString().split(".")[0] + "Z",
+
+
+                type: type,
+
+                customers: [
+                    { id: parseInt(CUSTOMER_ID, 10) }
+                ]
+            };
+
+            response = await fetch(SERVICE_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+        }
+
+        if (!response.ok) {
+            throw new Error("Error al guardar la cuenta");
+        }
+
+        closeAccountModal();
+        showMessage(
+            "Cuenta guardada",
+            isEditMode
+                ? "La cuenta se ha actualizado correctamente"
+                : "La cuenta se ha creado correctamente"
+        );
+
+        await loadAccounts();
+
+    } catch (error) {
+        showMessage("Error", error.message);
+    }
+}
+
+
+
 /*
 ================================================================================
    DELETE ACCOUNT / DELETE
 ================================================================================
+    |   Gestiona la eliminación de una cuenta desde la tabla
+    |   Obtiene el ID de la cuenta a partir del botón pulsado
+    |   Muestra una confirmación previa al borrado
+    |   Realiza la llamada DELETE al servicio REST
+    |   Controla el error cuando la cuenta tiene movimientos
+    |   Muestra mensajes de éxito o error y recarga la tabla
 */
 async function deleteAccount(event) {
     const accountId = event.currentTarget.dataset.accountId;
@@ -245,11 +437,7 @@ async function deleteAccount(event) {
                     throw new Error("Error al eliminar la cuenta");
                 }
 
-                showMessage(
-                    "Cuenta eliminada",
-                    "La cuenta se ha eliminado correctamente"
-                );
-
+                showMessage("Cuenta eliminada", "Cuenta eliminada correctamente");
                 await loadAccounts();
 
             } catch (error) {
@@ -261,11 +449,38 @@ async function deleteAccount(event) {
 
 
 
+/*
+================================================================================
+   UTILIDADES MODAL
+================================================================================
+    |   Funciones auxiliares del modal de creación / edición de cuentas
+    |   Controlan la apertura, cierre y comportamiento dinámico del formulario
+    |   No realizan llamadas al servidor
+    |   Solo gestionan la interfaz de usuario (UI)
+*/
+function closeAccountModal() {
+    accountModal.style.display = "none";
+}
+
+function handleTypeChange() {
+    if (inputType.value === "CREDIT") {
+        inputCreditLine.disabled = false;
+    } else {
+        inputCreditLine.value = "";
+        inputCreditLine.disabled = true;
+    }
+}
+
 
 /*
 ================================================================================
    MESSAGE ERROR / CONFIRMACIÓN (CAPA)
 ================================================================================
+    |   Sistema de mensajes reutilizable para toda la aplicación
+    |   Sustituye a alert() y confirm() del navegador
+    |   Muestra mensajes de error, información y confirmación
+    |   Se presenta como una capa centrada (overlay)
+    |   No accede al servidor ni modifica datos
 */
 let messageOverlay;
 let messageTitle;
@@ -295,9 +510,12 @@ function showConfirm(title, text, onConfirm) {
     messageText.textContent = text;
     btnConfirm.style.display = "inline-block";
 
+    // ✅ Necesario: evita “onConfirm is not a function”
     btnConfirm.onclick = async function () {
         closeMessage();
-        await onConfirm();
+        if (typeof onConfirm === "function") {
+            await onConfirm();
+        }
     };
 
     messageOverlay.style.display = "flex";

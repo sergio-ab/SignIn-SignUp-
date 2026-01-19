@@ -149,6 +149,14 @@ body {
     gap: 14px;
 }
 
+/* ========== ACTIONS (FIX FLEX) ========== */
+.table-row > .actions {
+    display: flex;              /* 🔑 fuerza flex */
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+}
+
 /* ========== ICON BUTTONS ========== */
 .icon-btn {
     width: 42px;
