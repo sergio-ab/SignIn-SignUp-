@@ -175,26 +175,31 @@ function* accountRowGenerator(accounts) {
 
         actionsCell.innerHTML =
             `<button 
-                class="icon-btn icon-btn--edit"
+                class="icon-btn icon-btn--movements"
                 data-account-id="${account.id}"
-                title="Edit"
-            >
-                <i class="fa-regular fa-pen-to-square"></i>
+                title="View movements">
+            <i class="fa-solid fa-list"></i>
             </button>
 
-            <button 
-                class="icon-btn icon-btn--delete"
-                data-account-id="${account.id}"
-                title="Delete"
-            >
-                <svg viewBox="0 0 24 24">
-                    <path d="M3 6h18" />
-                    <path d="M8 6V4h8v2" />
-                    <path d="M6 6l1 14h10l1-14" />
-                    <path d="M10 11v6" />
-                    <path d="M14 11v6" />
-                </svg>
-            </button>`;
+        <button 
+            class="icon-btn icon-btn--edit"
+            data-account-id="${account.id}"
+            title="Edit">
+        <i class="fa-regular fa-pen-to-square"></i>
+        </button>
+
+        <button 
+            class="icon-btn icon-btn--delete"
+            data-account-id="${account.id}"
+            title="Delete">
+            <svg viewBox="0 0 24 24">
+                <path d="M3 6h18" />
+                <path d="M8 6V4h8v2" />
+                <path d="M6 6l1 14h10l1-14" />
+                <path d="M10 11v6" />
+                <path d="M14 11v6" />
+            </svg>
+        </button>`;
 
         row.appendChild(actionsCell);
 
@@ -208,7 +213,12 @@ function* accountRowGenerator(accounts) {
             if (but.classList.contains("icon-btn--edit")) {
                 but.addEventListener("click", editAccount);
             }
+            if (but.classList.contains("icon-btn--movements")) {
+                but.addEventListener("click", goToMovements);
+            }
         }
+
+
 
         yield row;
     }
@@ -253,7 +263,7 @@ function openCreateAccount() {
 
     inputAccountId.value = "";
     inputBeginBalance.value = 0;
-    inputBeginBalance.disabled = true;
+    inputBeginBalance.disabled = false;
 
     inputType.disabled = false;
     inputCreditLine.disabled = true;
@@ -364,7 +374,7 @@ async function submitAccountForm(event) {
                 description: description,
                 balance: 0,
                 creditLine: creditLine,
-                beginBalance: 0,
+                beginBalance: Number(inputBeginBalance.value),
                 beginBalanceTimestamp: new Date().toISOString().split(".")[0] + "Z",
 
 
@@ -448,6 +458,22 @@ async function deleteAccount(event) {
 }
 
 
+/*
+================================================================================
+   VER MOVIMIENTOS
+================================================================================
+    |   Redirección a la vista de movimientos de una cuenta
+    |   Se ejecuta al pulsar el botón "Movimientos" de la tabla
+    |   Obtiene el accountId desde el atributo data-account-id del botón
+*/
+
+function goToMovements(event) {
+    const accountId = event.currentTarget.dataset.accountId;
+
+    window.location.href =
+        `http:///NeoBank/movements.html?accountId=${accountId}`;
+}
+
 
 /*
 ================================================================================
@@ -510,7 +536,7 @@ function showConfirm(title, text, onConfirm) {
     messageText.textContent = text;
     btnConfirm.style.display = "inline-block";
 
-    // ✅ Necesario: evita “onConfirm is not a function”
+    // Necesario: evita “onConfirm is not a function”
     btnConfirm.onclick = async function () {
         closeMessage();
         if (typeof onConfirm === "function") {
