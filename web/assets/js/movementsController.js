@@ -98,7 +98,7 @@ function loadAccountFromSession() {
             const row = document.createElement("div");
             row.className = "table-row";
 
-            const fields = ["id", "timestamp", "amount", "balance", "description", "selectedAccountId"];
+            const fields = ["timestamp", "amount", "balance", "description"];
             for (const field of fields) {
                 const cell = document.createElement("div");
                 cell.textContent = movement[field];
@@ -182,7 +182,8 @@ function loadAccountFromSession() {
             alert(err.message);
         }
     }
-    
+   
+/*
 // ============================================================
 // CREAR MOVIMIENTO
 // ============================================================
@@ -191,16 +192,19 @@ function loadAccountFromSession() {
 
         try {
             const amount = parseFloat(document.getElementById("amount").value);
-            const description = document.getElementById("description").value.trim();
-            const accountId = parseInt(sessionStorage.getItem("selectedAccountId"));
+            const description = document.getElementById("description").value;
+            //const accountId = parseInt(sessionStorage.getItem("selectedAccountId"));
+            let balance;
 
             if (isNaN(amount)) throw new Error("Amount must be a number");
             if (!description) throw new Error("Description cannot be empty");
-            /*if (isNaN(accountId)) throw new Error("Account ID must be a number");*/
+            //if (isNaN(accountId)) throw new Error("Account ID must be a number");
+    
+            const url = `${SERVICE_URL}/${accountId}`;
             
-            const url = `http://localhost:8080/CRUDBankServerSide/webresources/movement/${accountId}`;
+            //const url = `http://localhost:8080/CRUDBankServerSide/webresources/movement/${accountId}`;
 
-            const movementData = { amount, description};
+            const movementData = { id, amount, description, timestamp, balance};
 
             const response = await fetch(url, {
                 method: "POST",
@@ -222,6 +226,55 @@ function loadAccountFromSession() {
             alert("Error: " + error.message);
         }
     }
+ */
+ 
+/*///////////////////////////////////////////////////////////////////////*/
+ async function handleCreateMovement(event) {
+    event.preventDefault();
+
+    try {
+        const amount = parseFloat(document.getElementById("amount").value);
+        const description = document.getElementById("description").value;
+        const accountId = sessionStorage.getItem("selectedAccountId");
+
+        if (isNaN(amount)) throw new Error("Amount must be a number");
+        if (!description) throw new Error("Description cannot be empty");
+        if (!accountId) throw new Error("Account not selected");
+
+        const movements = await fetchMovements(accountId);
+        const totalBalance = movements.reduce((acc, movement) => acc + movement.amount, 0);
+
+        const timestamp = new Date().toISOString();
+
+        const movementData = {
+            amount,
+            balance: totalBalance,
+            //balance: newBalance,
+            description,
+            timestamp
+        };
+
+        const response = await fetch(`${SERVICE_URL}/${accountId}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify(movementData)
+        });
+
+        if (!response.ok) throw new Error("Error creating movement");
+
+        movementModal.style.display = "none";
+        alert("Movimiento creado correctamente");
+        loadMovements();
+
+    } catch (error) {
+        alert("Error: " + error.message);
+    }
+}
+/*//////////////////////////////////////////////////////////////////////////////*/
+ 
  
 // ============================================================
 // BORRAR MOVIMIENTO
@@ -250,7 +303,7 @@ function loadAccountFromSession() {
     const btnCancel = document.getElementById("btnCancel");
     const btnLogout = document.getElementById("btnLogout");
     const movementsContainer = document.getElementById("movementsContainer");
-    
+    movementForm.addEventListener("submit", handleCreateMovement);
     // ============================================================
     // BOTONES MODAL
     // ============================================================
