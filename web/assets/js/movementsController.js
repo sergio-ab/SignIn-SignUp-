@@ -1,5 +1,5 @@
 /*========================================================================================================
-    |   MOVEMENT CONTROLLER
+    |   MOVEMENTS CONTROLLER
     |   Autor: SERGIO ARIAS BLANCO 2ºDAW
 ==========================================================================================================
     |   Controlador de la operativa CRUD de movimientos.
@@ -13,8 +13,8 @@ const SERVICE_URL = "http://localhost:8080/CRUDBankServerSide/webresources/movem
 
 //TEMPORAL (PARA REALIZAR PRUEBAS SIN UNIÓN DE PÁGINAS)
 //Guarda un valor de prueba en sessionStorage, simulando un inicio de sesión y la selección de una cuenta. 
-const accountId = sessionStorage.setItem("selectedAccountId", "2654785441"); 
-
+sessionStorage.setItem("selectedAccountId", "2654785441"); 
+sessionStorage.setItem("selectedAccountType", "Standard");
 /*========================================================================================================
     |   FUNCIÓN MANEJADORA PARA CREAR MOVIMIENTOS
 ==========================================================================================================
@@ -23,7 +23,9 @@ const accountId = sessionStorage.setItem("selectedAccountId", "2654785441");
 ==========================================================================================================*/
 
 function createMovementsHandler (){
-        /*movementForm.reset();*/ // Limpia cualquier dato previo en el formulario
+        const movementForm = document.getElementById("movementForm");
+        movementForm.reset(); // Limpia cualquier dato previo en el formulario
+        const movementModal = document.getElementById("movementModal");
         document.getElementById("modalTitle").textContent = "Create Movement"; //Cambia el título de la capa
         movementModal.style.display = "flex"; //Muestra la capa
     }
@@ -39,6 +41,7 @@ function createMovementsHandler (){
 ==========================================================================================================*/
 
 function cancelMovementsForm (){
+        const movementModal = document.getElementById("movementModal");
         movementModal.style.display = "none"; // Oculta la capa
         /*movementForm.reset();*/ 
     }
@@ -76,6 +79,12 @@ function loadAccountFromSession() {
     }
 }
 
+function getSelectedAccountType(){
+    const accountId = sessionStorage.getItem("selectedAccountId");
+    const accountType = sessionStorage.getItem("selectedAccountType");
+    return {accountId, accountType}
+}
+
 
 // ============================================================
 // FETCH MOVEMENTS POR ACCOUNT
@@ -101,7 +110,18 @@ function loadAccountFromSession() {
             const fields = ["timestamp", "amount", "balance", "description"];
             for (const field of fields) {
                 const cell = document.createElement("div");
-                cell.textContent = movement[field];
+                // FORMATEO DE FECHA
+                if (field === "timestamp"){
+                    const date = new Date(movement.timestamp);
+                    cell.textContent = date.toLocaleString();
+                }
+                else if (field === "amount" || field === "balance"){
+                    cell.textContent = movement[field].toFixed(2) + "€";
+                    cell.classList.add("text-right"); 
+                }
+                else {
+                    cell.textContent = movement[field];
+                }
                 row.appendChild(cell);
             }
 
@@ -124,23 +144,12 @@ function loadAccountFromSession() {
                 </button>
             `;
 
-                actions.querySelector("button").addEventListener("click", function() {
-                    const confirmation = confirm("¿Quiere eliminar este movimiento?");
-                    if (confirmation) {
-                        try {
-                        deleteMovement(movement);
-                        alert("Movimiento borrado correctamente");
-                        loadMovements();
-                    } catch (err) {
-                        alert(err.message);
-                    }
-                    }
-                    else {
-                       alert("La eliminación fue cancelada"); 
-                    }
-                });
+                const button = actions.querySelector("button");
+                
+                button.movement = movement;
+                
+                button.addEventListener("click", handleDeleteMovement);
             }
-            
 
             
 
@@ -175,7 +184,7 @@ function loadAccountFromSession() {
             }
 
             document.getElementById("totalMovements").textContent = movements.length;
-            const totalBalance = movements.reduce((acc, movement) => acc + movement.amount, 0);
+            const totalBalance = calculateBalance(movements);
             document.getElementById("totalBalance").textContent = `${totalBalance.toFixed(2)}€`;
 
         } catch (err) {
@@ -183,52 +192,10 @@ function loadAccountFromSession() {
         }
     }
    
-/*
+
 // ============================================================
 // CREAR MOVIMIENTO
 // ============================================================
-    async function handleCreateMovement(event){
-        event.preventDefault();
-
-        try {
-            const amount = parseFloat(document.getElementById("amount").value);
-            const description = document.getElementById("description").value;
-            //const accountId = parseInt(sessionStorage.getItem("selectedAccountId"));
-            let balance;
-
-            if (isNaN(amount)) throw new Error("Amount must be a number");
-            if (!description) throw new Error("Description cannot be empty");
-            //if (isNaN(accountId)) throw new Error("Account ID must be a number");
-    
-            const url = `${SERVICE_URL}/${accountId}`;
-            
-            //const url = `http://localhost:8080/CRUDBankServerSide/webresources/movement/${accountId}`;
-
-            const movementData = { id, amount, description, timestamp, balance};
-
-            const response = await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Accept": "application/json"
-                },
-                body: JSON.stringify(movementData)
-            });
-
-            if (!response.ok) throw new Error("Error creating movement");
-            await response.json();
-
-            movementModal.style.display = "none";
-            alert("Movimiento creado correctamente");
-            loadMovements();
-
-        } catch (error) {
-            alert("Error: " + error.message);
-        }
-    }
- */
- 
-/*///////////////////////////////////////////////////////////////////////*/
  async function handleCreateMovement(event) {
     event.preventDefault();
 
@@ -242,7 +209,23 @@ function loadAccountFromSession() {
         if (!accountId) throw new Error("Account not selected");
 
         const movements = await fetchMovements(accountId);
-        const totalBalance = movements.reduce((acc, movement) => acc + movement.amount, 0);
+                
+        //const type = document.getElementById("type").value;
+        const previousBalance = calculateBalance(movements);
+        
+        let totalBalance;
+        
+        if (description === "Deposit") {
+            totalBalance = previousBalance + amount;
+        }
+        
+        if (description === "Payment") {
+            //Cuenta estándar 
+            if (amount > previousBalance) {
+                throw new Error("Saldo insuficiente. Ingrese otra cantidad menor.")
+            }
+            totalBalance = previousBalance - amount; 
+        }
 
         const timestamp = new Date().toISOString();
 
@@ -268,12 +251,29 @@ function loadAccountFromSession() {
         movementModal.style.display = "none";
         alert("Movimiento creado correctamente");
         loadMovements();
+        
 
     } catch (error) {
         alert("Error: " + error.message);
     }
 }
 /*//////////////////////////////////////////////////////////////////////////////*/
+ function handleDeleteMovement(event) {
+     const button = event.currentTarget;
+     const movement = button.movement;
+     
+     const confirmation = confirm("¿Quiere eliminar este movimiento?");
+     if (!confirmation) return;
+     
+     deleteMovement(movement)
+             .then(function () {
+                 alert("Movimiento borrado correctamente");
+                 loadMovements();
+     })
+             .catch(function (err) {
+                 alert(err.message);
+     });
+ }
  
  
 // ============================================================
@@ -291,9 +291,23 @@ function loadAccountFromSession() {
 
         if (!response.ok) throw new Error("Error al borrar movimiento");
 
-        return await response.json();
+        return;
         
     }
+    
+function calculateBalance(movements) {
+    return movements.reduce(function(balance, movement) {
+        if (movement.description === "Deposit") {
+            return balance + movement.amount;
+        }
+        
+        if (movement.description === "Payment") {
+            return balance - movement.amount;
+        }
+        
+        return balance;
+    }, 0);
+}
 
  function initializeMovements (){
 
@@ -313,6 +327,14 @@ function loadAccountFromSession() {
     btnCancel.addEventListener("click", cancelMovementsForm);
 
     btnLogout.addEventListener("click", logoutMovements);
+    
+    //TEMPORAL PARA MOSTRAR EL ID DE LA CUENTA EN LA PÁGINA DE MOVIMIENTOS
+    const accountId = sessionStorage.getItem("selectedAccountId");
+    const accountType = sessionStorage.getItem("selectedAccountType");
+    
+    if (accountId) {
+        document.getElementById("accountId").textContent = `${accountType} (${accountId})`;  
+    }
 
     loadMovements();
 }
