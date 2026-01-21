@@ -149,6 +149,32 @@ body {
     gap: 14px;
 }
 
+/* ========== ALIGN TEXT ==========*/
+
+/* Alinea el texto a la derecha (para amount y balance) */
+.text-right {
+    text-align: right;
+}
+
+/* ========== ALIGN TEXT FOR MOBILES ==========*/
+
+@media (max-width: 900px) {
+    .text-right {
+        text-align: left;
+    }
+}
+
+
+/* ========== ACTIONS (FIX FLEX) ========== */
+.table-row > .actions {
+    display: flex;              /*  fuerza flex */
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+}
+
+
+
 /* ========== ICON BUTTONS ========== */
 .icon-btn {
     width: 42px;
@@ -197,6 +223,22 @@ body {
     background: #fff;
     color: #7a2a15;
 }
+
+/* MOVEMENTS */
+.icon-btn--movements {
+    border: 1px solid #ff9f1c;
+    color: #ff9f1c;
+    background-color: transparent;
+}
+
+.icon-btn--movements i {
+    color: #ff9f1c;
+}
+
+.icon-btn--movements:hover {
+    background-color: rgba(255, 159, 28, 0.2);
+}
+
 
 /* ========== MODAL CREATE / EDIT ========== */
 .modal-overlay {
