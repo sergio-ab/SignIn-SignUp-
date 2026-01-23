@@ -11,6 +11,13 @@
 //URL del servicio REST que maneja los eventos
 const SERVICE_URL = "http://localhost:8080/CRUDBankServerSide/webresources/movement"; 
 
+//Constante global para formatear cantidades monetarias. 
+const euroFormatter = new Intl.NumberFormat("de-DE", {
+    style: "currency",
+    currency: "EUR"
+});
+
+
 //TEMPORAL (PARA REALIZAR PRUEBAS SIN UNIÓN DE PÁGINAS)
 //Guarda un valor de prueba en sessionStorage, simulando un inicio de sesión y la selección de una cuenta. 
 sessionStorage.setItem("selectedAccountId", "2654785441"); 
@@ -116,7 +123,7 @@ function getSelectedAccountType(){
                     cell.textContent = date.toLocaleString();
                 }
                 else if (field === "amount" || field === "balance"){
-                    cell.textContent = movement[field].toFixed(2) + "€";
+                    cell.textContent = euroFormatter.format(movement[field]);
                     cell.classList.add("text-right"); 
                 }
                 else {
@@ -185,7 +192,7 @@ function getSelectedAccountType(){
 
             document.getElementById("totalMovements").textContent = movements.length;
             const totalBalance = calculateBalance(movements);
-            document.getElementById("totalBalance").textContent = `${totalBalance.toFixed(2)}€`;
+            document.getElementById("totalBalance").textContent = euroFormatter.format(totalBalance);
 
         } catch (err) {
             alert(err.message);
