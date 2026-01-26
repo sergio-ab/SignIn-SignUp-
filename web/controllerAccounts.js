@@ -30,6 +30,12 @@ const SERVICE_URL =
     "http://localhost:8080/CRUDBankServerSide/webresources/account";
 let accounts = [];
 
+// Constante global para formatear cantidades monetarias
+const euroFormatter = new Intl.NumberFormat("de-DE", {
+    style: "currency",
+    currency: "EUR"
+});
+
 
 /*
 ================================================================================
@@ -176,7 +182,7 @@ function* accountRowGenerator(accounts) {
                 field === "beginBalance" ||
                 field === "creditLine"
             ) {
-                cell.textContent = Number(account[field]).toFixed(2) + "€";
+                cell.textContent = euroFormatter.format(account[field]);
                 cell.classList.add("text-right");
             }
             else {
@@ -289,7 +295,7 @@ function operacionAgregadaAccount() {
 
     document.getElementById("totalAccounts").textContent = totalAccounts;
     document.getElementById("totalBalance").textContent =
-        totalBalance.toFixed(2) + " €";
+        euroFormatter.format(totalBalance);
 }
 
 
@@ -433,7 +439,7 @@ async function submitAccountForm(event) {
             const payload = {
                 id: Math.floor(Math.random() * 100000000),
                 description: description,
-                balance: 0,
+                balance: beginBalance,
                 creditLine: creditLine,
                 beginBalance: beginBalance,
                 beginBalanceTimestamp: new Date().toISOString().split(".")[0] + "Z",
