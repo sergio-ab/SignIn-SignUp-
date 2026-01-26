@@ -17,11 +17,12 @@ const euroFormatter = new Intl.NumberFormat("de-DE", {
     currency: "EUR"
 });
 
-
+/*
 //TEMPORAL (PARA REALIZAR PRUEBAS SIN UNIÓN DE PÁGINAS)
 //Guarda un valor de prueba en sessionStorage, simulando un inicio de sesión y la selección de una cuenta. 
 sessionStorage.setItem("selectedAccountId", "2654785441"); 
 sessionStorage.setItem("selectedAccountType", "Standard");
+
 /*========================================================================================================
     |   FUNCIÓN MANEJADORA PARA CREAR MOVIMIENTOS
 ==========================================================================================================
@@ -65,7 +66,7 @@ function cancelMovementsForm (){
 
 function logoutMovements (){
         sessionStorage.clear(); // Borra los datos de la sesión
-        window.location.href = "index.html"; // Redirige a la página de login
+        window.location.href = "accounts.html"; // Redirige a la página de login
     }
     
 

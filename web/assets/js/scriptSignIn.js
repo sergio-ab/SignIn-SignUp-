@@ -128,13 +128,14 @@ function sendRequestAndProcessResponse() {
         email: xmlDoc.getElementsByTagName("email")[0].textContent,
         password: xmlDoc.getElementsByTagName("password")[0].textContent
       };
-      sessionStorage.setItem("customer", JSON.stringify(customer));
+      //sessionStorage.setItem("customer", JSON.stringify(customer));
+      saveCustomerToSession(customer);
       //si sale bien, mostramos el mensaje de exito de inicio
       /*document.getElementById("error-password").textContent =
         "Customer signed in successfully!";*/
       showResponseMessage("Customer signed in successfully!", "success");
       setTimeout(() => {
-      window.location.href = 'main.html';
+      window.location.href = 'accounts.html';
       }, 500);
     })
     .catch((error) => {
@@ -311,3 +312,7 @@ function toggleStyle(){
     console.log("Email aplicado correctamente en SignIn");
   }
 })();
+
+function saveCustomerToSession(customer) {
+  sessionStorage.setItem("customer", JSON.stringify(customer));
+}
