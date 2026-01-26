@@ -41,6 +41,7 @@ let accounts = [];
     |       - Leer valores introducidos por el usuario
     |       - Bloquear / habilitar campos según el tipo de cuenta
     |       - Rellenar datos cuando se edita una cuenta
+================================================================================
 */
 const btnCreateAccount = document.getElementById("btnCreateAccount");
 const accountModal = document.getElementById("accountModal");
@@ -66,6 +67,7 @@ const btnCancel = document.getElementById("btnCancel");
     |       - Decidir qué acción ejecutar al hacer submit
     |       - Cambiar el comportamiento del formulario
     |       - Bloquear o permitir campos según el caso
+================================================================================
 */
 let isEditMode = false;
 
@@ -75,6 +77,7 @@ let isEditMode = false;
    INIT
 ================================================================================
     |   La función init se encarga de inicializar la página cuando el DOM está cargado.
+================================================================================
 */
 
 document.addEventListener("DOMContentLoaded", init);
@@ -99,6 +102,7 @@ async function init() {
     |   Usuario desde sessionStorage
     |   Lee el nombre del usuario guardado al hacer login
     |   Lo muestra en la vista
+================================================================================
 */
 function loadUserFromSession() {
     const userName = sessionStorage.getItem("userName");
@@ -115,6 +119,7 @@ function loadUserFromSession() {
     |   Hace una petición GET al servidor
     |   Pide explícitamente los datos en formato JSON
     |   Usamos async para hacer más legible el código evitando el uso de muchos .then()
+================================================================================
 */
 async function fetchAccounts() {
     const response = await fetch(SERVICE_URL, {
@@ -138,6 +143,7 @@ async function fetchAccounts() {
     |   Permite generar filas dinámicamente
     |   No crea todo de golpe
     |   for() -> Recorre el array de cuentas recibido del servidor
+================================================================================
 */
 function* accountRowGenerator(accounts) {
     for (const account of accounts) {
@@ -158,12 +164,22 @@ function* accountRowGenerator(accounts) {
             const cell = document.createElement("div");
             cell.className = "table-cell";
 
-            // 🔑 CAMBIO CLAVE: el tipo se deduce del creditLine
+            // El tipo se deduce del creditLine
             if (field === "type") {
                 cell.textContent = account.creditLine > 0
                     ? "CREDIT"
                     : "STANDARD";
-            } else {
+            }
+            // CAMPOS MONETARIOS → FORMATO + DERECHA
+            else if (
+                field === "balance" ||
+                field === "beginBalance" ||
+                field === "creditLine"
+            ) {
+                cell.textContent = Number(account[field]).toFixed(2) + "€";
+                cell.classList.add("text-right");
+            }
+            else {
                 cell.textContent = account[field];
             }
 
@@ -173,33 +189,34 @@ function* accountRowGenerator(accounts) {
         const actionsCell = document.createElement("div");
         actionsCell.className = "actions";
 
-        actionsCell.innerHTML =
-            `<button 
+        actionsCell.innerHTML = `
+            <button 
                 class="icon-btn icon-btn--movements"
                 data-account-id="${account.id}"
                 title="View movements">
-            <i class="fa-solid fa-list"></i>
+                <i class="fa-solid fa-list"></i>
             </button>
 
-        <button 
-            class="icon-btn icon-btn--edit"
-            data-account-id="${account.id}"
-            title="Edit">
-        <i class="fa-regular fa-pen-to-square"></i>
-        </button>
+            <button 
+                class="icon-btn icon-btn--edit"
+                data-account-id="${account.id}"
+                title="Edit">
+                <i class="fa-regular fa-pen-to-square"></i>
+            </button>
 
-        <button 
-            class="icon-btn icon-btn--delete"
-            data-account-id="${account.id}"
-            title="Delete">
-            <svg viewBox="0 0 24 24">
-                <path d="M3 6h18" />
-                <path d="M8 6V4h8v2" />
-                <path d="M6 6l1 14h10l1-14" />
-                <path d="M10 11v6" />
-                <path d="M14 11v6" />
-            </svg>
-        </button>`;
+            <button 
+                class="icon-btn icon-btn--delete"
+                data-account-id="${account.id}"
+                title="Delete">
+                <svg viewBox="0 0 24 24">
+                    <path d="M3 6h18" />
+                    <path d="M8 6V4h8v2" />
+                    <path d="M6 6l1 14h10l1-14" />
+                    <path d="M10 11v6" />
+                    <path d="M14 11v6" />
+                </svg>
+            </button>
+        `;
 
         row.appendChild(actionsCell);
 
@@ -213,16 +230,16 @@ function* accountRowGenerator(accounts) {
             if (but.classList.contains("icon-btn--edit")) {
                 but.addEventListener("click", editAccount);
             }
+
             if (but.classList.contains("icon-btn--movements")) {
                 but.addEventListener("click", goToMovements);
             }
         }
 
-
-
         yield row;
     }
 }
+
 
 /*
 ================================================================================
@@ -232,6 +249,7 @@ function* accountRowGenerator(accounts) {
     |   Obtiene datos -> const accounts
     |   Prepara el contenedor -> const container
     |   Usa la función generadora -> const generator
+================================================================================
 */
 async function loadAccounts() {
     try {
@@ -242,10 +260,38 @@ async function loadAccounts() {
         for (const row of accountRowGenerator(accounts)) {
             container.appendChild(row);
         }
+
+        // Operación agregada sobre la colección de cuentas
+        operacionAgregadaAccount();
+
     } catch (error) {
         showMessage("Error", error.message);
     }
 }
+
+
+/*
+================================================================================
+   OPERACIÓN AGREGADA SOBRE CUENTAS
+================================================================================
+    |   Calcula valores globales a partir de la colección de cuentas:
+    |   - Número total de cuentas
+    |   - Balance total acumulado
+================================================================================
+*/
+function operacionAgregadaAccount() {
+
+    var totalAccounts = accounts.length;
+
+    var totalBalance = accounts.reduce(function (sum, account) {
+        return sum + Number(account.balance);
+    }, 0);
+
+    document.getElementById("totalAccounts").textContent = totalAccounts;
+    document.getElementById("totalBalance").textContent =
+        totalBalance.toFixed(2) + " €";
+}
+
 
 
 /*
@@ -255,6 +301,7 @@ async function loadAccounts() {
     |   Abre el modal en modo CREAR cuenta
     |   Inicializa el formulario con valores por defecto
     |   Desactiva campos que no deben modificarse
+================================================================================
 */
 function openCreateAccount() {
     isEditMode = false;
@@ -280,6 +327,7 @@ function openCreateAccount() {
     |   Obtiene la cuenta seleccionada a partir de su id
     |   Rellena el formulario con los datos existentes
     |   Bloquea los campos que no deben modificarse
+================================================================================
 */
 function editAccount(event) {
     const accountId = event.currentTarget.dataset.accountId;
@@ -316,6 +364,7 @@ function editAccount(event) {
     |   Decide si se crea o se edita una cuenta según el estado del modal
     |   Realiza la llamada REST correspondiente (POST o PUT)
     |   Muestra mensajes de éxito o error y recarga la tabla
+================================================================================
 */
 /*
 ================================================================================
@@ -333,6 +382,18 @@ async function submitAccountForm(event) {
         showMessage("Error", "La descripción es obligatoria");
         return;
     }
+
+    // ============================
+    // VALIDACIÓN BEGIN BALANCE
+    // ============================
+    const beginBalance = inputBeginBalance.valueAsNumber;
+
+    if (!inputBeginBalance.checkValidity() || beginBalance < 0) {
+        showMessage("Error", "El balance inicial no puede ser negativo");
+        return;
+    }
+
+
 
     // ============================
     // TRADUCIR SELECTOR A CREDITLINE
@@ -367,14 +428,14 @@ async function submitAccountForm(event) {
             });
         } else {
             // ============================
-            // CREATE - PAYLOAD CORRECTO
+            // CREATE - PAYLOAD 
             // ============================
             const payload = {
                 id: Math.floor(Math.random() * 100000000),
                 description: description,
                 balance: 0,
                 creditLine: creditLine,
-                beginBalance: Number(inputBeginBalance.value),
+                beginBalance: beginBalance,
                 beginBalanceTimestamp: new Date().toISOString().split(".")[0] + "Z",
 
 
@@ -423,6 +484,7 @@ async function submitAccountForm(event) {
     |   Realiza la llamada DELETE al servicio REST
     |   Controla el error cuando la cuenta tiene movimientos
     |   Muestra mensajes de éxito o error y recarga la tabla
+================================================================================
 */
 async function deleteAccount(event) {
     const accountId = event.currentTarget.dataset.accountId;
@@ -462,16 +524,37 @@ async function deleteAccount(event) {
 ================================================================================
    VER MOVIMIENTOS
 ================================================================================
-    |   Redirección a la vista de movimientos de una cuenta
-    |   Se ejecuta al pulsar el botón "Movimientos" de la tabla
-    |   Obtiene el accountId desde el atributo data-account-id del botón
+    |   Gestiona la navegación a la vista de movimientos de una cuenta.
+    |   Obtiene la cuenta seleccionada desde la tabla, la almacena en
+    |   sessionStorage para compartirla entre vistas y redirige a
+    |   movements.html.
+================================================================================
 */
 
 function goToMovements(event) {
     const accountId = event.currentTarget.dataset.accountId;
 
-    window.location.href =
-        `http:///NeoBank/movements.html?accountId=${accountId}`;
+    const account = accounts.find(acc => acc.id == accountId);
+
+    if (!account) {
+        showMessage("Error", "Cuenta no encontrada");
+        return;
+    }
+
+    // Guardar cuenta completa
+    sessionStorage.setItem(
+        "selectedAccount",
+        JSON.stringify(account)
+    );
+
+    // Compatibilidad con controller de movimientos
+    sessionStorage.setItem("selectedAccountId", account.id);
+    sessionStorage.setItem(
+        "selectedAccountType",
+        account.creditLine > 0 ? "CREDIT" : "STANDARD"
+    );
+
+    window.location.href = "movements.html";
 }
 
 
@@ -483,6 +566,7 @@ function goToMovements(event) {
     |   Controlan la apertura, cierre y comportamiento dinámico del formulario
     |   No realizan llamadas al servidor
     |   Solo gestionan la interfaz de usuario (UI)
+================================================================================
 */
 function closeAccountModal() {
     accountModal.style.display = "none";
@@ -507,6 +591,7 @@ function handleTypeChange() {
     |   Muestra mensajes de error, información y confirmación
     |   Se presenta como una capa centrada (overlay)
     |   No accede al servidor ni modifica datos
+================================================================================
 */
 let messageOverlay;
 let messageTitle;

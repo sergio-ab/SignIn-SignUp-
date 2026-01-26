@@ -1,6 +1,6 @@
 /*---------------------------------------------------------
     |   Autor: Grupo
-    |   Última modificación: 23/12/2025
+    |   Última modificación: 09/01/2026
 -----------------------------------------------------------
     |   HOJA DE ESTILOS (CSS)
     |   Define:
@@ -149,13 +149,31 @@ body {
     gap: 14px;
 }
 
+/* ========== ALIGN TEXT ==========*/
+
+/* Alinea el texto a la derecha (para amount y balance) */
+.text-right {
+    text-align: right;
+}
+
+/* ========== ALIGN TEXT FOR MOBILES ==========*/
+
+@media (max-width: 900px) {
+    .text-right {
+        text-align: left;
+    }
+}
+
+
 /* ========== ACTIONS (FIX FLEX) ========== */
 .table-row > .actions {
-    display: flex;              /* 🔑 fuerza flex */
+    display: flex;              /*  fuerza flex */
     align-items: center;
     justify-content: center;
     gap: 14px;
 }
+
+
 
 /* ========== ICON BUTTONS ========== */
 .icon-btn {
@@ -220,6 +238,7 @@ body {
 .icon-btn--movements:hover {
     background-color: rgba(255, 159, 28, 0.2);
 }
+
 
 /* ========== MODAL CREATE / EDIT ========== */
 .modal-overlay {
