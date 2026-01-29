@@ -68,7 +68,114 @@ function logoutMovements (){
         sessionStorage.clear(); // Borra los datos de la sesión
         window.location.href = "accounts.html"; // Redirige a la página de login
     }
+
+
+
+/*========================================================================================================
+    |   FUNCIÓN MANEJADORA DE INFORMACIÓN
+==========================================================================================================
+    |   Muestra información sobre el funcionamiento de la página de movimientos
+==========================================================================================================*/
+function showInfoBtnHandler(){
+    alert ("Información de la página: \n\n" +
+           "- Aquí podrá consultar el vídeo informativo de la página de movimientos.\n\n" +
+           "- El balance se calcula automáticamente según el tipo de cuenta.\n\n" +
+           "- Solo el último movimiento puede eliminarse."
+           );
+}
+
+
+
+
+function getSelectedAccount(){
+    const account = sessionStorage.getItem("selectedAccount");
+    return account ? JSON.parse(account) : null;
+}
+
+function getBaseAccountBalance(movements){
+    if(movements && movements.length > 0) {
+        return movements[movements.length -1].balance;
+    }
+    const account = getSelectedAccount();
+    return account ? Number(account.beginBalance) : 0;
+}
+
+function getAvailableBalance(balance){
+    const account = getSelectedAccount();
     
+    if(!account) return balance;
+    
+    if(account.creditLine && account.creditLine > 0){
+        return balance + Number(account.creditLine);
+    }
+    
+    return balance;
+}
+
+function calculateBalance(previousBalance, amount, description){
+    if(description === "Deposit"){
+        return previousBalance + amount;
+    }
+    
+    if(description === "Payment"){
+        if(amount > previousBalance){
+            throw new Error("Saldo insuficiente. Ingrese otra cantidad menor.");
+        }
+        return previousBalance - amount;
+    }
+    
+    return previousBalance;
+}
+
+function updateAccountBalanceInSession(Balance){
+    const account = getSelectedAccount();
+    if(!account) return;
+    
+    account.balance = Balance;
+    
+    sessionStorage.setItem(
+            "selectedAccount", JSON.stringify(account)
+            );
+}
+
+
+function getCreditLineText(){
+    const account = getSelectedAccount();
+    
+    if(!account || !account.creditLine || account.creditLine <= 0){
+        return "";
+    }
+    
+    return `(${euroFormatter.format(account.creditLine)} crédito)`;
+}
+
+/*async function updateAccountBalanceInBackend(accountId, Balance){
+    const account = getSelectedAccount();
+    if(!account) return;
+    
+    const payload = {
+        id: account.id,
+        description: account.description,
+        beginBalance: account.beginBalance,
+        balance: Balance,
+        creditLine: account.creditLine,
+        customerId: account.customers ? account.customers[0].id : null
+    };
+    
+    const response = await fetch(
+            "http://localhost:8080/CRUDBankServerSide/webresources/account",
+        {
+                method: "PUT",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringfy(payload)
+        }
+    );
+    
+    if (!response.ok){
+        throw new Error("Error updating account balance");
+    }
+}*/
+
 
 
 
@@ -192,8 +299,10 @@ function getSelectedAccountType(){
             }
 
             document.getElementById("totalMovements").textContent = movements.length;
-            const totalBalance = calculateBalance(movements);
-            document.getElementById("totalBalance").textContent = euroFormatter.format(totalBalance);
+            const baseBalance = getBaseAccountBalance(movements);
+            const totalBalance = getAvailableBalance(baseBalance);
+            const creditLineText= getCreditLineText();
+            document.getElementById("totalBalance").innerHTML = euroFormatter.format(totalBalance) + (creditLineText ? `<br><small>${creditLineText}</small>` : "");
 
         } catch (err) {
             alert(err.message);
@@ -219,7 +328,9 @@ function getSelectedAccountType(){
         const movements = await fetchMovements(accountId);
                 
         //const type = document.getElementById("type").value;
-        const previousBalance = calculateBalance(movements);
+        const previousBalance = getBaseAccountBalance(movements);
+        
+        const Balance = calculateBalance(previousBalance, amount, description);
         
         let totalBalance;
         
@@ -230,7 +341,7 @@ function getSelectedAccountType(){
         if (description === "Payment") {
             //Cuenta estándar 
             if (amount > previousBalance) {
-                throw new Error("Saldo insuficiente. Ingrese otra cantidad menor.")
+                throw new Error("Saldo insuficiente. Ingrese otra cantidad menor.");
             }
             totalBalance = previousBalance - amount; 
         }
@@ -256,6 +367,10 @@ function getSelectedAccountType(){
 
         if (!response.ok) throw new Error("Error creating movement");
 
+
+        updateAccountBalanceInSession(Balance);
+        //await updateAccountBalanceInBackend(accountId, Balance);
+        
         movementModal.style.display = "none";
         alert("Movimiento creado correctamente");
         loadMovements();
@@ -302,20 +417,6 @@ function getSelectedAccountType(){
         return;
         
     }
-    
-function calculateBalance(movements) {
-    return movements.reduce(function(balance, movement) {
-        if (movement.description === "Deposit") {
-            return balance + movement.amount;
-        }
-        
-        if (movement.description === "Payment") {
-            return balance - movement.amount;
-        }
-        
-        return balance;
-    }, 0);
-}
 
  function initializeMovements (){
 
@@ -325,6 +426,7 @@ function calculateBalance(movements) {
     const btnCancel = document.getElementById("btnCancel");
     const btnLogout = document.getElementById("btnLogout");
     const movementsContainer = document.getElementById("movementsContainer");
+    const btnInfo = document.getElementById("btnInfo");
     movementForm.addEventListener("submit", handleCreateMovement);
     // ============================================================
     // BOTONES MODAL
@@ -335,6 +437,8 @@ function calculateBalance(movements) {
     btnCancel.addEventListener("click", cancelMovementsForm);
 
     btnLogout.addEventListener("click", logoutMovements);
+    
+    btnInfo.addEventListener("click", showInfoBtnHandler);
     
     //TEMPORAL PARA MOSTRAR EL ID DE LA CUENTA EN LA PÁGINA DE MOVIMIENTOS
     const accountId = sessionStorage.getItem("selectedAccountId");

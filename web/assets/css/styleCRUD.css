@@ -239,6 +239,17 @@ body {
     background-color: rgba(255, 159, 28, 0.2);
 }
 
+/* INFO BUTTON */
+.icon-btn--info {
+    border: 2px solid #00c896;
+    color: #00c896;
+}
+
+.icon-btn--info:hover {
+    background: #00c896;
+    color: #fff;
+}
+
 
 /* ========== MODAL CREATE / EDIT ========== */
 .modal-overlay {
