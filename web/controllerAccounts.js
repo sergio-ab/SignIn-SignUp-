@@ -18,8 +18,8 @@
    DEMO CUSTOMER (SIMULACIÓN DE SESIÓN)
 ================================================================================
 */
-sessionStorage.setItem("customer.id", "1234567890");
-sessionStorage.setItem("userName", "Account")
+sessionStorage.setItem("customer.id", "123123123");
+sessionStorage.setItem("userName", "Clara")
 /*
 ================================================================================
    CONSTANTES
@@ -259,7 +259,16 @@ function* accountRowGenerator(accounts) {
 */
 async function loadAccounts() {
     try {
-        accounts = await fetchAccounts();
+        const allAccounts = await fetchAccounts();
+
+        // FILTRAR POR CUSTOMER_ID (sessionStorage)
+        accounts = allAccounts.filter(function (account) {
+            return account.customers &&
+                   account.customers.some(function (customer) {
+                       return String(customer.id) === String(CUSTOMER_ID);
+                   });
+        });
+
         const container = document.getElementById("accountsContainer");
         container.innerHTML = "";
 
@@ -267,7 +276,7 @@ async function loadAccounts() {
             container.appendChild(row);
         }
 
-        // Operación agregada sobre la colección de cuentas
+        // Operación agregada sobre la colección de cuentas filtradas
         operacionAgregadaAccount();
 
     } catch (error) {
@@ -643,3 +652,39 @@ function closeMessage() {
     btnConfirm.style.display = "none";
     btnConfirm.onclick = null;
 }
+/*
+================================================================================
+   LOGOUT
+================================================================================
+    |   Si el usuario hace click en el botón logout
+    |   La página le lleva a la página signin.html
+================================================================================
+*/
+
+
+const btnLogout = document.getElementById('btnLogout');
+
+btnLogout.addEventListener('click', function () {
+    // Limpiar sesión
+    sessionStorage.clear();
+
+    // Redirigir a signin
+    window.location.href = 'signIn.html';
+});
+
+
+
+/*
+<script type ="text/javascript">
+document.addEventListenner('DOMContentLoaded', function () {
+const el = document.getElementById('h5p-container');
+const options = {
+    h5pJsonPath: '/Test/assets/h5p-content', // Path to the extracted H5P content. NOTE that paths are relative to the server root: they begin with app's Context Path!!
+    frameJs: '/Test/assets/h5p-player/frame.bundle.js', // Path to player's frame.bundle.js
+    frameCss: '/Test/assets/h5p-player/styles/h5p.css', // Path to player's h5p.css
+    librariesPath: '/Test/assets/h5p-libraries' // Path to player's h5p.css
+    };
+let h5p=new H5PStandalone.H5P(el, options);
+});           
+</script> 
+*/

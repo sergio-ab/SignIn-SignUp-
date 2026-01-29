@@ -2,7 +2,7 @@
 
 <!-- ---------------------------------------------------------
     |   Autor: Clara Montaño Rodríguez
-    |   Última modificación: 26/01/2026
+    |   Última modificación: 29/01/2026
 -----------------------------------------------------------
     |   VISTA (HTML)
     |   Contiene:
@@ -25,6 +25,7 @@
     |   - Tabla con roles ARIA
 --------------------------------------------------------- -->
 
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -50,26 +51,47 @@
 
 <main class="main-container">
 
-    
-    <!--------------------------------------------------------------------------
-        |   HEADER 
-    --------------------------------------------------------------------------->
+    <!-- HEADER -->
     <header class="top-bar">
         <h1>My Account</h1>
-        <div class="top-actions">
-            <button class="btn btn--primary" id="btnCreateAccount">
-                Create Account
-            </button>
-            <button class="btn btn--outline">
-                Logout
-            </button>
-        </div>
+
+        <nav
+            role="navigation"
+            aria-label="Navegación principal">
+
+            <div class="top-actions">
+
+                <button
+                    class="btn btn--primary"
+                    id="btnCreateAccount"
+                    role="button">
+                    Create Account
+                </button>
+
+                <button
+                    class="btn btn--outline"
+                    id="btnHelp"
+                    role="button">
+                    Help
+                </button>
+
+                <button
+                    class="btn btn--outline"
+                    id="btnLogout"
+                    role="button"
+                    aria-label="Cerrar sesión">
+                    Logout
+                </button>
+
+            </div>
+        </nav>
     </header>
 
-    <!--------------------------------------------------------------------------
-        |   WELCOME 
-    --------------------------------------------------------------------------->       
-    <section class="welcome-box" aria-labelledby="welcomeTitle">
+    <!-- WELCOME -->
+    <section
+        class="welcome-box"
+        aria-labelledby="welcomeTitle">
+
         <div>
             <h2 id="welcomeTitle">
                 Bienvenido,
@@ -90,42 +112,47 @@
         </div>
     </section>
 
-    <h2 class="section-title">Accounts</h2>
+    <!-- TÍTULO TABLA -->
+    <h2 class="section-title" id="accountsTitle">Accounts</h2>
 
-    <!--------------------------------------------------------------------------
-        |   TABLA ACCESIBLE (DIV + ARIA ROLES)
-    --------------------------------------------------------------------------->
-    <section class="table" role="table" aria-label="Listado de cuentas">
+    <!-- TABLA -->
+    <section
+        class="table"
+        role="table"
+        aria-labelledby="accountsTitle">
 
         <!-- THEAD -->
         <div class="table-header" role="row">
             <div role="columnheader">ID</div>
             <div role="columnheader">Description</div>
             <div role="columnheader">Type</div>
-            <div role="columnheader">Balance</div>
-            <div role="columnheader">Begin Balance</div>
-            <div role="columnheader">Credit Line</div>
+            <div role="columnheader" class="text-right">Balance</div>
+            <div role="columnheader" class="text-right">Begin Balance</div>
+            <div role="columnheader" class="text-right">Credit Line</div>
             <div role="columnheader">Actions</div>
         </div>
-        
-        <!----------------------------------------------------------------------
-            |   TBODY
-        ----------------------------------------------------------------------->
 
-        <div id="accountsContainer" class="table-body" role="rowgroup"></div>
+        <!-- TBODY -->
+        <div
+            id="accountsContainer"
+            class="table-body"
+            role="rowgroup">
+        </div>
 
     </section>
 
 </main>
 
-<!-- 
-================================================================================
-    |   MODAL CREATE / EDIT ACCOUNT
-================================================================================
--->
-<div id="accountModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle" style="display: none;">
-    <div class="modal">
+<!-- MODAL CREATE / EDIT -->
+<div
+    id="accountModal"
+    class="modal-overlay"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modalTitle"
+    style="display: none;">
 
+    <div class="modal">
         <h2 id="modalTitle">Create Account</h2>
 
         <form id="accountForm">
@@ -155,18 +182,19 @@
             </div>
 
         </form>
-
     </div>
 </div>
 
-<!-- 
-================================================================================
-    |   MENSAJES / CONFIRMACIONES
-================================================================================
--->
-<div id="messageOverlay" class="modal-overlay" role="alertdialog" aria-labelledby="messageTitle" aria-describedby="messageText" style="display: none;">
-    <div class="modal">
+<!-- MODAL MENSAJES -->
+<div
+    id="messageOverlay"
+    class="modal-overlay"
+    role="alertdialog"
+    aria-labelledby="messageTitle"
+    aria-describedby="messageText"
+    style="display: none;">
 
+    <div class="modal">
         <h2 id="messageTitle">Mensaje</h2>
         <p id="messageText"></p>
 
@@ -178,7 +206,6 @@
                 Cerrar
             </button>
         </div>
-
     </div>
 </div>
 
