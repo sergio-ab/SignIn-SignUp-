@@ -18,14 +18,16 @@
    DEMO CUSTOMER (SIMULACIÓN DE SESIÓN)
 ================================================================================
 */
-sessionStorage.setItem("customer.id", "123123123");
-sessionStorage.setItem("userName", "Clara")
+//sessionStorage.setItem("customer.id", "123123123");
+//sessionStorage.setItem("userName", "Clara")
 /*
 ================================================================================
    CONSTANTES
 ================================================================================
 */
-const CUSTOMER_ID = sessionStorage.getItem("customer.id").replace(/[,.]/g, "");
+const customer = getCustomerFromSession();
+const CUSTOMER_ID = String(customer.id).replace(/[,.]/g, "");
+//const CUSTOMER_ID = sessionStorage.getItem("customer.id").replace(/[,.]/g, "");
 const SERVICE_URL =
     "http://localhost:8080/CRUDBankServerSide/webresources/account";
 let accounts = [];
@@ -111,11 +113,38 @@ async function init() {
 ================================================================================
 */
 function loadUserFromSession() {
-    const userName = sessionStorage.getItem("userName");
-    if (userName) {
-        document.getElementById("userName").textContent = userName;
-    }
+    const userName = getCustomerFromSession();
+    if (!customer) return;
+    
+    document.getElementById("userName").textContent = customer.firstName;
 }
+
+
+
+
+/*
+================================================================================
+   CARGAR DATOS DEL CUSTOMER DESDE SESSIONSTORAGE
+================================================================================
+    |   Customer desde sessionStorage
+================================================================================
+*/
+function getCustomerFromSession() {
+    const customerJSON = sessionStorage.getItem("customer");
+    
+    /*if (!customerJSON) {
+        //Si no hay sesión, se vuelve al login
+        window.location.href = "signIn.html"
+        return null;
+    }*/
+    
+    return JSON.parse(customerJSON);
+}
+
+
+
+
+
 
 /* 
 ================================================================================
@@ -438,7 +467,8 @@ async function submitAccountForm(event) {
                     beginBalance: inputBeginBalance.value,
                     balance: accounts.find(a => a.id == inputAccountId.value).balance,
                     creditLine: creditLine,
-                    customerId: CUSTOMER_ID
+                    customers: [{ id: parseInt(CUSTOMER_ID, 10) }
+    ]
                 })
             });
         } else {
