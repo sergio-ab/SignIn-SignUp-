@@ -59,8 +59,8 @@
             <div class="table-header">
                 <!--<div>ID</div>-->
                 <div>Timestamp</div>
-                <div>Amount</div>
-                <div>Balance</div>
+                <div class="text-right">Amount</div>
+                <div class="text-right">Balance</div>
                 <div>Description</div>
                 <!--<div>Account ID</div>-->
                 <div>Actions</div>
@@ -83,7 +83,7 @@
                     <input type="number" id="amount" step="0.01" min="0.01" required>
                 </label>
 
-                <label for="description">Description</label>
+                <label for="description">Description
                     <select id="description" name="description">
                         <option value="Deposit">Deposit</option>
                         <option value="Payment">Payment</option>

@@ -17,6 +17,8 @@ const euroFormatter = new Intl.NumberFormat("de-DE", {
     currency: "EUR"
 });
 
+const accountId = sessionStorage.getItem("selectedAccountId");
+
 /*
 //TEMPORAL (PARA REALIZAR PRUEBAS SIN UNIÓN DE PÁGINAS)
 //Guarda un valor de prueba en sessionStorage, simulando un inicio de sesión y la selección de una cuenta. 
@@ -65,8 +67,7 @@ function cancelMovementsForm (){
 ==========================================================================================================*/
 
 function logoutMovements (){
-        sessionStorage.clear(); // Borra los datos de la sesión
-        window.location.href = "accounts.html"; // Redirige a la página de login
+        window.location.href = "accounts.html"; // Redirige a la página de accounts
     }
 
 
@@ -76,13 +77,36 @@ function logoutMovements (){
 ==========================================================================================================
     |   Muestra información sobre el funcionamiento de la página de movimientos
 ==========================================================================================================*/
-function showInfoBtnHandler(){
-    alert ("Información de la página: \n\n" +
-           "- Aquí podrá consultar el vídeo informativo de la página de movimientos.\n\n" +
-           "- El balance se calcula automáticamente según el tipo de cuenta.\n\n" +
-           "- Solo el último movimiento puede eliminarse."
-           );
+function showInfoBtnHandler() {
+    const infoLayer = document.getElementById("infoLayer");
+    infoLayer.style.display = "flex";
+
+    // Inicializar H5P si aún no se ha cargado
+    const h5pContainer = document.getElementById('h5p-container');
+    if (!h5pContainer.hasChildNodes()) {
+        const options = {
+            h5pJsonPath: '/Test/assets/h5p-content', // Cambiar a tu ruta H5P
+            frameJs: '/Test/assets/h5p-player/frame.bundle.js',
+            frameCss: '/Test/assets/h5p-player/styles/h5p.css',
+            librariesPath: '/Test/assets/h5p-libraries'
+        };
+        new H5PStandalone.H5P(h5pContainer, options);
+    }
 }
+
+// Cerrar capa al hacer clic fuera del contenido
+document.getElementById("infoLayer").addEventListener("click", function(event) {
+    // Verificamos si el clic fue fuera del contenido de la capa
+    if (event.target === this) {
+        document.getElementById("infoLayer").style.display = "none";
+    }
+});
+
+// Botón cerrar capa
+document.getElementById("btnCloseInfoLayer").addEventListener("click", () => {
+    document.getElementById("infoLayer").style.display = "none";
+});
+
 
 
 
@@ -149,33 +173,38 @@ function getCreditLineText(){
     return `(${euroFormatter.format(account.creditLine)} crédito)`;
 }
 
-/*async function updateAccountBalanceInBackend(accountId, Balance){
+
+
+async function updateAccountBalanceInBackend(newBalance){
     const account = getSelectedAccount();
-    if(!account) return;
-    
-    const payload = {
-        id: account.id,
-        description: account.description,
-        beginBalance: account.beginBalance,
-        balance: Balance,
-        creditLine: account.creditLine,
-        customerId: account.customers ? account.customers[0].id : null
-    };
-    
+    if (!account) return;
+
+    account.balance = newBalance;
+    //console.log("Payload que voy a enviar al backend:", JSON.stringify(account, null, 2));
+
+
     const response = await fetch(
-            "http://localhost:8080/CRUDBankServerSide/webresources/account",
+        "http://localhost:8080/CRUDBankServerSide/webresources/account",
         {
-                method: "PUT",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringfy(payload)
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify(account)
         }
     );
-    
-    if (!response.ok){
-        throw new Error("Error updating account balance");
-    }
-}*/
+    //const text = await response.text();
+    //console.log("Status:", response.status, "Response body:", text);
 
+
+    if (!response.ok) {
+        throw new Error("Error actualizando el balance de la cuenta");
+    }
+
+    // mantener sessionStorage consistente
+    sessionStorage.setItem("selectedAccount", JSON.stringify(account));
+}
 
 
 
@@ -368,12 +397,13 @@ function getSelectedAccountType(){
         if (!response.ok) throw new Error("Error creating movement");
 
 
+        await updateAccountBalanceInBackend(Balance);
         updateAccountBalanceInSession(Balance);
-        //await updateAccountBalanceInBackend(accountId, Balance);
+        
         
         movementModal.style.display = "none";
         alert("Movimiento creado correctamente");
-        loadMovements();
+        await loadMovements();
         
 
     } catch (error) {
@@ -381,22 +411,33 @@ function getSelectedAccountType(){
     }
 }
 /*//////////////////////////////////////////////////////////////////////////////*/
- function handleDeleteMovement(event) {
-     const button = event.currentTarget;
-     const movement = button.movement;
-     
-     const confirmation = confirm("¿Quiere eliminar este movimiento?");
-     if (!confirmation) return;
-     
-     deleteMovement(movement)
-             .then(function () {
-                 alert("Movimiento borrado correctamente");
-                 loadMovements();
-     })
-             .catch(function (err) {
-                 alert(err.message);
-     });
- }
+async function handleDeleteMovement(event) {
+    const button = event.currentTarget;
+    const movement = button.movement;
+
+    const confirmation = confirm("¿Quiere eliminar este movimiento?");
+    if (!confirmation) return;
+
+    try {
+        await deleteMovement(movement);
+        
+        const remainingMovements = await fetchMovements(accountId);
+        const newBalance = getBaseAccountBalance(remainingMovements);
+
+        // actualizar cuenta
+        
+        updateAccountBalanceInSession(newBalance);
+        await updateAccountBalanceInBackend(newBalance);
+        
+
+        alert("Movimiento borrado correctamente");
+        await loadMovements();
+
+    } catch (err) {
+        alert("Error: " + err.message);
+    }
+}
+
  
  
 // ============================================================
