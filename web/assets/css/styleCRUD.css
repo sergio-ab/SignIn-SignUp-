@@ -239,6 +239,17 @@ body {
     background-color: rgba(255, 159, 28, 0.2);
 }
 
+/* INFO BUTTON */
+.icon-btn--info {
+    border: 2px solid #00c896;
+    color: #00c896;
+}
+
+.icon-btn--info:hover {
+    background: #00c896;
+    color: #fff;
+}
+
 
 /* ========== MODAL CREATE / EDIT ========== */
 .modal-overlay {
@@ -301,6 +312,20 @@ body {
     gap: 12px;
     margin-top: 10px;
 }
+/* MODAL INFO */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.65); /* Fondo oscuro */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
 
 /* ========== RESPONSIVE ========== */
 @media (max-width: 900px) {
