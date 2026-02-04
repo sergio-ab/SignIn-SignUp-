@@ -42,6 +42,8 @@
 
     <!-- CSS -->
     <link rel="stylesheet" href="assets/css/styleCRUD.css">
+    <link rel="stylesheet" href="assets/css/styleCRUDPrincipal.css" id="mainStyle">
+    <link rel="stylesheet" href="assets/css/styleCRUDAlternate.css" id="altStyle" disabled>
 
     <!-- CONTROLLER -->
     <script type="module" src="assets/js/controllerAccounts.js"></script>
@@ -78,6 +80,9 @@
                     role="button"
                     aria-label="Cerrar sesión">
                     Logout
+                </button>
+                <button class="icon-btn icon-btn--theme" id="btnToggleStyle" title="Cambiar estilo">
+                    <i class="fa-solid fa-paintbrush"></i>
                 </button>
 
             </div>

@@ -405,4 +405,57 @@ function initializeMovements (){
     loadMovements();
 }
 
+// ========================================================
+// TOGGLE STYLE CRUD (Principal / Verde)
+// ========================================================
+
+// Referencias a los enlaces de estilo
+const mainStyle = document.getElementById("mainStyle"); // Marrón
+const altStyle = document.getElementById("altStyle");   // Verde
+const btnToggleStyle = document.getElementById("btnToggleStyle");
+
+// Solo añadir listener si el botón existe
+if (btnToggleStyle) {
+    btnToggleStyle.addEventListener("click", toggleCRUDStyle);
+}
+
+function toggleCRUDStyle() {
+    if (!mainStyle || !altStyle) {
+        console.error("Hojas de estilo no encontradas");
+        return;
+    }
+
+    // Si el verde estaba activo, volvemos al marrón
+    if (altStyle.disabled === false) {
+        altStyle.disabled = true;
+        mainStyle.disabled = false;
+        localStorage.setItem("crudStyle", "main");
+        console.log("Estilo principal activado");
+    } else {
+        // Activamos verde
+        altStyle.disabled = false;
+        mainStyle.disabled = true;
+        localStorage.setItem("crudStyle", "green");
+        console.log("Estilo verde activado");
+    }
+}
+
+// Restaurar preferencia guardada
+(function restoreCRUDStyle() {
+    if (!mainStyle || !altStyle) return;
+
+    var saved = localStorage.getItem("crudStyle");
+
+    if (saved === "green") {
+        altStyle.disabled = false;
+        mainStyle.disabled = true;
+    } else {
+        altStyle.disabled = true;
+        mainStyle.disabled = false;
+    }
+})();
+
+
+
+
 document.addEventListener("DOMContentLoaded", initializeMovements);
