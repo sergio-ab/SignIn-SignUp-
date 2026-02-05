@@ -17,6 +17,8 @@ const euroFormatter = new Intl.NumberFormat("de-DE", {
     currency: "EUR"
 });
 
+let h5pInstance = null;
+
 /*========================================================================================================
     |   FUNCIONES DE ACCESO A DATOS DE LA CUENTA
 ==========================================================================================================*/
@@ -395,6 +397,12 @@ function initializeMovements (){
     
     document.getElementById("btnLogout").addEventListener("click", logoutMovements);
     
+    const btnInfo = document.getElementById("btnInfo");
+        if (btnInfo) {
+            btnInfo.addEventListener("click", showVideoHelpMovment);
+        }
+
+    
     movementForm.addEventListener("submit", handleCreateMovement);
 
     // Mostrar ID de la cuenta en cabecera
@@ -455,7 +463,58 @@ function toggleCRUDStyle() {
     }
 })();
 
+/*HELP INTERACTIVE VIDEO*/
+function showVideoHelpMovment() {
+    const el = document.getElementById('h5p-container');
+    if (!h5pInstance) {
+    const options = {
+        h5pJsonPath: '/NeoBank/assets/h5p-helpMovements', 
+        frameJs: '/NeoBank/assets/h5p-player/frame.bundle.js',
+        frameCss: '/NeoBank/assets/h5p-player/styles/h5p.css',
+        librariesPath: '/NeoBank/assets/h5p-libraries' 
+        };
+    h5pInstance = new H5PStandalone.H5P(el, options);
+        el.style.display = "flex";
+        document.body.style.overflow = "hidden"; // Evita scroll al abrir
+        
+        // Configuramos el listener de cierre SOLO una vez al crear la instancia
+        setupClickOutside();
+        return;  
+    }
+    toggleDisplay(el);
+}
+
+function toggleDisplay(el) {
+    if (window.getComputedStyle(el).display === "none") {
+        el.style.setProperty("display", "flex", "important");
+        document.body.style.overflow = "hidden";
+    } else {
+        el.style.setProperty("display", "none", "important");
+        document.body.style.overflow = "auto";
+    }
+}
+
+function setupClickOutside() {
+    const el = document.getElementById('h5p-container');
+    el.addEventListener('click', (e) => {
+        if (e.target === el) {
+            toggleDisplay(el);
+        }
+    });
+}
 
 
 
 document.addEventListener("DOMContentLoaded", initializeMovements);
+
+document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+        const el = document.querySelector(".h5p-container");
+        if (el && window.getComputedStyle(el).display !== "none") {
+            el.style.setProperty("display", "none", "important");
+            document.body.style.overflow = "auto";
+        }
+    }
+});
+
+
