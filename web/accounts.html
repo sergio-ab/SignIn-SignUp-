@@ -42,6 +42,11 @@
 
     <!-- CSS -->
     <link rel="stylesheet" href="assets/css/styleCRUD.css">
+    <link rel="stylesheet" href="assets/css/styleCRUDPrincipal.css" id="mainStyle">
+    <link rel="stylesheet" href="assets/css/styleCRUDAlternate.css" id="altStyle" disabled>
+    
+    <!-- H5P VIDEO -->
+    <script src="/NeoBank/assets/h5p-player/main.bundle.js"></script>
 
     <!-- CONTROLLER -->
     <script type="module" src="assets/js/accountsController.js"></script>
@@ -68,9 +73,12 @@
                     Create Account
                 </button>
                 
-                <button class="icon-btn icon-btn--info" id="btnInfo" title="Information">
-                    <i class="fa-solid fa-circle-info"></i>                    
-                </button>
+                <div class="videoContainer" role="contentinfo">
+                    <button class="icon-btn icon-btn--info" id="btnInfo" title="Information">
+                        <i class="fa-solid fa-circle-info"></i>                    
+                    </button>
+                    <div id="h5p-container2" style="display: none" aria-label="Video interactivo" ></div>
+                </div> 
 
                 <button
                     class="btn btn--outline"
@@ -205,6 +213,7 @@
         </div>
     </div>
 </div>
+
 
 </body>
 </html>

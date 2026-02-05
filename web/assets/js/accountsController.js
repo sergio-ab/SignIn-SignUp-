@@ -38,6 +38,7 @@ const euroFormatter = new Intl.NumberFormat("de-DE", {
     currency: "EUR"
 });
 
+let h5pInstance = null;
 
 /*
 ================================================================================
@@ -62,6 +63,7 @@ const inputType = document.getElementById("type");
 const inputBeginBalance = document.getElementById("beginBalance");
 const inputCreditLine = document.getElementById("creditLine");
 const btnCancel = document.getElementById("btnCancel");
+
 
 
 /*
@@ -98,6 +100,12 @@ async function init() {
     btnCancel.addEventListener("click", closeAccountModal);
     accountForm.addEventListener("submit", submitAccountForm);
     inputType.addEventListener("change", handleTypeChange);
+
+    const btnInfo = document.getElementById("btnInfo");
+    if (btnInfo) {
+        btnInfo.addEventListener("click", showVideoHelpAccounts);
+    }
+
 
     await loadAccounts();
 }
@@ -704,17 +712,45 @@ btnLogout.addEventListener('click', function () {
 
 
 
-/*
-<script type ="text/javascript">
-document.addEventListenner('DOMContentLoaded', function () {
-const el = document.getElementById('h5p-container');
-const options = {
-    h5pJsonPath: '/Test/assets/h5p-content', // Path to the extracted H5P content. NOTE that paths are relative to the server root: they begin with app's Context Path!!
-    frameJs: '/Test/assets/h5p-player/frame.bundle.js', // Path to player's frame.bundle.js
-    frameCss: '/Test/assets/h5p-player/styles/h5p.css', // Path to player's h5p.css
-    librariesPath: '/Test/assets/h5p-libraries' // Path to player's h5p.css
-    };
-let h5p=new H5PStandalone.H5P(el, options);
-});           
-</script> 
-*/
+/* HELP INTERACTIVE VIDEO - ACCOUNTS */
+function showVideoHelpAccounts() {
+    const el = document.getElementById('h5p-container2');
+    /*if (!el) return;*/
+
+    if (!h5pInstance) {
+        const options = {
+            h5pJsonPath: '/NeoBank/assets/h5p-helpAccounts',
+            frameJs: '/NeoBank/assets/h5p-player/frame.bundle.js',
+            frameCss: '/NeoBank/assets/h5p-player/styles/h5p.css',
+            librariesPath: '/NeoBank/assets/h5p-libraries'
+        };
+
+        h5pInstance = new H5PStandalone.H5P(el, options);
+        el.style.display = "flex";
+        document.body.style.overflow = "hidden";
+
+        setupClickOutside();
+        return;
+    }
+
+    toggleDisplay(el);
+}
+
+function toggleDisplay(el) {
+    if (window.getComputedStyle(el).display === "none") {
+        el.style.setProperty("display", "flex", "important");
+        document.body.style.overflow = "hidden";
+    } else {
+        el.style.setProperty("display", "none", "important");
+        document.body.style.overflow = "auto";
+    }
+}
+
+function setupClickOutside() {
+    const el = document.getElementById('h5p-container2');
+    el.addEventListener('click', (e) => {
+        if (e.target === el) {
+            toggleDisplay(el);
+        }
+    });
+}

@@ -1,0 +1,40 @@
+/*---------------------------------------------------------
+    |   STYLE CRUD - PRINCIPAL
+---------------------------------------------------------*/
+body {
+    background: url("../images/background1.jpg") center / cover no-repeat;
+    color: #fff;
+}
+
+.main-container {
+    background: rgba(90,40,15,0.88);
+}
+
+.top-bar h1 { color: #fff; }
+
+.btn--primary { background: #007f67; color: #fff; }
+.btn--outline { border-color: #fff; color: #fff; }
+
+.user-name { color: #00c896; }
+
+.welcome-box { background: rgba(0,0,0,0.25); }
+
+.table-header { background: rgba(0,0,0,0.45); }
+.table-row { background: rgba(255,255,255,0.08); }
+
+/* ICON BUTTONS */
+.icon-btn--theme { border-color: #007f67; color: #007f67; }
+
+.icon-btn--edit { border-color: #007f67; color: #007f67; }
+.icon-btn--edit:hover { background: #007f67; color: #fff; }
+
+.icon-btn--delete { border-color: #fff; color: #fff; }
+.icon-btn--delete:hover { background: #fff; color: #7a2a15; }
+
+.icon-btn--movements { border-color: #ff9f1c; color: #ff9f1c; }
+.icon-btn--movements:hover { background-color: rgba(255,159,28,0.2); }
+
+.icon-btn--info { border-color: #00c896; color: #00c896; }
+.icon-btn--info:hover { background: #00c896; color: #fff; }
+
+.modal { background: rgba(90,40,15,0.95); }
