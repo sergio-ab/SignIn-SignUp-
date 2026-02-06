@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>My Movements</title>
+
+    <!-- FONT -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="assets/css/styleCRUD.css">
+    <link rel="stylesheet" href="assets/css/styleCRUDPrincipal.css" id="mainStyle">
+    <link rel="stylesheet" href="assets/css/styleCRUDAlternate.css" id="altStyle" disabled>
+    
+    <!-- H5P VIDEO -->
+    <script src="/NeoBank/assets/h5p-player/main.bundle.js"></script>
+
+    <!-- JS-->
+    <script type="module" src="assets/js/movementsController.js" defer></script>
+</head>
+
+<body>
+    <div class="main-container">
+
+        <!-- HEADER -->
+        <div class="top-bar" role="banner">
+            <h1>My Movements</h1>
+            <div class="top-actions" role="navigation" aria-label="Acciones principales">
+                <button class="btn btn--primary" id="btnCreateMovement">Create Movement</button>
+                <div class="videoContainer" role="contentinfo">
+                    <button class="icon-btn icon-btn--info" id="btnInfo" title="Information" aria-label="Mostrar información">
+                        <i class="fa-solid fa-circle-info"></i>                    
+                    </button>
+                    <div id="h5p-container" class="h5p-container" style="display: none" aria-label="Video interactivo" ></div>
+                </div> 
+                <button class="btn btn--outline" id="btnLogout">Return to accounts</button>
+                <button class="icon-btn icon-btn--theme" id="btnToggleStyle" title="Cambiar estilo" aria-label="Cambiar estilo">
+                    <i class="fa-solid fa-paintbrush"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- WELCOME -->
+        <div class="welcome-box">
+            <div>
+                <h2>Bienvenid@ a su cuenta:  <span class="user-name" id="accountId"></span></h2>
+                <p>Consulta y gestiona tus movimientos de forma segura.</p>
+            </div>
+
+            <div class="welcome-stats">
+                <div>
+                    <strong id="totalMovements">0</strong>
+                    <span>Movimientos</span>
+                </div>
+                <div>
+                    <strong id="totalBalance">€0,00</strong>
+                    <span>Balance total</span>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title">Movements</h2>
+
+        <!-- TABLA -->
+        <div class="table" role="table" aria-label="Listado de movimientos de la cuenta">
+            <div class="table-header">
+                
+                <!--<div>ID</div>-->
+                <div>Timestamp</div>
+                <div class="text-right">Amount</div>
+                <div class="text-right">Balance</div>
+                <div>Description</div>
+                <!--<div>Account ID</div>-->
+                <div>Actions</div>
+                
+            </div>
+            <div id="movementsContainer" class="table-body"></div>
+        </div>
+
+    </div>
+
+    <!-- MODAL -->
+    <div id="movementModal" class="modal-overlay" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal">
+            <h2 id="modalTitle">Create Movement</h2>
+
+            <form id="movementForm">
+                <input type="hidden" id="movementId">
+
+                <label>
+                    Amount
+                    <input type="number" id="amount" name="amount" step="0.01" min="0.01" required>
+                </label>
+
+                <label for="description">Description
+                    <select id="description" name="description">
+                        <option value="Deposit">Deposit</option>
+                        <option value="Payment">Payment</option>
+                    </select>
+                </label>
+
+                <!--<label>
+                    Account ID
+                    <input type="number" id="accountIdInput">
+                </label>-->
+
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn--primary">Save</button>
+                    <button type="button" class="btn btn--outline" id="btnCancel">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    
+</body>
+</html>
