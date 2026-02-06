@@ -29,7 +29,7 @@ const customer = getCustomerFromSession();
 const CUSTOMER_ID = String(customer.id).replace(/[,.]/g, "");
 //const CUSTOMER_ID = sessionStorage.getItem("customer.id").replace(/[,.]/g, "");
 const SERVICE_URL =
-    "http://localhost:8080/CRUDBankServerSide/webresources/account";
+    "/CRUDBankServerSide/webresources/account";
 let accounts = [];
 
 // Constante global para formatear cantidades monetarias

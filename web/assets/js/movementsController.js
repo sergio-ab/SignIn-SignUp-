@@ -9,7 +9,7 @@
 */
 
 // URL del servicio REST que maneja los movimientos
-const SERVICE_URL = "http://localhost:8080/CRUDBankServerSide/webresources/movement"; 
+const SERVICE_URL = "/CRUDBankServerSide/webresources/movement"; 
 
 // Formateador de moneda (euros)
 const euroFormatter = new Intl.NumberFormat("de-DE", {
@@ -99,7 +99,7 @@ async function putAccountWithUpdatedBalance(idAccount, movements) {
     try {
         // Obtener cuenta completa en JSON
         const response = await fetch(
-            `http://localhost:8080/CRUDBankServerSide/webresources/account/${idAccount}`,
+            `/CRUDBankServerSide/webresources/account/${idAccount}`,
             {
                 method: "GET",
                 headers: { "Accept": "application/json" }
@@ -122,7 +122,7 @@ async function putAccountWithUpdatedBalance(idAccount, movements) {
 
         // Enviar PUT con la cuenta completa en JSON
         const putResponse = await fetch(
-            "http://localhost:8080/CRUDBankServerSide/webresources/account",
+            "/CRUDBankServerSide/webresources/account",
             {
                 method: "PUT",
                 headers: {
