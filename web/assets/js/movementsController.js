@@ -61,7 +61,10 @@ function calculateBalance(previousBalance, amount, description){
     return previousBalance;
 }
 
-// Calcula balances acumulados de toda la lista de movimientos 
+/** 
+ * @todo:  Calcular y mostrar el valor agregado del total de los ingresos y de los gastos por separado.
+ */
+
 function calculateAccumulatedBalances(movements, beginBalance) {
     
     let currentBalance = Number(beginBalance) || 0;
@@ -290,16 +293,30 @@ async function loadMovements() {
     }
 }
 
-/* Crear movimiento */
+/**
+ *  Crear movimiento 
+ * @fixme Encapsular los datos del movimiento en un nuevo objeto de la clase Movement. 
+ *  
+ */
 async function handleCreateMovement(event){
     
     event.preventDefault();
     
     try{
+        //FIXME Crear un objeto de la clase Movement y almacenar los datos en ese objeto y no en variables independientes para cada campo.
         const account = getSelectedAccount();
         
         if(!account) throw new Error("Cuenta no seleccionada");
 
+        //TODO Utilizar la siguiente RegExp para validar que el importe pueda introducirse con separador de decimales y de miles.
+        const esAmountRegex = /^(?:\d{1,15}|\d{1,3}(?:\.\d{3}){1,4})(?:,\d{1,2})?$/;
+        /* Explanation for esAmountRegex:
+              (?:                                # integer part options
+                \d{1,15}                         # 1 to 15 digits without thousand separator
+                | \d{1,3}(?:\.\d{3}){1,4}        # 1–3 digits, then 1–4 groups of ".ddd"
+               )
+              (?:,\d{1,2})?                      # optional decimal with 1 or 2 digits
+        */
         const amount = parseFloat(document.getElementById("amount").value);
         
         const description = document.getElementById("description").value;
