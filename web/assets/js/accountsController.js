@@ -178,13 +178,13 @@ async function fetchAccounts() {
 
     return await response.json();
 }
-/*
+/**
+ * @todo Mostar la columna de fecha de apertura de la cuenta con el valor de beginBalanceTimestamp formateado.
 ================================================================================
    FUNCIÓN GENERADORA
 ================================================================================
     |   Produce elementos uno a uno usando yield
     |   Permite generar filas dinámicamente
-    |   No crea todo de golpe
     |   for() -> Recorre el array de cuentas recibido del servidor
 ================================================================================
 */
@@ -418,14 +418,16 @@ function editAccount(event) {
     |   Muestra mensajes de éxito o error y recarga la tabla
 ================================================================================
 */
-/*
+/**
+ * @fixme Instanciar un objeto de la clase Account para encapsular los datos de las cuentas.
+
 ================================================================================
    SUBMIT CREATE / EDIT
 ================================================================================
 */
 async function submitAccountForm(event) {
     event.preventDefault();
-
+    //FIXME Instanciar un objeto de la clase Account para encapsular los datos de las cuentas.
     const description = inputDescription.value.trim();
     const type = inputType.value;
     let creditLine = 0;
@@ -438,6 +440,16 @@ async function submitAccountForm(event) {
     // ============================
     // VALIDACIÓN BEGIN BALANCE
     // ============================
+    //TODO Utilizar la siguiente RegExp para validar que el importe pueda introducirse con separador de decimales y de miles.
+    const esAmountRegex = /^(?:\d{1,15}|\d{1,3}(?:\.\d{3}){1,4})(?:,\d{1,2})?$/;
+    /* Explanation for esAmountRegex:
+          (?:                                # integer part options
+            \d{1,15}                         # 1 to 15 digits without thousand separator
+            | \d{1,3}(?:\.\d{3}){1,4}        # 1–3 digits, then 1–4 groups of ".ddd"
+           )
+          (?:,\d{1,2})?                      # optional decimal with 1 or 2 digits
+    */
+    
     const beginBalance = inputBeginBalance.valueAsNumber;
 
     if (!inputBeginBalance.checkValidity() || beginBalance < 0) {
@@ -528,6 +540,7 @@ async function submitAccountForm(event) {
 
 
 /*
+ * @fixme Solo se podrán borrar cuentas que no tengan movimientos. Controlar esta condición para no realizar petición de borrado al servidor y así evitar el HTTP 500 por violación de integridad referencial.
 ================================================================================
    DELETE ACCOUNT / DELETE
 ================================================================================
@@ -551,9 +564,9 @@ async function deleteAccount(event) {
                     `${SERVICE_URL}/${accountId}`,
                     { method: "DELETE" }
                 );
-
                 if (response.status === 409) {
                     throw new Error(
+                        //FIXME Hay que controlar esta situación antes de hacer la petición y si se cumple NO hacer la petición.
                         "No se puede eliminar la cuenta porque tiene movimientos"
                     );
                 }
