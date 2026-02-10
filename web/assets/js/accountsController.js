@@ -196,6 +196,7 @@ function* accountRowGenerator(accounts) {
 
         const fields = [
             "id",
+            "beginBalanceTimestamp",
             "description",
             "type",
             "balance",
@@ -206,13 +207,20 @@ function* accountRowGenerator(accounts) {
         for (const field of fields) {
             const cell = document.createElement("div");
             cell.className = "table-cell";
+            
+            // CREATION DATE
+            if (field === "beginBalanceTimestamp") {
+                const date = new Date(account.beginBalanceTimestamp);
+                cell.textContent = date.toLocaleDateString("en-GB");
+            }
 
             // El tipo se deduce del creditLine
-            if (field === "type") {
+            else if (field === "type") {
                 cell.textContent = account.creditLine > 0
-                    ? "CREDIT"
-                    : "STANDARD";
+                ? "CREDIT"
+                : "STANDARD";
             }
+            
             // CAMPOS MONETARIOS → FORMATO + DERECHA
             else if (
                 field === "balance" ||
@@ -445,8 +453,6 @@ async function submitAccountForm(event) {
         return;
     }
 
-
-
     // ============================
     // TRADUCIR SELECTOR A CREDITLINE
     // ============================
@@ -461,39 +467,54 @@ async function submitAccountForm(event) {
         creditLine = 0;
     }
 
-
     try {
         let response;
 
         if (isEditMode) {
+            // ============================
+            // EDIT → MANTENER CAMPOS INMUTABLES
+            // ============================
+            const account = accounts.find(a => a.id == inputAccountId.value);
+
+            if (!account) {
+                showMessage("Error", "Cuenta no encontrada");
+                return;
+            }
+
             response = await fetch(SERVICE_URL, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    id: inputAccountId.value,
+                    id: account.id,
                     description: description,
-                    beginBalance: inputBeginBalance.value,
-                    balance: accounts.find(a => a.id == inputAccountId.value).balance,
+
+                    // 🔒 NO CAMBIAN
+                    beginBalance: account.beginBalance,
+                    beginBalanceTimestamp: account.beginBalanceTimestamp,
+                    type: account.type,
+
+                    // 🔁 SÍ CAMBIAN
+                    balance: account.balance,
                     creditLine: creditLine,
-                    customers: [{ id: parseInt(CUSTOMER_ID, 10) }
-    ]
+
+                    customers: [
+                        { id: parseInt(CUSTOMER_ID, 10) }
+                    ]
                 })
             });
+
         } else {
             // ============================
-            // CREATE - PAYLOAD 
+            // CREATE → NUEVA CUENTA
             // ============================
             const payload = {
                 id: Math.floor(Math.random() * 100000000),
                 description: description,
                 balance: beginBalance,
-                creditLine: creditLine,
                 beginBalance: beginBalance,
                 beginBalanceTimestamp: new Date().toISOString().split(".")[0] + "Z",
-
-
+                creditLine: creditLine,
                 type: type,
-
                 customers: [
                     { id: parseInt(CUSTOMER_ID, 10) }
                 ]
@@ -524,6 +545,7 @@ async function submitAccountForm(event) {
         showMessage("Error", error.message);
     }
 }
+
 
 
 
