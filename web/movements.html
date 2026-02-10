@@ -13,8 +13,8 @@
 
     <!-- CSS -->
     <link rel="stylesheet" href="assets/css/styleCRUD.css">
-    <link rel="stylesheet" href="assets/css/styleCRUDPrincipal.css" id="mainStyle">
-    <link rel="stylesheet" href="assets/css/styleCRUDAlternate.css" id="altStyle" disabled>
+    <link rel="stylesheet" href="assets/css/styleCRUDPrincipal.css" id="mainStyle" title="Estilo Principal">
+    <link rel="alternate stylesheet" href="assets/css/styleCRUDAlternate.css" id="altStyle" title="Estilo Secundario" disabled>
     
     <!-- H5P VIDEO -->
     <script src="/NeoBank/assets/h5p-player/main.bundle.js"></script>
@@ -47,18 +47,18 @@
         <!-- WELCOME -->
         <div class="welcome-box">
             <div>
-                <h2>Bienvenid@ a su cuenta:  <span class="user-name" id="accountId"></span></h2>
-                <p>Consulta y gestiona tus movimientos de forma segura.</p>
+                <h2>Welcome to your account:  <span class="user-name" id="accountId"></span></h2>
+                <p>View and manage your movements securely.</p>
             </div>
 
             <div class="welcome-stats">
                 <div>
                     <strong id="totalMovements">0</strong>
-                    <span>Movimientos</span>
+                    <span>Movements</span>
                 </div>
                 <div>
                     <strong id="totalBalance">€0,00</strong>
-                    <span>Balance total</span>
+                    <span>Total Limit</span>
                 </div>
             </div>
         </div>
@@ -93,7 +93,7 @@
 
                 <label>
                     Amount
-                    <input type="number" id="amount" name="amount" step="0.01" min="0.01" required>
+                    <input id="amount" name="amount">
                 </label>
 
                 <label for="description">Description
