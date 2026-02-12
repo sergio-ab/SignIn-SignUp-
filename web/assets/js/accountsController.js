@@ -12,6 +12,16 @@
 
 "use strict"; //Activa el modo estricto de JavaScript.
 
+/*
+================================================================================
+   IMPORTACIÓN DEL MODELO DE DATOS 
+================================================================================
+   - Se importa la clase Account desde el modelo de datos.
+   - Se aplica programación orientada a objetos.
+===============================
+*/
+import { Account } from "./dataModel.js";
+
 
 /*
 ================================================================================
@@ -306,13 +316,33 @@ async function loadAccounts() {
     try {
         const allAccounts = await fetchAccounts();
 
-        // FILTRAR POR CUSTOMER_ID (sessionStorage)
-        accounts = allAccounts.filter(function (account) {
-            return account.customers &&
-                   account.customers.some(function (customer) {
-                       return String(customer.id) === String(CUSTOMER_ID);
-                   });
-        });
+        /*
+        ================================================================================
+            TRANSFORMACIÓN A OBJETOS DEL MODELO
+        ================================================================================
+            - filter() selecciona cuentas del cliente.
+            - map() + new Account() crea instancias reales.
+        ================================================================================
+        */
+        accounts = allAccounts
+            .filter(function (account) {
+                return account.customers &&
+                    account.customers.some(function (customer) {
+                        return String(customer.id) === String(CUSTOMER_ID);
+                    });
+            })
+            .map(function (a) {
+                return new Account(
+                    a.id,
+                    a.description,
+                    a.balance,
+                    a.creditLine,
+                    a.beginBalance,
+                    a.beginBalanceTimestamp,
+                    a.type,
+                    CUSTOMER_ID
+                );
+            });
 
         const container = document.getElementById("accountsContainer");
         container.innerHTML = "";
@@ -415,6 +445,7 @@ function editAccount(event) {
 }
 
 
+
 /*
 ================================================================================
    SUBMIT CREATE / EDIT
@@ -446,23 +477,44 @@ async function submitAccountForm(event) {
     // ============================
     // VALIDACIÓN BEGIN BALANCE
     // ============================
-    const beginBalance = inputBeginBalance.valueAsNumber;
+    /*
+    ================================================================================
+        VALIDACIÓN REGEX NUMÉRICA
+    ================================================================================
+        - Solo números positivos.
+        - Decimales opcionales (máx. 2).
+    ================================================================================
+    */
+    const decimalRegex = /^\d+(\.\d{1,2})?$/;
 
-    if (!inputBeginBalance.checkValidity() || beginBalance < 0) {
-        showMessage("Error", "El balance inicial no puede ser negativo");
+    const beginBalanceValue = inputBeginBalance.value.trim();
+
+    if (!decimalRegex.test(beginBalanceValue)) {
+        showMessage("Error", "Introduce un número válido (máx. 2 decimales, sin negativos)");
         return;
     }
+
+    const beginBalance = parseFloat(beginBalanceValue);
 
     // ============================
     // TRADUCIR SELECTOR A CREDITLINE
     // ============================
     if (type === "CREDIT") {
-        creditLine = parseInt(inputCreditLine.value, 10);
 
-        if (isNaN(creditLine) || creditLine <= 0) {
+        const creditLineValue = inputCreditLine.value.trim();
+
+        if (!decimalRegex.test(creditLineValue)) {
+            showMessage("Error", "La línea de crédito debe ser un número válido");
+            return;
+        }
+
+        creditLine = parseFloat(creditLineValue);
+
+        if (creditLine <= 0) {
             showMessage("Error", "La línea de crédito debe ser mayor que 0");
             return;
         }
+
     } else {
         creditLine = 0;
     }
@@ -487,13 +539,9 @@ async function submitAccountForm(event) {
                 body: JSON.stringify({
                     id: account.id,
                     description: description,
-
-                    // 🔒 NO CAMBIAN
                     beginBalance: account.beginBalance,
                     beginBalanceTimestamp: account.beginBalanceTimestamp,
                     type: account.type,
-
-                    // 🔁 SÍ CAMBIAN
                     balance: account.balance,
                     creditLine: creditLine,
 
