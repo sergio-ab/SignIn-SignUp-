@@ -92,8 +92,8 @@ body {
 .table-row {
   display: table-row;
 }
-.table-header>div,
-.table-row>div {
+.table-header> [role ="row"] > [role = "columnheader"],
+.table-row> [role="cell"] {
   display: table-cell;
   padding: 16px 22px;
   vertical-align: middle;

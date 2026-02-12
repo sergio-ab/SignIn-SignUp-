@@ -244,12 +244,16 @@ function* movementRowGenerator(movements, lastMovementMap) {
         const row = document.createElement("div");
         
         row.className = "table-row";
+        
+        row.setAttribute("role", "row");
 
         const fields = ["timestamp","amount","balance","description"];
         
         for(const field of fields){
             
             const cell = document.createElement("div");
+            
+            cell.setAttribute("role", "cell");
             
             if(field === "timestamp") cell.textContent = new Date(movement.timestamp).toLocaleString();
             
@@ -267,6 +271,8 @@ function* movementRowGenerator(movements, lastMovementMap) {
         const actions = document.createElement("div");
         
         actions.className = "actions";
+        
+        actions.setAttribute("role", "cell");
         
         const isLast = lastMovementMap[movement.accountId] === movement.id;
         

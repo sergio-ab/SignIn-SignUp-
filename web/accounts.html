@@ -125,13 +125,13 @@
     <h2 class="section-title" id="accountsTitle">Accounts</h2>
 
     <!-- TABLA -->
-    <section
-        class="table"
-        role="table"
-        aria-labelledby="accountsTitle">
+    <section class="table"
+         role="table"
+         aria-labelledby="accountsTitle">
 
-        <!-- THEAD -->
-        <div class="table-header" role="row">
+    <!-- HEADER -->
+    <div class="table-header" role="rowgroup">
+        <div class="table-row" role="row">
             <div role="columnheader">ID</div>
             <div role="columnheader">Description</div>
             <div role="columnheader">Type</div>
@@ -140,15 +140,16 @@
             <div role="columnheader" class="text-right">Credit Line</div>
             <div role="columnheader">Actions</div>
         </div>
+    </div>
 
-        <!-- TBODY -->
-        <div
-            id="accountsContainer"
-            class="table-body"
-            role="rowgroup">
-        </div>
+    <!-- BODY -->
+    <div id="accountsContainer"
+         class="table-body"
+         role="rowgroup">
+    </div>
 
-    </section>
+</section>
+
 
 </main>
 

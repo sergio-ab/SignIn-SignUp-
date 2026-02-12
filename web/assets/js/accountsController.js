@@ -193,6 +193,7 @@ function* accountRowGenerator(accounts) {
 
         const row = document.createElement("div");
         row.className = "table-row";
+        row.setAttribute("role", "row");
 
         const fields = [
             "id",
@@ -206,6 +207,7 @@ function* accountRowGenerator(accounts) {
         for (const field of fields) {
             const cell = document.createElement("div");
             cell.className = "table-cell";
+            cell.setAttribute("role", "cell");
 
             // El tipo se deduce del creditLine
             if (field === "type") {
@@ -231,6 +233,8 @@ function* accountRowGenerator(accounts) {
 
         const actionsCell = document.createElement("div");
         actionsCell.className = "actions";
+        actionsCell.setAttribute("role", "cell");
+
 
         actionsCell.innerHTML = `
             <button 

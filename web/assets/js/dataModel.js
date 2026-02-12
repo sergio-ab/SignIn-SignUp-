@@ -32,7 +32,7 @@ export class Customer {
         id: this.id,
         firstName: this.firstName,
         lastName: this.lastName,
-        middleInitital: this.middleInitial,
+        middleInitial: this.middleInitial,
         street: this.street,
         city: this.city,
         state: this.state,
