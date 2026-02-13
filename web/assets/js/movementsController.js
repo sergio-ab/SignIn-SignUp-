@@ -26,6 +26,7 @@ let h5pInstance = null;
 // VALIDACIONES IMPORTE
 // =======================
 const AMOUNT_REGEX = /^(?!0+(?:,0{1,2})?$)(?:\d{1,3}(?:\.\d{3})*|\d+)(?:,\d{1,2})?$/;
+/*const AMOUNT_REGEX = /^(?:\d{1,3}(?:\.\d{3})*|\d+)(?:,\d{1,2})?$/;*/ // Usado solo para validar formato
 
 function validateAmountFormat(amountStr) {
     if (!AMOUNT_REGEX.test(amountStr)) {
@@ -42,6 +43,18 @@ function parseEuropeanNumber(amountStr) {
             .replace(",", ".")
     );
 }
+
+// AÑADIR FUNCION NUEVA EN CASO DE VALIDACIÓN EN DOS PARTES
+/*function validateAmountValue(amount) {
+    if (isNaN(amount)) {
+        throw new Error("El importe no es un número válido.");
+    }
+
+    if (amount <= 0) {
+        throw new Error("El importe debe ser mayor que 0.");
+    }
+}*/
+
 
 /*========================================================================================================
     |   FUNCIONES DE ACCESO A DATOS DE LA CUENTA
@@ -371,6 +384,9 @@ async function handleCreateMovement(event){
 
         // Convertir a número
         const amount = parseEuropeanNumber(amountStr);
+        
+        //AÑADIR SI CASO DE VALIDACIÓN EN DOS PASOS
+        //validateAmountValue(amount);
 
         const description = document.getElementById("description").value;
 
