@@ -254,22 +254,22 @@ function* accountRowGenerator(accounts) {
             <button 
                 class="icon-btn icon-btn--movements"
                 data-account-id="${account.id}"
-                title="View movements">
-                <i class="fa-solid fa-list"></i>
+                aria-label="Ver movimientos de la cuenta ${account.id}">
+                <i class="fa-solid fa-list" aria-hidden="true"></i>
             </button>
 
             <button 
                 class="icon-btn icon-btn--edit"
                 data-account-id="${account.id}"
-                title="Edit">
-                <i class="fa-regular fa-pen-to-square"></i>
+                aria-label="Editar cuenta ${account.id}">
+                <i class="fa-regular fa-pen-to-square" aria-hidden="true"></i>
             </button>
 
             <button 
                 class="icon-btn icon-btn--delete"
                 data-account-id="${account.id}"
-                title="Delete">
-                <svg viewBox="0 0 24 24">
+                aria-label="Eliminar cuenta ${account.id}">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
                     <path d="M3 6h18" />
                     <path d="M8 6V4h8v2" />
                     <path d="M6 6l1 14h10l1-14" />
