@@ -48,6 +48,35 @@ const euroFormatter = new Intl.NumberFormat("de-DE", {
     currency: "EUR"
 });
 
+/*
+================================================================================
+   VALIDACIÓN NUMÉRICA EN DOS PASOS (FORMATO Y VALOR)
+================================================================================
+    |   1) Se valida el formato mediante una expresión regular que admite:
+    |      - Signo opcional (+/-)
+    |      - Separador de miles con punto (.)
+    |      - Separador decimal con coma (,)
+    |      - Hasta 2 decimales
+    |
+    |   2) Si el formato es correcto, la cadena se convierte explícitamente
+    |      a tipo Number para poder realizar comparaciones numéricas
+    |      evitando mezclar String y Number.
+================================================================================
+*/
+
+// Regex formato europeo: miles con "." y decimales con "," (signo opcional)
+const regexEuro = /^[+-]?(?:\d{1,3}(?:\.\d{3})*|\d+)(?:,\d{1,2})?$/;
+
+// Convierte "10.000,01" -> 10000.01 (Number)
+function parseEuroNumber(value) {
+    return Number(
+        value
+            .replace(/\./g, "")  // quita separadores de miles
+            .replace(",", ".")   // coma decimal -> punto
+    );
+}
+
+
 let h5pInstance = null;
 
 /*
@@ -451,15 +480,10 @@ function editAccount(event) {
    SUBMIT CREATE / EDIT
 ================================================================================
     |   Gestiona el envío del formulario del modal
-    |   Valida los datos introducidos por el usuario
-    |   Decide si se crea o se edita una cuenta según el estado del modal
-    |   Realiza la llamada REST correspondiente (POST o PUT)
-    |   Muestra mensajes de éxito o error y recarga la tabla
-================================================================================
-*/
-/*
-================================================================================
-   SUBMIT CREATE / EDIT
+    |   Valida los datos en dos pasos:
+    |       1) Formato (regex formato europeo)
+    |       2) Valor (comparación numérica real)
+    |   Convierte siempre String → Number antes de comparar
 ================================================================================
 */
 async function submitAccountForm(event) {
@@ -474,41 +498,50 @@ async function submitAccountForm(event) {
         return;
     }
 
-    // ============================
-    // VALIDACIÓN BEGIN BALANCE
-    // ============================
-    /*
-    ================================================================================
-        VALIDACIÓN REGEX NUMÉRICA
-    ================================================================================
-        - Solo números positivos.
-        - Decimales opcionales (máx. 2).
-    ================================================================================
-    */
-    const decimalRegex = /^\d+(\.\d{1,2})?$/;
-
+    // =====================================================
+    // VALIDACIÓN BEGIN BALANCE (FORMATO + VALOR)
+    // =====================================================
     const beginBalanceValue = inputBeginBalance.value.trim();
 
-    if (!decimalRegex.test(beginBalanceValue)) {
-        showMessage("Error", "Introduce un número válido (máx. 2 decimales, sin negativos)");
+    // Validación de formato
+    if (!regexEuro.test(beginBalanceValue)) {
+        showMessage("Error", "Formato inválido. Ejemplo válido: 10.000,01");
         return;
     }
 
-    const beginBalance = parseFloat(beginBalanceValue);
+    // Conversión a Number real
+    const beginBalance = parseEuroNumber(beginBalanceValue);
 
-    // ============================
-    // TRADUCIR SELECTOR A CREDITLINE
-    // ============================
+    if (!Number.isFinite(beginBalance)) {
+        showMessage("Error", "Número inválido");
+        return;
+    }
+
+    if (beginBalance < 0) {
+        showMessage("Error", "No se permiten valores negativos");
+        return;
+    }
+
+    // =====================================================
+    // VALIDACIÓN CREDIT LINE (si tipo CREDIT)
+    // =====================================================
     if (type === "CREDIT") {
 
         const creditLineValue = inputCreditLine.value.trim();
 
-        if (!decimalRegex.test(creditLineValue)) {
-            showMessage("Error", "La línea de crédito debe ser un número válido");
+        // Validación de formato
+        if (!regexEuro.test(creditLineValue)) {
+            showMessage("Error", "Formato inválido. Ejemplo válido: 10.000,01");
             return;
         }
 
-        creditLine = parseFloat(creditLineValue);
+        // Conversión a Number
+        creditLine = parseEuroNumber(creditLineValue);
+
+        if (!Number.isFinite(creditLine)) {
+            showMessage("Error", "Número inválido");
+            return;
+        }
 
         if (creditLine <= 0) {
             showMessage("Error", "La línea de crédito debe ser mayor que 0");
@@ -523,9 +556,7 @@ async function submitAccountForm(event) {
         let response;
 
         if (isEditMode) {
-            // ============================
-            // EDIT → MANTENER CAMPOS INMUTABLES
-            // ============================
+
             const account = accounts.find(a => a.id == inputAccountId.value);
 
             if (!account) {
@@ -544,7 +575,6 @@ async function submitAccountForm(event) {
                     type: account.type,
                     balance: account.balance,
                     creditLine: creditLine,
-
                     customers: [
                         { id: parseInt(CUSTOMER_ID, 10) }
                     ]
@@ -552,9 +582,7 @@ async function submitAccountForm(event) {
             });
 
         } else {
-            // ============================
-            // CREATE → NUEVA CUENTA
-            // ============================
+
             const payload = {
                 id: Math.floor(Math.random() * 100000000),
                 description: description,
@@ -593,6 +621,7 @@ async function submitAccountForm(event) {
         showMessage("Error", error.message);
     }
 }
+
 
 
 
