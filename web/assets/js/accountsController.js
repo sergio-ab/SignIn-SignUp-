@@ -193,19 +193,25 @@ function* accountRowGenerator(accounts) {
 
         const row = document.createElement("div");
         row.className = "table-row";
+        row.setAttribute("role", "row"); // ✅ Accesibilidad
 
         const fields = [
             "id",
+            "beginBalanceTimestamp",
             "description",
             "type",
             "balance",
             "beginBalance",
             "creditLine"
-        ];
+];
+
 
         for (const field of fields) {
             const cell = document.createElement("div");
             cell.className = "table-cell";
+            cell.setAttribute("role", "cell"); // Accesibilidad
+            
+            
 
             // El tipo se deduce del creditLine
             if (field === "type") {
@@ -213,6 +219,13 @@ function* accountRowGenerator(accounts) {
                     ? "CREDIT"
                     : "STANDARD";
             }
+            
+            // Timestamp formateado
+            else if (field === "beginBalanceTimestamp") {
+                const date = new Date(account[field]);
+                cell.textContent = date.toLocaleString("es-ES");
+            }
+            
             // CAMPOS MONETARIOS → FORMATO + DERECHA
             else if (
                 field === "balance" ||
@@ -230,7 +243,8 @@ function* accountRowGenerator(accounts) {
         }
 
         const actionsCell = document.createElement("div");
-        actionsCell.className = "actions";
+        actionsCell.className = "table-cell actions"; // Ahora es celda real
+        actionsCell.setAttribute("role", "cell");     // Accesibilidad
 
         actionsCell.innerHTML = `
             <button 
@@ -282,6 +296,7 @@ function* accountRowGenerator(accounts) {
         yield row;
     }
 }
+
 
 
 /*
