@@ -10,7 +10,7 @@ body {
 
 .top-bar h1 { color: #ff9900; }
 
-.btn--primary { background: #ff9900; color: #fff; }
+.btn--primary { background: #ff9900; color: #000000; }
 .btn--outline { border-color: #ff9900; color: #ff9900; }
 
 .user-name { color: #ff9900; }
