@@ -1,5 +1,8 @@
 "use strict";
 
+import { Movement, Account } from "./dataModel.js";
+
+
 /*========================================================================================================
     |   MOVEMENTS CONTROLLER - CRUD MOVEMENTS
 ==========================================================================================================
@@ -19,15 +22,69 @@ const euroFormatter = new Intl.NumberFormat("de-DE", {
 
 let h5pInstance = null;
 
+// =======================
+// VALIDACIONES IMPORTE
+// =======================
+const AMOUNT_REGEX = /^(?:\d{1,15}|\d{1,3}(?:\.\d{3}){1,4})(?:,\d{1,2})?$/;
+        /* Explanation for esAmountRegex:
+              (?:                                # integer part options
+                \d{1,15}                         # 1 to 15 digits without thousand separator
+                | \d{1,3}(?:\.\d{3}){1,4}        # 1–3 digits, then 1–4 groups of ".ddd"
+               )
+              (?:,\d{1,2})?                      # optional decimal with 1 or 2 digits
+        */
+
+function validateAmountFormat(amountStr) {
+    if (!AMOUNT_REGEX.test(amountStr)) {
+        throw new Error(
+            "Importe inválido. Use formato europeo (ej: 1.234,56) y mayor que 0"
+        );
+    }
+}
+
+function parseEuropeanNumber(amountStr) {
+    return parseFloat(
+        amountStr
+            .replace(/\./g, "")
+            .replace(",", ".")
+    );
+}
+
+// FUNCIÓN VALIDAR CANTIDADES
+function validateAmountValue(amount) {
+    if (isNaN(amount)) {
+        throw new Error("El importe no es un número válido.");
+    }
+
+    if (amount <= 0) {
+        throw new Error("El importe debe ser mayor que 0.");
+    }
+}
+
+
 /*========================================================================================================
     |   FUNCIONES DE ACCESO A DATOS DE LA CUENTA
 ==========================================================================================================*/
 
 // Función para recoger la el tipo de cuenta
-function getSelectedAccount(){
-    
-    return sessionStorage.getItem("selectedAccount") ? JSON.parse(sessionStorage.getItem("selectedAccount")) : null;
+function getSelectedAccount() {
+    const raw = sessionStorage.getItem("selectedAccount");
+    if (!raw) return null;
+
+    const a = JSON.parse(raw);
+
+    return new Account(
+        a.id,
+        a.description,
+        a.balance,
+        a.creditLine,
+        a.beginBalance,
+        a.beginBalanceTimestamp,
+        a.type,
+        a.customerId
+    );
 }
+
 
 // Función para recoger el balance en caso de ser cuenta Standar o de Cŕedito
 function getAvailableBalance(balance){
@@ -61,10 +118,7 @@ function calculateBalance(previousBalance, amount, description){
     return previousBalance;
 }
 
-/** 
- * @todo:  Calcular y mostrar el valor agregado del total de los ingresos y de los gastos por separado.
- */
-
+// Calcula balances acumulados de toda la lista de movimientos 
 function calculateAccumulatedBalances(movements, beginBalance) {
     
     let currentBalance = Number(beginBalance) || 0;
@@ -79,7 +133,15 @@ function calculateAccumulatedBalances(movements, beginBalance) {
         
         else if(desc === "Payment") currentBalance -= amount;
         
-        return {...m, balance: currentBalance};
+        return new Movement(
+            m.id,
+            m.timestamp,
+            m.amount,
+            currentBalance,
+            m.description,
+            m.accountId
+        );
+
     });
 }
 
@@ -201,6 +263,8 @@ function* movementRowGenerator(movements, lastMovementMap) {
         const row = document.createElement("div");
         
         row.className = "table-row";
+        
+        row.setAttribute("role", "row");
 
         const fields = ["timestamp","amount","balance","description"];
         
@@ -208,7 +272,16 @@ function* movementRowGenerator(movements, lastMovementMap) {
             
             const cell = document.createElement("div");
             
-            if(field === "timestamp") cell.textContent = new Date(movement.timestamp).toLocaleString();
+            cell.setAttribute("role", "cell");
+            
+            if(field === "timestamp") {
+                
+                const strong = document.createElement("strong");
+                
+                strong.textContent = new Date(movement.timestamp).toLocaleString();
+                
+                cell.appendChild(strong);
+            }
             
             else if(field === "amount" || field === "balance"){
                 
@@ -224,6 +297,8 @@ function* movementRowGenerator(movements, lastMovementMap) {
         const actions = document.createElement("div");
         
         actions.className = "actions";
+        
+        actions.setAttribute("role", "cell");
         
         const isLast = lastMovementMap[movement.accountId] === movement.id;
         
@@ -260,7 +335,17 @@ async function loadMovements() {
         
         if(!account) return;
 
-        const movements = await fetchMovements(account.id);
+        const movements = (await fetchMovements(account.id)).map(m =>
+            new Movement(
+                m.id,
+                m.timestamp,
+                m.amount,
+                m.balance,
+                m.description,
+                m.accountId
+            )
+        );
+
         
         const movementsWithBalance = calculateAccumulatedBalances(movements, account.beginBalance);
 
@@ -279,6 +364,19 @@ async function loadMovements() {
 
         document.getElementById("totalMovements").textContent = movements.length;
         
+        // Calcular totales de ingresos (Deposit) y gastos (Payment)
+        let totalDeposits = 0;
+        let totalPayments = 0;
+
+        movementsWithBalance.forEach(m => {
+            if (m.description === "Deposit") totalDeposits += Number(m.amount);
+            else if (m.description === "Payment") totalPayments += Number(m.amount);
+        });
+
+        // Mostrar los totales
+        document.getElementById("totalDeposits").textContent = euroFormatter.format(totalDeposits);
+        document.getElementById("totalPayments").textContent = euroFormatter.format(totalPayments);
+        
         const totalBalance = getAvailableBalance(
             movementsWithBalance.length
                 ? movementsWithBalance[movementsWithBalance.length -1].balance
@@ -293,35 +391,29 @@ async function loadMovements() {
     }
 }
 
-/**
- *  Crear movimiento 
- * @fixme Encapsular los datos del movimiento en un nuevo objeto de la clase Movement. 
- *  
- */
+/* Crear movimiento */
 async function handleCreateMovement(event){
     
     event.preventDefault();
     
     try{
-        //FIXME Crear un objeto de la clase Movement y almacenar los datos en ese objeto y no en variables independientes para cada campo.
         const account = getSelectedAccount();
         
         if(!account) throw new Error("Cuenta no seleccionada");
 
-        //TODO Utilizar la siguiente RegExp para validar que el importe pueda introducirse con separador de decimales y de miles.
-        const esAmountRegex = /^(?:\d{1,15}|\d{1,3}(?:\.\d{3}){1,4})(?:,\d{1,2})?$/;
-        /* Explanation for esAmountRegex:
-              (?:                                # integer part options
-                \d{1,15}                         # 1 to 15 digits without thousand separator
-                | \d{1,3}(?:\.\d{3}){1,4}        # 1–3 digits, then 1–4 groups of ".ddd"
-               )
-              (?:,\d{1,2})?                      # optional decimal with 1 or 2 digits
-        */
-        const amount = parseFloat(document.getElementById("amount").value);
-        
-        const description = document.getElementById("description").value;
+        const amountInput = document.getElementById("amount");
+        const amountStr = amountInput.value.trim();
 
-        if(isNaN(amount) || !description) throw new Error("Datos inválidos");
+        // Validar con REGEX
+        validateAmountFormat(amountStr);
+
+        // Convertir a número
+        const amount = parseEuropeanNumber(amountStr);
+        
+        //VALIDACIÓN FORMATO
+        validateAmountValue(amount);
+
+        const description = document.getElementById("description").value;
 
         const movements = await fetchMovements(account.id);
         
@@ -335,19 +427,27 @@ async function handleCreateMovement(event){
         
         const timestamp = new Date().toISOString();
         
-        const movementData = { amount, balance: newBalance, description, timestamp };
+        const movement = new Movement(
+            null,           // id → lo genera el backend
+            timestamp,
+            amount,
+            newBalance,
+            description,
+            account.id
+        );
+
 
         const response = await fetch(`${SERVICE_URL}/${account.id}`, {
             method: "POST",
             headers: { "Content-Type": "application/json", "Accept": "application/json" },
-            body: JSON.stringify(movementData)
+            body: JSON.stringify(movement)
         });
         
         if(!response.ok) throw new Error("Error creando movimiento");
 
         updateAccountBalanceInSession(newBalance);
         
-        await putAccountWithUpdatedBalance(account.id, [...movementsWithBalance, movementData]);
+        await putAccountWithUpdatedBalance(account.id, [...movementsWithBalance, movement]);
 
         document.getElementById("movementModal").style.display = "none";
         
@@ -533,4 +633,3 @@ document.addEventListener("keydown", (e) => {
         }
     }
 });
-
