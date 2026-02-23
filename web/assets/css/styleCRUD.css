@@ -177,6 +177,13 @@ body {
   justify-content: center;
   z-index: 1000;
 }
+
+/* Modal de creación de movimiento oculto por defecto */
+.modal-overlay {
+    display: none;
+}
+
+
 .modal {
   padding: 30px 34px;
   border-radius: 22px;
@@ -233,3 +240,8 @@ body {
   align-items: center;
   justify-content: center;
 }
+/* Contenedor H5P oculto por defecto */
+#h5p-container {
+    display: none;
+}
+

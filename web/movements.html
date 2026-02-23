@@ -35,7 +35,7 @@
                     <button class="icon-btn icon-btn--info" id="btnInfo" title="Information" aria-label="Mostrar información">
                         <i class="fa-solid fa-circle-info"></i>                    
                     </button>
-                    <div id="h5p-container" class="h5p-container" style="display: none" aria-label="Video interactivo" ></div>
+                    <div id="h5p-container" class="h5p-container" aria-label="Video interactivo"></div>
                 </div> 
                 <button class="btn btn--outline" id="btnLogout">Return to accounts</button>
                 <button class="icon-btn icon-btn--theme" id="btnToggleStyle" title="Cambiar estilo" aria-label="Cambiar estilo">
@@ -52,15 +52,23 @@
             </div>
 
             <div class="welcome-stats">
-                <div>
-                    <strong id="totalMovements">0</strong>
-                    <span>Movements</span>
-                </div>
-                <div>
-                    <strong id="totalBalance">€0,00</strong>
-                    <span>Total Limit</span>
-                </div>
-            </div>
+    <div>
+        <strong id="totalMovements">0</strong>
+        <span>Movements</span>
+    </div>
+    <div>
+        <strong id="totalBalance">€0,00</strong>
+        <span>Total Limit</span>
+    </div>
+    <div>
+        <strong id="totalDeposits">€0,00</strong>
+        <span>Total Deposits</span>
+    </div>
+    <div>
+        <strong id="totalPayments">€0,00</strong>
+        <span>Total Payments</span>
+    </div>
+</div>
         </div>
 
         <h2 class="section-title">Movements</h2>
@@ -87,7 +95,7 @@
     </div>
 
     <!-- MODAL -->
-    <div id="movementModal" class="modal-overlay" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div id="movementModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
         <div class="modal">
             <h2 id="modalTitle">Create Movement</h2>
 
@@ -96,7 +104,7 @@
 
                 <label>
                     Amount
-                    <input type="number" id="amount" name="amount" step="0.01" min="0.01" required>
+                    <input id="amount" name="amount">
                 </label>
 
                 <label for="description">Description
