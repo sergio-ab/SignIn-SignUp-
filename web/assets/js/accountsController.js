@@ -12,6 +12,18 @@
 
 "use strict"; //Activa el modo estricto de JavaScript.
 
+/*
+================================================================================
+   IMPORTACIÓN DEL MODELO DE DATOS 
+================================================================================
+   - FIXME Instanciar un objeto de la clase Account para encapsular los datos de las cuentas.
+   - Se importa la clase Account desde el modelo de datos.
+   - Se aplica programación orientada a objetos.
+================================================================================
+*/
+    import { Account } from "./dataModel.js";
+
+
 
 /*
 ================================================================================
@@ -37,6 +49,39 @@ const euroFormatter = new Intl.NumberFormat("de-DE", {
     style: "currency",
     currency: "EUR"
 });
+
+
+/*
+================================================================================
+   VALIDACIÓN NUMÉRICA RegExp TODO
+================================================================================
+    |   TODO Utilizar la siguiente RegExp para validar que el importe 
+    |   pueda introducirse con separador de decimales y de miles.
+
+    |   NO permite signo negativo porque el valor negativo
+    |   se controla posteriormente con validación numérica.
+    
+    Explanation for esAmountRegex:
+          (?:                                # integer part options
+            \d{1,15}                         # 1 to 15 digits without thousand separator
+            | \d{1,3}(?:\.\d{3}){1,4}        # 1–3 digits, then 1–4 groups of ".ddd"
+           )
+          (?:,\d{1,2})?                      # optional decimal with 1 or 2 digits
+    
+================================================================================
+*/
+
+// RegExp oficial proporcionada (formato español)
+const esAmountRegex = /^(?:\d{1,15}|\d{1,3}(?:\.\d{3}){1,4})(?:,\d{1,2})?$/;
+
+// Convierte "10.000,01" → 10000.01 (Number real)
+function parseEuroNumber(value) {
+    return Number(
+        value
+            .replace(/\./g, "")  // Elimina separadores de miles
+            .replace(",", ".")   // Convierte coma decimal en punto
+    );
+}
 
 let h5pInstance = null;
 
@@ -178,13 +223,13 @@ async function fetchAccounts() {
 
     return await response.json();
 }
-/*
+/**
+ * @todo Mostar la columna de fecha de apertura de la cuenta con el valor de beginBalanceTimestamp formateado.
 ================================================================================
    FUNCIÓN GENERADORA
 ================================================================================
     |   Produce elementos uno a uno usando yield
     |   Permite generar filas dinámicamente
-    |   No crea todo de golpe
     |   for() -> Recorre el array de cuentas recibido del servidor
 ================================================================================
 */
@@ -209,21 +254,18 @@ function* accountRowGenerator(accounts) {
         for (const field of fields) {
             const cell = document.createElement("div");
             cell.className = "table-cell";
-            cell.setAttribute("role", "cell"); // Accesibilidad
             
-            
+            // CREATION DATE
+            if (field === "beginBalanceTimestamp") {
+                const date = new Date(account.beginBalanceTimestamp);
+                cell.textContent = date.toLocaleDateString("en-GB");
+            }
 
             // El tipo se deduce del creditLine
-            if (field === "type") {
+            else if (field === "type") {
                 cell.textContent = account.creditLine > 0
-                    ? "CREDIT"
-                    : "STANDARD";
-            }
-            
-            // Timestamp formateado
-            else if (field === "beginBalanceTimestamp") {
-                const date = new Date(account[field]);
-                cell.textContent = date.toLocaleString("es-ES");
+                ? "CREDIT"
+                : "STANDARD";
             }
             
             // CAMPOS MONETARIOS → FORMATO + DERECHA
@@ -250,22 +292,22 @@ function* accountRowGenerator(accounts) {
             <button 
                 class="icon-btn icon-btn--movements"
                 data-account-id="${account.id}"
-                title="View movements">
-                <i class="fa-solid fa-list"></i>
+                aria-label="Ver movimientos de la cuenta ${account.id}">
+                <i class="fa-solid fa-list" aria-hidden="true"></i>
             </button>
 
             <button 
                 class="icon-btn icon-btn--edit"
                 data-account-id="${account.id}"
-                title="Edit">
-                <i class="fa-regular fa-pen-to-square"></i>
+                aria-label="Editar cuenta ${account.id}">
+                <i class="fa-regular fa-pen-to-square" aria-hidden="true"></i>
             </button>
 
             <button 
                 class="icon-btn icon-btn--delete"
                 data-account-id="${account.id}"
-                title="Delete">
-                <svg viewBox="0 0 24 24">
+                aria-label="Eliminar cuenta ${account.id}">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
                     <path d="M3 6h18" />
                     <path d="M8 6V4h8v2" />
                     <path d="M6 6l1 14h10l1-14" />
@@ -313,13 +355,38 @@ async function loadAccounts() {
     try {
         const allAccounts = await fetchAccounts();
 
-        // FILTRAR POR CUSTOMER_ID (sessionStorage)
-        accounts = allAccounts.filter(function (account) {
-            return account.customers &&
-                   account.customers.some(function (customer) {
-                       return String(customer.id) === String(CUSTOMER_ID);
-                   });
-        });
+        /*
+        ================================================================================
+            TRANSFORMACIÓN A OBJETOS DEL MODELO
+        ================================================================================
+            - filter() selecciona cuentas del cliente.
+            - map() + new Account() crea instancias reales.
+        ================================================================================
+        */
+        accounts = allAccounts
+            .filter(function (account) {
+                return account.customers &&
+                    account.customers.some(function (customer) {
+                        return String(customer.id) === String(CUSTOMER_ID);
+                    });
+            })
+            /*
+ * @fixme RESUELTO:
+ * Se crean instancias de la clase Account con new Account()
+ * para encapsular correctamente los datos.
+ */
+            .map(function (a) {
+                return new Account(
+                    a.id,
+                    a.description,
+                    a.balance,
+                    a.creditLine,
+                    a.beginBalance,
+                    a.beginBalanceTimestamp,
+                    a.type,
+                    CUSTOMER_ID
+                );
+            });
 
         const container = document.getElementById("accountsContainer");
         container.innerHTML = "";
@@ -424,91 +491,145 @@ function editAccount(event) {
 
 /*
 ================================================================================
-   SUBMIT CREATE / EDIT
+   SUBMIT CREATE / EDIT ACCOUNT
 ================================================================================
-    |   Gestiona el envío del formulario del modal
-    |   Valida los datos introducidos por el usuario
-    |   Decide si se crea o se edita una cuenta según el estado del modal
-    |   Realiza la llamada REST correspondiente (POST o PUT)
-    |   Muestra mensajes de éxito o error y recarga la tabla
+    |   Gestiona el envío del formulario del modal (CREATE / EDIT).
+    |
+    |   VALIDACIÓN EN DOS FASES:
+    |   1️ Validación de formato mediante RegExp (formato español).
+    |   2️ Conversión explícita a Number y validación lógica del valor.
+    |
+    |   Se evita comparar Strings con Numbers.
+    |   Se garantiza coherencia en todos los importes monetarios.
 ================================================================================
 */
-/*
+/**
+ * @fixme Instanciar un objeto de la clase Account para encapsular los datos de las cuentas.
+
 ================================================================================
    SUBMIT CREATE / EDIT
 ================================================================================
 */
 async function submitAccountForm(event) {
-    event.preventDefault();
+    event.preventDefault(); // Evita el envío tradicional del formulario
 
     const description = inputDescription.value.trim();
     const type = inputType.value;
     let creditLine = 0;
 
+    // =====================================================
+    // VALIDACIÓN DESCRIPCIÓN
+    // =====================================================
     if (!description) {
         showMessage("Error", "La descripción es obligatoria");
         return;
     }
 
-    // ============================
-    // VALIDACIÓN BEGIN BALANCE
-    // ============================
-    const beginBalance = inputBeginBalance.valueAsNumber;
+    // =====================================================
+    // VALIDACIÓN BEGIN BALANCE (FORMATO + VALOR)
+    // =====================================================
 
-    if (!inputBeginBalance.checkValidity() || beginBalance < 0) {
-        showMessage("Error", "El balance inicial no puede ser negativo");
+    const beginBalanceValue = inputBeginBalance.value.trim();
+
+    //Validación de formato (RegExp española)
+    if (!esAmountRegex.test(beginBalanceValue)) {
+        showMessage("Error", "Formato inválido. Ejemplo válido: 10.000,01");
         return;
     }
 
+    //Conversión explícita a Number
+    const beginBalance = parseEuroNumber(beginBalanceValue);
 
+    if (!Number.isFinite(beginBalance)) {
+        showMessage("Error", "Número inválido");
+        return;
+    }
 
-    // ============================
-    // TRADUCIR SELECTOR A CREDITLINE
-    // ============================
+    //Validación lógica (no negativos)
+    if (beginBalance < 0) {
+        showMessage("Error", "No se permiten valores negativos");
+        return;
+    }
+
+    // =====================================================
+    // VALIDACIÓN CREDIT LINE (solo si tipo CREDIT)
+    // =====================================================
     if (type === "CREDIT") {
-        creditLine = parseInt(inputCreditLine.value, 10);
 
-        if (isNaN(creditLine) || creditLine <= 0) {
+        const creditLineValue = inputCreditLine.value.trim();
+
+        //Validación de formato
+        if (!esAmountRegex.test(creditLineValue)) {
+            showMessage("Error", "Formato inválido. Ejemplo válido: 10.000,01");
+            return;
+        }
+
+        //Conversión a Number
+        creditLine = parseEuroNumber(creditLineValue);
+
+        if (!Number.isFinite(creditLine)) {
+            showMessage("Error", "Número inválido");
+            return;
+        }
+
+        //Validación lógica (> 0 obligatorio)
+        if (creditLine <= 0) {
             showMessage("Error", "La línea de crédito debe ser mayor que 0");
             return;
         }
+
     } else {
+        // Si no es cuenta CREDIT, la línea de crédito es 0
         creditLine = 0;
     }
 
-
+    // =====================================================
+    // ENVÍO AL SERVIDOR (CREATE / EDIT)
+    // =====================================================
     try {
         let response;
 
         if (isEditMode) {
+            // =================================================
+            // MODO EDIT (PUT)
+            // =================================================
+            const account = accounts.find(a => a.id == inputAccountId.value);
+
+            if (!account) {
+                showMessage("Error", "Cuenta no encontrada");
+                return;
+            }
+
             response = await fetch(SERVICE_URL, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    id: inputAccountId.value,
+                    id: account.id,
                     description: description,
-                    beginBalance: inputBeginBalance.value,
-                    balance: accounts.find(a => a.id == inputAccountId.value).balance,
+                    beginBalance: account.beginBalance,
+                    beginBalanceTimestamp: account.beginBalanceTimestamp,
+                    type: account.type,
+                    balance: account.balance,
                     creditLine: creditLine,
-                    customers: [{ id: parseInt(CUSTOMER_ID, 10) }
-    ]
+                    customers: [
+                        { id: parseInt(CUSTOMER_ID, 10) }
+                    ]
                 })
             });
+
         } else {
-            // ============================
-            // CREATE - PAYLOAD 
-            // ============================
+            // =================================================
+            // MODO CREATE (POST)
+            // =================================================
             const payload = {
                 id: Math.floor(Math.random() * 100000000),
                 description: description,
                 balance: beginBalance,
-                creditLine: creditLine,
                 beginBalance: beginBalance,
-                beginBalanceTimestamp: new Date().toISOString().split(".")[0] + "Z",
-
-
+                beginBalanceTimestamp:
+                    new Date().toISOString().split(".")[0] + "Z",
+                creditLine: creditLine,
                 type: type,
-
                 customers: [
                     { id: parseInt(CUSTOMER_ID, 10) }
                 ]
@@ -521,11 +642,16 @@ async function submitAccountForm(event) {
             });
         }
 
+        // =====================================================
+        // CONTROL DE RESPUESTA
+        // =====================================================
         if (!response.ok) {
             throw new Error("Error al guardar la cuenta");
         }
 
+        // Cierre modal + mensaje de éxito
         closeAccountModal();
+
         showMessage(
             "Cuenta guardada",
             isEditMode
@@ -533,6 +659,7 @@ async function submitAccountForm(event) {
                 : "La cuenta se ha creado correctamente"
         );
 
+        // Recargar tabla
         await loadAccounts();
 
     } catch (error) {
@@ -541,8 +668,8 @@ async function submitAccountForm(event) {
 }
 
 
-
 /*
+ * @fixme Solo se podrán borrar cuentas que no tengan movimientos. Controlar esta condición para no realizar petición de borrado al servidor y así evitar el HTTP 500 por violación de integridad referencial.
 ================================================================================
    DELETE ACCOUNT / DELETE
 ================================================================================
@@ -557,6 +684,33 @@ async function submitAccountForm(event) {
 async function deleteAccount(event) {
     const accountId = event.currentTarget.dataset.accountId;
 
+    const account = accounts.find(acc => acc.id == accountId);
+
+
+    if (!account) {
+        showMessage("Error", "Cuenta no encontrada");
+        return;
+    }
+
+    /*=====================================================
+        |   @fixme RESUELTO:
+        |   Comprobamos en cliente si la cuenta tiene movimientos
+        |   antes de realizar la petición DELETE al servidor.
+        |   Compruebas en el cliente si tiene movimientos.
+        |   Si tiene → no haces la petición.
+        |   El servidor nunca recibe el DELETE.
+        |   No hay error HTTP.
+        |   No hay violación de integridad.
+    =====================================================
+    */
+    if (account.movements && account.movements.length > 0) {
+        showMessage(
+            "No permitido",
+            "No se puede eliminar la cuenta porque tiene movimientos"
+        );
+        return; //  NO se hace la petición
+    }
+
     showConfirm(
         "Eliminar cuenta",
         `¿Seguro que deseas eliminar la cuenta ${accountId}?`,
@@ -566,12 +720,6 @@ async function deleteAccount(event) {
                     `${SERVICE_URL}/${accountId}`,
                     { method: "DELETE" }
                 );
-
-                if (response.status === 409) {
-                    throw new Error(
-                        "No se puede eliminar la cuenta porque tiene movimientos"
-                    );
-                }
 
                 if (!response.ok) {
                     throw new Error("Error al eliminar la cuenta");
