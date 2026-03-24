@@ -238,6 +238,7 @@ function* accountRowGenerator(accounts) {
 
         const row = document.createElement("div");
         row.className = "table-row";
+        row.setAttribute("role", "row"); // ✅ Accesibilidad
 
         const fields = [
             "id",
@@ -247,7 +248,8 @@ function* accountRowGenerator(accounts) {
             "balance",
             "beginBalance",
             "creditLine"
-        ];
+];
+
 
         for (const field of fields) {
             const cell = document.createElement("div");
@@ -283,7 +285,8 @@ function* accountRowGenerator(accounts) {
         }
 
         const actionsCell = document.createElement("div");
-        actionsCell.className = "actions";
+        actionsCell.className = "table-cell actions"; // Ahora es celda real
+        actionsCell.setAttribute("role", "cell");     // Accesibilidad
 
         actionsCell.innerHTML = `
             <button 
@@ -335,6 +338,7 @@ function* accountRowGenerator(accounts) {
         yield row;
     }
 }
+
 
 
 /*

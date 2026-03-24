@@ -32,11 +32,10 @@
 
     <!-- FONT -->
     <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap"
-          rel="stylesheet">
+        rel="stylesheet">
 
     <!-- FONT AWESOME -->
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <!-- CSS -->
     <link rel="stylesheet" href="assets/css/styleCRUD.css">
@@ -52,69 +51,82 @@
 <!--TODO Mover todos los estilos en linea a un CSS externo-->
 <body>
 
-<main class="main-container">
+    <main class="main-container">
 
-    <!-- HEADER -->
-    <header class="top-bar">
-        <h1>My Account</h1>
+        <!-- HEADER -->
+        <header class="top-bar">
+            <h1>My Account</h1>
 
-        <nav
-            role="navigation"
-            aria-label="Navegación principal">
+            <nav role="navigation" aria-label="Navegación principal">
 
-            <div class="top-actions">
+                <div class="top-actions">
 
-                <button
-                    class="btn btn--primary"
-                    id="btnCreateAccount"
-                    role="button">
-                    Create Account
-                </button>
-                
-                <div class="videoContainer" role="contentinfo">
-                    <button class="icon-btn icon-btn--info" id="btnInfo" title="Information">
-                        <i class="fa-solid fa-circle-info"></i>                    
+                    <button class="btn btn--primary" id="btnCreateAccount" role="button">
+                        Create Account
                     </button>
-                    <div id="h5p-container2" style="display: none" aria-label="Video interactivo" ></div>
-                </div> 
 
-                <button
-                    class="btn btn--outline"
-                    id="btnLogout"
-                    role="button"
-                    aria-label="Cerrar sesión">
-                    Logout
-                </button>
-                
-                <button class="icon-btn icon-btn--theme" id="btnToggleStyle" title="Cambiar estilo" aria-label="Cambiar estilo">
-                    <i class="fa-solid fa-paintbrush"></i>
-                </button>
+                    <div class="videoContainer" role="contentinfo">
+                        <button class="icon-btn icon-btn--info" id="btnInfo" title="Information">
+                            <i class="fa-solid fa-circle-info"></i>
+                        </button>
+                        <div id="h5p-container2" style="display: none" aria-label="Video interactivo"></div>
+                    </div>
 
-            </div>
-        </nav>
-    </header>
+                    <button class="btn btn--outline" id="btnLogout" role="button" aria-label="Cerrar sesión">
+                        Logout
+                    </button>
 
-    <!-- WELCOME -->
-    <section
-        class="welcome-box"
-        aria-labelledby="welcomeTitle">
+                    <button class="icon-btn icon-btn--theme" id="btnToggleStyle" title="Cambiar estilo"
+                        aria-label="Cambiar estilo">
+                        <i class="fa-solid fa-paintbrush"></i>
+                    </button>
 
-        <div>
-            <h2 id="welcomeTitle">
-                Bienvenido,
-                <span class="user-name" id="userName"></span>
-            </h2>
-            <p>Consulta y gestiona tus cuentas de forma segura.</p>
-        </div>
+                </div>
+            </nav>
+        </header>
 
-        <div class="welcome-stats">
+        <!-- WELCOME -->
+        <section class="welcome-box" aria-labelledby="welcomeTitle">
+
             <div>
-                <strong id="totalAccounts">0</strong>
-                <span>Cuentas</span>
+                <h2 id="welcomeTitle">
+                    Bienvenido,
+                    <span class="user-name" id="userName"></span>
+                </h2>
+                <p>Consulta y gestiona tus cuentas de forma segura.</p>
             </div>
-            <div>
-                <strong id="totalBalance">€0,00</strong>
-                <span>Balance total</span>
+
+            <div class="welcome-stats">
+                <div>
+                    <strong id="totalAccounts">0</strong>
+                    <span>Cuentas</span>
+                </div>
+                <div>
+                    <strong id="totalBalance">€0,00</strong>
+                    <span>Balance total</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- TÍTULO TABLA -->
+        <h2 class="section-title" id="accountsTitle">Accounts</h2>
+
+        <!-- TABLA -->
+        <section class="table" role="table" aria-labelledby="accountsTitle">
+
+        <!--TODO aplicar correctamente los roles table y rowgroup añadiendo los elementos div necesarios. Ver https://www.thewcag.com/examples/tables Table with Divs + ARIA-->
+            <!-- HEADER -->
+            <div class="table-header" role="rowgroup">
+              <div class="table-row" role="row">
+                <div class="table-cell" role="columnheader">ID</div>
+                <div class="table-cell" role="columnheader">Timestamp</div>
+                <div class="table-cell" role="columnheader">Description</div>
+                <div class="table-cell" role="columnheader">Type</div>
+                <div class="table-cell text-right" role="columnheader">Balance</div>
+                <div class="table-cell text-right" role="columnheader">Begin Balance</div>
+                <div class="table-cell text-right" role="columnheader">Credit Line</div>
+                <div class="table-cell" role="columnheader">Actions</div>
+              </div>
             </div>
         </div>
     </section>
@@ -145,34 +157,51 @@
             class="table-body">
         </div>
 
-    </section>
+            <!-- BODY -->
+            <div id="accountsContainer" class="table-body" role="rowgroup">
+            </div>
 
-</main>
+        </section>
 
-<!-- MODAL CREATE / EDIT -->
-<div
-    id="accountModal"
-    class="modal-overlay"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="modalTitle"
-    style="display: none;">
 
-    <div class="modal">
-        <h2 id="modalTitle">Create Account</h2>
+    </main>
 
-        <form id="accountForm">
+    <!-- MODAL CREATE / EDIT -->
+    <div id="accountModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle"
+        style="display: none;">
 
-            <input type="hidden" id="accountId">
+        <div class="modal">
+            <h2 id="modalTitle">Create Account</h2>
 
-            <label for="description">Description</label>
-            <input type="text" id="description" maxlength="50" required>
+            <form id="accountForm">
 
-            <label for="type">Type</label>
-            <select id="type" required>
-                <option value="STANDARD">STANDARD</option>
-                <option value="CREDIT">CREDIT</option>
-            </select>
+                <input type="hidden" id="accountId">
+
+                <label for="description">Description</label>
+                <input type="text" id="description" maxlength="50" required>
+
+                <label for="type">Type</label>
+                <select id="type" required>
+                    <option value="STANDARD">STANDARD</option>
+                    <option value="CREDIT">CREDIT</option>
+                </select>
+
+                <label for="beginBalance">Begin Balance</label>
+                <input type="number" id="beginBalance" min="0" step="0.01" required>
+
+                <label for="creditLine">Credit Line</label>
+                <input type="number" id="creditLine" min="0" step="0.01" value="0">
+
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn--primary">Save</button>
+                    <button type="button" class="btn btn--outline" id="btnCancel">
+                        Cancel
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
 
             <label for="beginBalance">Begin Balance</label>
             <input type="text" id="beginBalance" required>
@@ -181,40 +210,17 @@
             <input type="text" id="creditLine" value="0">
 
             <div class="modal-actions">
-                <button type="submit" class="btn btn--primary">Save</button>
-                <button type="button" class="btn btn--outline" id="btnCancel">
-                    Cancel
+                <button id="btnConfirm" class="btn btn--primary" style="display: none;">
+                    Confirmar
+                </button>
+                <button id="btnCloseMessage" class="btn btn--outline">
+                    Cerrar
                 </button>
             </div>
-
-        </form>
-    </div>
-</div>
-
-<!-- MODAL MENSAJES -->
-<div
-    id="messageOverlay"
-    class="modal-overlay"
-    role="alertdialog"
-    aria-labelledby="messageTitle"
-    aria-describedby="messageText"
-    style="display: none;">
-
-    <div class="modal">
-        <h2 id="messageTitle">Mensaje</h2>
-        <p id="messageText"></p>
-
-        <div class="modal-actions">
-            <button id="btnConfirm" class="btn btn--primary" style="display: none;">
-                Confirmar
-            </button>
-            <button id="btnCloseMessage" class="btn btn--outline">
-                Cerrar
-            </button>
         </div>
     </div>
-</div>
 
 
 </body>
+
 </html>
